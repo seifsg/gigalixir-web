@@ -4,10 +4,12 @@ import { UserList } from './users'
 import { PostList } from './posts'
 import { PostEdit } from './PostEdit'
 import jsonServerProvider from 'ra-data-json-server';
+import authProvider from './authProvider';
+
 
 const dataProvider = jsonServerProvider('http://jsonplaceholder.typicode.com');
 const App = () => (
-    <Admin dataProvider={dataProvider}>
+    <Admin authProvider={authProvider} dataProvider={dataProvider}>
         <Resource name="posts" list={PostList} edit={PostEdit} />
         <Resource name="users" list={UserList} />
     </Admin>
