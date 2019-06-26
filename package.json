@@ -2,6 +2,10 @@
   "name": "gigalixir-web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "npm": "6.4.1",
+    "node": "11.1.0"
+  },
   "dependencies": {
     "prop-types": "^15.7.2",
     "ra-data-json-server": "^2.9.3",
