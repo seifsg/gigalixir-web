@@ -1,9 +1,31 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
+import axios from 'axios';
+
+let host = "http://localhost:4000"
 
 export default (type, params) => {
     // called when the user attempts to log in
     if (type === AUTH_LOGIN) {
-        const { username } = params;
+        const { username, password } = params;
+        axios.get(host + '/frontend/api/csrf', { withCredentials: true })
+        .then(function (response) {
+          // handle success
+          console.log(response);
+          let csrf_token = response.data.data;
+          console.log(csrf_token);
+          return axios.post(host + '/frontend/api/sessions', {session: {email: username, password: password}}, {headers: {"X-CSRF-Token": csrf_token}, withCredentials: true });
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .finally(function () {
+          // always executed
+        });
+
         localStorage.setItem('username', username);
         // accept all username/password combinations
         return Promise.resolve();
@@ -30,4 +52,3 @@ export default (type, params) => {
     }
     return Promise.reject('Unknown method');
 };
-
