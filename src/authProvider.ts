@@ -14,9 +14,9 @@ function get_csrf() {
         })
 }
 
-export default (type, params) => {
+export default (auth_type: any, params: any) => {
     // called when the user attempts to log in
-    if (type === AUTH_LOGIN) {
+    if (auth_type === AUTH_LOGIN) {
         const { username, password } = params;
         return get_csrf()
             .then(function(csrf_token) {
@@ -24,14 +24,14 @@ export default (type, params) => {
             })
     }
     // called when the user clicks on the logout button
-    if (type === AUTH_LOGOUT) {
+    if (auth_type === AUTH_LOGOUT) {
         return get_csrf()
             .then(function(csrf_token) {
                 return axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
             })
     }
     // called when the API returns an error
-    if (type === AUTH_ERROR) {
+    if (auth_type === AUTH_ERROR) {
         const { status } = params;
         if (status === 401 || status === 403) {
             return get_csrf()
@@ -42,7 +42,7 @@ export default (type, params) => {
         return Promise.resolve();
     }
     // called when the user navigates to a new location
-    if (type === AUTH_CHECK) {
+    if (auth_type === AUTH_CHECK) {
         return axios.get(host + '/frontend/api/sessions', { withCredentials: true });
     }
     return Promise.reject('Unknown method');

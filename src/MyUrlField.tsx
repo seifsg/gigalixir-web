@@ -12,7 +12,7 @@ const styles = {
     },
 };
 
-const MyUrlField = ({ record = {}, source, classes }) =>
+const MyUrlField = ({ record = {}, source, classes }: {record?: any, source: string, classes: {link: string, icon: string}}) =>
     <a href={record[source]} className={classes.link}>
         {record[source]}
         <LaunchIcon className={classes.icon}/>
