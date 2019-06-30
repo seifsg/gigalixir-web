@@ -1,23 +1,24 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
 import axios from 'axios';
 
-let host = "http://localhost:4000"
+const host = process.env.REACT_APP_API_HOST
+console.log(`host: ${host}`)
 
-let logError = (reason: any) => {
+const logError = (reason: any) => {
     console.log(reason)
     return Promise.reject(reason)
 }
 
-let get_csrf = async (): Promise<string> => {
+const get_csrf = async (): Promise<string> => {
     const response = await axios.get(host + '/frontend/api/csrf', { withCredentials: true });
     return response.data.data;
 }
-let logout = async (csrf_token: string) => {
+const logout = async (csrf_token: string) => {
     const response = await axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
     return response.data;
 }
 
-export default (auth_type: any, params: any) => {
+export default (auth_type: any, params?: any) => {
     let result: Promise<any>
     if (auth_type === AUTH_LOGIN) {
         // called when the user attempts to log in

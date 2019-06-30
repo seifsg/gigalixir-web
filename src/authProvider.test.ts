@@ -15,7 +15,6 @@ it('logs in', (done) => {
         expect(createSessionMock).toHaveBeenCalled()
     }).catch(reason => {
         fail(reason)
-        done()
     }).finally(() => {
         csrfMock.mockRestore()
         createSessionMock.mockRestore()
@@ -53,7 +52,6 @@ it('checks session', (done) => {
         expect(checkSessionMock).toHaveBeenCalled()
     }).catch(reason => {
         fail(reason)
-        done()
     }).finally(() => {
         checkSessionMock.mockRestore()
         done()
@@ -73,7 +71,6 @@ it('logs out', (done) => {
         expect(deleteSessionMock).toHaveBeenCalled()
     }).catch(reason => {
         fail(reason)
-        done()
     }).finally(() => {
         csrfMock.mockRestore()
         deleteSessionMock.mockRestore()
@@ -94,7 +91,6 @@ it('logs out on error', (done) => {
         expect(deleteSessionMock).toHaveBeenCalled()
     }).catch(reason => {
         fail(reason)
-        done()
     }).finally(() => {
         csrfMock.mockRestore()
         deleteSessionMock.mockRestore()
