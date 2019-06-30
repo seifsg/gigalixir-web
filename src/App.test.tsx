@@ -9,8 +9,10 @@ it('renders without crashing', () => {
   const createSessionMock = jest.spyOn(axios, 'get')
   createSessionMock.mockReturnValueOnce(Promise.resolve({ data: {data: "fake-session" }}))
   const div = document.createElement('div');
+
   ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
+  
   expect(csrfMock).toHaveBeenCalled()
   expect(createSessionMock).toHaveBeenCalled()
   csrfMock.mockRestore()

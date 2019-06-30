@@ -3,59 +3,48 @@ import axios from 'axios';
 
 let host = "http://localhost:4000"
 
-function logError(reason: any) {
+let logError = (reason: any) => {
     console.log(reason)
     return Promise.reject(reason)
 }
 
-function get_csrf() {
-    return axios.get(host + '/frontend/api/csrf', { withCredentials: true })
-        .then(response => response.data.data)
-        .catch(logError)
+let get_csrf = async (): Promise<string> => {
+    const response = await axios.get(host + '/frontend/api/csrf', { withCredentials: true });
+    return response.data.data;
+}
+let logout = async (csrf_token: string) => {
+    const response = await axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
+    return response.data;
 }
 
 export default (auth_type: any, params: any) => {
-    // called when the user attempts to log in
+    let result: Promise<any>
     if (auth_type === AUTH_LOGIN) {
+        // called when the user attempts to log in
         const { username, password } = params;
-        return get_csrf()
-            .then(function (csrf_token) {
-                return axios.post(host + '/frontend/api/sessions', { session: { email: username, password: password } }, { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true })
-                    .then(response => response.data)
-                    .catch(logError)
+        result = get_csrf()
+            .then(async (csrf_token: string): Promise<{ data: any }> => {
+                const response = await axios.post(host + '/frontend/api/sessions', { session: { email: username, password: password } }, { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
+                return response.data;
             })
-            .catch(logError)
-        }
-    // called when the user clicks on the logout button
-    if (auth_type === AUTH_LOGOUT) {
-        return get_csrf()
-            .then(function (csrf_token) {
-                return axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true })
-                    .then(response => response.data)
-                    .catch(logError)
-
-            })
-            .catch(logError)
-        }
-    // called when the API returns an error
-    if (auth_type === AUTH_ERROR) {
+    } else if (auth_type === AUTH_LOGOUT) {
+        // called when the user clicks on the logout button
+        result = get_csrf().then(logout)
+    } else if (auth_type === AUTH_ERROR) {
+        // called when the API returns an error
         const { status } = params;
         if (status === 401 || status === 403) {
-            return get_csrf()
-                .then(function (csrf_token) {
-                    return axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true })
-                        .then(response => response.data)
-                        .catch(logError)
-                })
-                .catch(logError)
+            result = get_csrf().then(logout)
+        } else {
+            result = Promise.resolve();
         }
-        return Promise.resolve();
-    }
-    // called when the user navigates to a new location
-    if (auth_type === AUTH_CHECK) {
-        return axios.get(host + '/frontend/api/sessions', { withCredentials: true })
+    } else if (auth_type === AUTH_CHECK) {
+        // called when the user navigates to a new location
+        result = axios.get(host + '/frontend/api/sessions', { withCredentials: true })
             .then(response => response.data)
-            .catch(logError)
     }
-    return Promise.reject('Unknown method');
-};
+    else {
+        result = Promise.reject(`Unknown method: ${auth_type}`)
+    }
+    return result.catch(logError)
+}
