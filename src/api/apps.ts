@@ -1,5 +1,32 @@
-import axios from 'axios'
+import * as api from './api'
 
-const host = process.env.REACT_APP_API_HOST
+interface App {
+    id: string,
+    stack: string,
+    size: number,
+    replicas: number,
+    region: string,
+    cloud: string
+}
 
-export const get = () => axios.get(host + "/frontend/api/apps")
+const renameIds = (apps: any[]): App[] =>
+    apps.map(app => { return { 
+        id: app.unique_name,
+        stack: app.stack,
+        size: app.size,
+        replicas: app.replicas,
+        region: app.region,
+        cloud: app.cloud 
+    } })
+
+
+export const get = (): Promise<{ data: App[], total: number }> =>
+    api.get("/frontend/api/apps")
+        .then(response => {
+            const apps = response.data.data
+            return {
+                data: renameIds(apps),
+                total: apps.length
+            }
+        })
+
