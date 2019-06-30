@@ -10,14 +10,12 @@ interface App {
 }
 
 const renameIds = (apps: any[]): App[] =>
-    apps.map(app => { return { 
-        id: app.unique_name,
-        stack: app.stack,
-        size: app.size,
-        replicas: app.replicas,
-        region: app.region,
-        cloud: app.cloud 
-    } })
+    // using object spread operator to copy over all fields except unique_name field
+    apps.map(({ unique_name, ...others }) => {
+        return {
+            id: unique_name, ...others
+        }
+    })
 
 
 export const get = (): Promise<{ data: App[], total: number }> =>
