@@ -1,21 +1,9 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
-import axios from 'axios';
-
-const host = process.env.REACT_APP_API_HOST
-console.log(`host: ${host}`)
+import { check, login, logout } from './api/sessions'
 
 const logError = (reason: any) => {
     console.log(reason)
     return Promise.reject(reason)
-}
-
-const get_csrf = async (): Promise<string> => {
-    const response = await axios.get(host + '/frontend/api/csrf', { withCredentials: true });
-    return response.data.data;
-}
-const logout = async (csrf_token: string) => {
-    const response = await axios.delete(host + '/frontend/api/sessions', { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
-    return response.data;
 }
 
 export default (auth_type: any, params?: any) => {
@@ -23,26 +11,21 @@ export default (auth_type: any, params?: any) => {
     if (auth_type === AUTH_LOGIN) {
         // called when the user attempts to log in
         const { username, password } = params;
-        result = get_csrf()
-            .then(async (csrf_token: string): Promise<{ data: any }> => {
-                const response = await axios.post(host + '/frontend/api/sessions', { session: { email: username, password: password } }, { headers: { "X-CSRF-Token": csrf_token }, withCredentials: true });
-                return response.data;
-            })
+        result = login(username, password)
     } else if (auth_type === AUTH_LOGOUT) {
         // called when the user clicks on the logout button
-        result = get_csrf().then(logout)
+        result = logout()
     } else if (auth_type === AUTH_ERROR) {
         // called when the API returns an error
         const { status } = params;
         if (status === 401 || status === 403) {
-            result = get_csrf().then(logout)
+            result = logout()
         } else {
             result = Promise.resolve();
         }
     } else if (auth_type === AUTH_CHECK) {
         // called when the user navigates to a new location
-        result = axios.get(host + '/frontend/api/sessions', { withCredentials: true })
-            .then(response => response.data)
+        result = check()
     }
     else {
         result = Promise.reject(`Unknown method: ${auth_type}`)
