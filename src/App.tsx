@@ -1,11 +1,12 @@
 import React from 'react';
-import { Admin, Resource, ListGuesser } from 'react-admin';
+import { Admin, Resource } from 'react-admin';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
+import { AppList, AppCreate } from './apps'
 
 const App = () => (
     <Admin authProvider={authProvider} dataProvider={dataProvider}>
-        <Resource name="apps" list={ListGuesser} />
+        <Resource name="apps" list={AppList} create={AppCreate}/>
     </Admin>
 );
 
