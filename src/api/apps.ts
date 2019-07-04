@@ -47,21 +47,41 @@ export const get = (): Promise<{ data: App[]; total: number }> => {
         });
 }
 
+function capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const readableError = (errors: {[k: string]: string[]}): string => {
+    return Object.keys(errors).map(function(key): string {
+        // hack to map unique_name to name
+        let name = key
+        if (name === "unique_name") {
+            name = "name"
+        }
+        name = capitalizeFirstLetter(name)
+        return `${name} ${errors[key][0]}`
+    }).join(". ")
+}
 
 export const create = (name: string, cloud: string, region: string): Promise<{}> => {
     return api.post('/frontend/api/apps', {
         unique_name: name,
         cloud: cloud,
         region: region
-    }).then((response): {data: App} => {
+    }).then((response: {data: {unique_name: string; replicas: number; size: number}}): {data: App} => {
         const app = response.data;
         return {data: {
-            id: app.unique_name as string,
+            id: app.unique_name,
             cloud: cloud,
             region: region,
-            replicas: app.replicas as number,
-            size: app.size as number,
+            replicas: app.replicas,
+            size: app.size,
         }}
+    }).catch((error): never => {
+        const errors = error.response.data.errors;
+        const result = readableError(errors)
+        throw new Error(result);
     })
 }
 /* eslint-enable @typescript-eslint/camelcase */
+
