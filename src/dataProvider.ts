@@ -1,3 +1,4 @@
+import logger from './logger';
 import {
     // fetchUtils,
     GET_LIST,
@@ -13,7 +14,7 @@ import {
 import * as apps from './api/apps';
 
 export default (type: string, resource: string, params: any) => {
-    console.log(type, resource, params)
+    logger.debug(type, resource, params)
     if (type === GET_LIST) {
         if (resource === 'apps') {
             return apps.get();
