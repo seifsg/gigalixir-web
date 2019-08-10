@@ -38,9 +38,8 @@ const isGetOne = (params: DataProviderParams, type: string): params is GetOnePar
 type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE'
 
 function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams : GetListParams): Promise<{}> {
-    logger.debug('enter dataProvider')
     logger.debug(type)
-    logger.debug(JSON.stringify(resource))
+    logger.debug(resource)
     logger.debug(JSON.stringify(params))
     if (isGetList(params, type)) {
         if (resource === 'apps') {

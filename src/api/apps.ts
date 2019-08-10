@@ -50,7 +50,7 @@ export const list = (): Promise<{ data: App[]; total: number }> => {
 export const get = (id: string): Promise<{ data: App }> => {
     return api.get('/frontend/api/apps/' + id)
         .then((response): {data: App } => {
-            const { unique_name, ...others } = response.data;
+            const { unique_name, ...others } = response.data.data;
             return {
                 data: {
                     id: unique_name,
