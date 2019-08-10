@@ -22,26 +22,40 @@ interface CreateParams {
         region: string;
     };
 }
+interface GetOneParams {
+    id: string
+}
 
-const isGetList = (params: CreateParams | GetListParams, type: string): params is GetListParams => type === 'GET_LIST'
-const isCreate = (params: CreateParams | GetListParams, type: string): params is CreateParams => type === 'CREATE'
+type DataProviderParams = CreateParams | GetListParams | GetOneParams
+
+const isGetList = (params: DataProviderParams, type: string): params is GetListParams => type === 'GET_LIST'
+const isCreate = (params: DataProviderParams, type: string): params is CreateParams => type === 'CREATE'
+const isGetOne = (params: DataProviderParams, type: string): params is GetOneParams => type === 'GET_ONE'
 
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
 // type DataProviderType = typeof a[number]
-type DataProviderType = 'GET_LIST' | 'CREATE'
+type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE'
 
 function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams : GetListParams): Promise<{}> {
-    logger.debug(type, resource, params)
+    logger.debug('enter dataProvider')
+    logger.debug(type)
+    logger.debug(JSON.stringify(resource))
+    logger.debug(JSON.stringify(params))
     if (isGetList(params, type)) {
         if (resource === 'apps') {
-            return apps.get();
+            return apps.list();
         }
     }
     if (isCreate(params, type)) {
         if (resource === 'apps') {
             const { name, cloud, region } = params.data 
             return apps.create(name, cloud, region);
+        }
+    }
+    if (isGetOne(params, type)) {
+        if (resource === 'apps') {
+            return apps.get(params.id)
         }
     }
     throw new Error('not implemented yet');

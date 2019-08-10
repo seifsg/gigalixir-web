@@ -36,14 +36,26 @@ const renameIds = (apps: {unique_name: string; stack: string; size: number; repl
     }));
 }
 
-
-export const get = (): Promise<{ data: App[]; total: number }> => {
+export const list = (): Promise<{ data: App[]; total: number }> => {
     return api.get('/frontend/api/apps')
         .then((response): {data: App[]; total: number} => {
             const apps = response.data.data;
             return {
                 data: renameIds(apps),
                 total: apps.length,
+            };
+        });
+}
+
+export const get = (id: string): Promise<{ data: App }> => {
+    return api.get('/frontend/api/apps/' + id)
+        .then((response): {data: App } => {
+            const { unique_name, ...others } = response.data;
+            return {
+                data: {
+                    id: unique_name,
+                    ...others
+                }
             };
         });
 }

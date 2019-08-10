@@ -1,13 +1,24 @@
 import React from 'react';
-import { SelectInput, List, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
+import { Show, SimpleShowLayout, SelectInput, List, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
 
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
 type ListProps = any
+type ShowProps = any // fill this out?
+
+export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactElement => (
+    <Show {...props}>
+        <SimpleShowLayout>
+            <TextField source="id" />
+            <TextField source="size" />
+            <TextField source="replicas" />
+        </SimpleShowLayout>
+    </Show>
+);
 
 export const AppList: React.FunctionComponent<ListProps> = ( props ): React.ReactElement => (
     <List {...props}>
-        <Datagrid rowClick="edit">
+        <Datagrid rowClick="show">
             <TextField source="id" />
             <NumberField source="size" />
             <NumberField source="replicas" />
