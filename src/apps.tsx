@@ -1,5 +1,6 @@
 import React from 'react';
 import { Show, SimpleShowLayout, SelectInput, List, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
+import { Chart } from './Chart';
 
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
@@ -12,6 +13,7 @@ export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactE
             <TextField source="id" />
             <TextField source="size" />
             <TextField source="replicas" />
+            <Chart/>
         </SimpleShowLayout>
     </Show>
 );

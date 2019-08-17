@@ -35,7 +35,7 @@ const isGetOne = (params: DataProviderParams, type: string): params is GetOnePar
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
 // type DataProviderType = typeof a[number]
-type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE'
+type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 
 function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams : GetListParams): Promise<{}> {
     logger.debug(type)
