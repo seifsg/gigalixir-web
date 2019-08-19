@@ -1,17 +1,6 @@
-import logger from './logger';
-import {
-// fetchUtils,
-// GET_LIST,
-// GET_ONE,
-// GET_MANY,
-// GET_MANY_REFERENCE,
-// CREATE,
-// UPDATE,
-// UPDATE_MANY,
-// DELETE,
-// DELETE_MANY,
-} from 'react-admin';
 import * as apps from './api/apps';
+import * as stats from './api/stats';
+import logger from './logger';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {} 
@@ -62,6 +51,9 @@ function foo<T extends DataProviderType>(type: T, resource: string, params: Data
     if (isGetOne(params, type)) {
         if (resource === 'apps') {
             return apps.get(params.id)
+        }
+        if (resource === 'stats') {
+            return stats.get(params.id)
         }
     }
     throw new Error('not implemented yet');

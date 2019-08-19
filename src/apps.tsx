@@ -13,7 +13,7 @@ export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactE
             <TextField source="id" />
             <TextField source="size" />
             <TextField source="replicas" />
-            <Chart/>
+            <Chart id={props.id}/>
         </SimpleShowLayout>
     </Show>
 );
