@@ -1,6 +1,4 @@
 import * as api from './api';
-import { HttpError } from 'react-admin'
-import logger from '../logger';
 
 export interface Stats {
     id: string,

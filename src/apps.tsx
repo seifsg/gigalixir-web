@@ -1,11 +1,34 @@
 import React from 'react';
 import { Show, SimpleShowLayout, SelectInput, List, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
 import { Chart } from './Chart';
+import { Query, Loading } from 'react-admin'
+import logger from './logger';
+import { Stats } from './api/stats'
 
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
 type ListProps = any
 type ShowProps = any // fill this out?
+interface ChartsProps {
+    id: string
+} 
+export const Charts: React.FunctionComponent<ChartsProps> = (props): React.ReactElement => (
+    <Query type="GET_ONE" resource="stats" payload={{ id: props.id }}>
+    {({ data, loading, error }: { data: Stats, loading: boolean, error: any}) => {
+        logger.debug("data: " + JSON.stringify(data))
+        logger.debug("loading: " + JSON.stringify(loading))
+        logger.debug("error: " + JSON.stringify(error))
+        if (loading) { return <Loading />; }
+        if (error) { return <div>{error.message}</div>; }
+        logger.debug(JSON.stringify(data))
+
+        return <div>
+            <Chart data={data.data.mem} title='Memory (MB)'/>
+            <Chart data={data.data.cpu} title='CPU (Millicores)'/>
+        </div> 
+    }}
+    </Query>        
+)
 
 export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactElement => (
     <Show {...props}>
@@ -13,7 +36,7 @@ export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactE
             <TextField source="id" />
             <TextField source="size" />
             <TextField source="replicas" />
-            <Chart id={props.id}/>
+            <Charts id={props.id}/>
         </SimpleShowLayout>
     </Show>
 );

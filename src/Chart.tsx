@@ -1,11 +1,10 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { Stats, value, point } from './api/stats'
-import { Query, Loading } from 'react-admin'
-import logger from './logger';
+import { value, point } from './api/stats'
 
 interface ChartProps {
-    id: string
+    title: string,
+    data: point[]
 }
 
 type chartPoint = {
@@ -27,44 +26,34 @@ const formatStatsPointForChart = (point: point): chartPoint => {
     }
 }
 
-const options = {
-    title: {
-        display: true,
-        text: 'Memory (MB)'
-    },
-    legend: {
-        display: false
-    },
-    scales: {
-        xAxes: [{
-            type: 'time',
-        }],
-        yAxes: [{
-            ticks: {
-                beginAtZero: true
-            }
-        }]
-    }
-}
 
-export const Chart: React.FunctionComponent<ChartProps> = (props): React.ReactElement => (
-    <Query type="GET_ONE" resource="stats" payload={{ id: props.id }}>
-        {({ data, loading, error }: { data: Stats, loading: boolean, error: any}) => {
-            logger.debug("data: " + JSON.stringify(data))
-            logger.debug("loading: " + JSON.stringify(loading))
-            logger.debug("error: " + JSON.stringify(error))
-            if (loading) { return <Loading />; }
-            if (error) { return <div>{error.message}</div>; }
-            logger.debug(JSON.stringify(data))
-            const datasets = {
-                    datasets: [
-                    {
-                        pointRadius: 1,
-                        data: formatStatsForChart(data.data.mem)
-                    }
-                ]
+export const Chart: React.FunctionComponent<ChartProps> = (props): React.ReactElement => {
+    const datasets = {
+            datasets: [
+            {
+                pointRadius: 1,
+                data: formatStatsForChart(props.data)
             }
-            return <Line data={datasets} options={options}/>
-        }}
-    </Query>
-);
+        ]
+    }
+    const options = {
+        title: {
+            display: true,
+            text: props.title
+        },
+        legend: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }            
+    return <Line data={datasets} options={options}/>
+};
