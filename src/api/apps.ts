@@ -77,7 +77,6 @@ const readableError = (errors: {[k: string]: string[]}): string => {
 }
 
 export const create = (name: string, cloud: string, region: string): Promise<{}> => {
-    logger.info(name)
     return api.post('/frontend/api/apps', {
         unique_name: name,
         cloud: cloud,

@@ -15,13 +15,8 @@ interface ChartsProps {
 export const Charts: React.FunctionComponent<ChartsProps> = (props): React.ReactElement => (
     <Query type="GET_ONE" resource="stats" payload={{ id: props.id }}>
     {({ data, loading, error }: { data: Stats, loading: boolean, error: any}) => {
-        logger.debug("data: " + JSON.stringify(data))
-        logger.debug("loading: " + JSON.stringify(loading))
-        logger.debug("error: " + JSON.stringify(error))
         if (loading) { return <Loading />; }
-        if (error) { return <div>{error.message}</div>; }
-        logger.debug(JSON.stringify(data))
-
+        if (error) { return <div>Error: {error.message}</div>; }
         return <div>
             <Chart data={data.data.mem} title='Memory (MB)'/>
             <Chart data={data.data.cpu} title='CPU (Millicores)'/>

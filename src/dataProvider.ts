@@ -34,9 +34,6 @@ type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 //         : T extends 'GET_ONE' ? GetOneParams 
 //             : UpdateParams): Promise<{}> {
 function foo<T extends DataProviderType>(type: T, resource: string, params: DataProviderParams): Promise<{}> {
-    logger.debug(type)
-    logger.debug(resource)
-    logger.debug(JSON.stringify(params))
     if (isGetList(params, type)) {
         if (resource === 'apps') {
             return apps.list();
