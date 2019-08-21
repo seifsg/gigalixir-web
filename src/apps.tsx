@@ -37,7 +37,7 @@ const maxValue = (max: number, message = 'Too big') =>
     (value: any) => value && value > max ? message : undefined;
 
 const validateSize = [required(), number(), minValue(0.2, "Must be at least 0.2"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
-const validateReplicas = [required(), number(), minValue(0, "Must be non-negative"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
+const validateReplicas = [number(), minValue(0, "Must be non-negative"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
 
 export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactElement => (
     <div>
