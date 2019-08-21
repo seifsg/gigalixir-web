@@ -76,7 +76,7 @@ const readableError = (errors: {[k: string]: string[]}): string => {
     }).join(". ")
 }
 
-export const create = (name: string, cloud: string, region: string): Promise<{}> => {
+export const create = (name: string, cloud: string, region: string): Promise<{data: App}> => {
     return api.post('/frontend/api/apps', {
         unique_name: name,
         cloud: cloud,
@@ -97,4 +97,16 @@ export const create = (name: string, cloud: string, region: string): Promise<{}>
     })
 }
 /* eslint-enable @typescript-eslint/camelcase */
+
+// TODO: all the other ones take an App and return an App, this one doesn't because we don't really know where to get
+// cloud and region and all the other fields from, which aren't returned in the API response.
+export const scale = (name: string, size: number, replicas: number): Promise<{data: {size: number, replicas: number}}> => {
+    return api.post(`/frontend/api/apps/${name}/scale`, {
+        size: size,
+        replicas: replicas
+    }).then((response: {data: {replicas: number; size: number}}): {data: {size: number, replicas: number}} => {
+        const newApp = response.data;
+        return {data: {replicas: newApp.replicas, size: newApp.size}}
+    })
+}
 
