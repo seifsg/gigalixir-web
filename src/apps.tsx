@@ -1,13 +1,13 @@
 import React from 'react';
-import { Edit, NumberInput, Show, SimpleShowLayout, SelectInput, List, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
+import { Edit, NumberInput, Show, SimpleShowLayout, SelectInput, List, SimpleList, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
 import { Chart } from './Chart';
 import { Query, Loading } from 'react-admin'
 import logger from './logger';
 import { Stats } from './api/stats'
+import { AppList } from './AppList'
 
-// not gonna go thru and do a whole list of stuff from here
-// https://marmelab.com/react-admin/List.html#the-list-component
-type ListProps = any
+export { AppList }
+
 type ShowProps = any // fill this out?
 interface ChartsProps {
     id: string
@@ -56,19 +56,6 @@ export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactE
             </SimpleShowLayout>
         </Show>
     </div>
-);
-
-export const AppList: React.FunctionComponent<ListProps> = (props): React.ReactElement => (
-    <List {...props}>
-        <Datagrid rowClick="show">
-            <TextField source="id" />
-            <NumberField source="size" />
-            <NumberField source="replicas" />
-            <TextField source="cloud" />
-            <TextField source="region" />
-            <TextField source="stack" />
-        </Datagrid>
-    </List>
 );
 
 const regionChoices = (cloud: string): { defaultValue: string; choices: { id: string; name: string }[] } => {

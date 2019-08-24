@@ -1,9 +1,9 @@
-import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
+import { AUTH_GET_PERMISSIONS, AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
 import { check, login, logout } from './api/sessions'
 import logger from './logger'
 
 function logError<T>(reason: T): Promise<T> {
-    logger.error({reason: reason})
+    logger.error(JSON.stringify(reason))
     return Promise.reject(reason)
 }
 
@@ -27,9 +27,9 @@ export default (authType: any, params?: any) => {
     } else if (authType === AUTH_CHECK) {
         // called when the user navigates to a new location
         result = check()
-    }
-    else {
-        result = Promise.reject(`Unknown method: ${authType}`)
+    } else {
+        const message = `Unknown method: ${authType}`;
+        result = Promise.reject(message)
     }
     return result.catch(logError)
 }
