@@ -1,62 +1,11 @@
 import React from 'react';
 import { Edit, NumberInput, Show, SimpleShowLayout, SelectInput, List, SimpleList, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
-import { Chart } from './Chart';
-import { Query, Loading } from 'react-admin'
 import logger from './logger';
-import { Stats } from './api/stats'
 import { AppList } from './AppList'
+import { AppShow } from './AppShow'
 
-export { AppList }
+export { AppList, AppShow }
 
-type ShowProps = any // fill this out?
-interface ChartsProps {
-    id: string
-}
-export const Charts: React.FunctionComponent<ChartsProps> = (props): React.ReactElement => (
-    <Query type="GET_ONE" resource="stats" payload={{ id: props.id }}>
-        {({ data, loading, error }: { data: Stats, loading: boolean, error: any }) => {
-            if (loading) { return <Loading />; }
-            if (error) { return <div>Error: {error.message}</div>; }
-            return <div>
-                <Chart data={data.data.mem} title='Memory (MB)' />
-                <Chart data={data.data.cpu} title='CPU (Millicores)' />
-            </div>
-        }}
-    </Query>
-)
-
-const required = (message = 'Required') =>
-    (value: any) => value ? undefined : message;
-const maxLength = (max: number, message = 'Too short') =>
-    (value: any) => value && value.length > max ? message : undefined;
-const number = (message = 'Must be a number') =>
-    (value: any) => value && isNaN(Number(value)) ? message : undefined;
-const minValue = (min: number, message = 'Too small') =>
-    (value: any) => value && value < min ? message : undefined;
-const maxValue = (max: number, message = 'Too big') =>
-    (value: any) => value && value > max ? message : undefined;
-
-const validateSize = [required(), number(), minValue(0.2, "Must be at least 0.2"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
-const validateReplicas = [number(), minValue(0, "Must be non-negative"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
-
-export const AppShow: React.FunctionComponent<ShowProps> = (props): React.ReactElement => (
-    <div>
-        <Edit {...props}>
-            <SimpleForm>
-                <NumberInput source="size" validate={validateSize} />
-                <NumberInput source="replicas" validate={validateReplicas} />
-            </SimpleForm>
-        </Edit>
-        <Show {...props}>
-            <SimpleShowLayout>
-                <TextField source="id" />
-                <TextField source="size" />
-                <TextField source="replicas" />
-                <Charts id={props.id} />
-            </SimpleShowLayout>
-        </Show>
-    </div>
-);
 
 const regionChoices = (cloud: string): { defaultValue: string; choices: { id: string; name: string }[] } => {
     if (cloud === "gcp") {
