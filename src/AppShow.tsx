@@ -49,7 +49,7 @@ const AppScale = (props: ScaleProps) => {
     const { onSave, ...sanitizedProps } = props
     return (
         <Edit title=" " {...sanitizedProps}>
-            <SimpleForm redirect={false} toolbar={<AppScaleToolbar />}>
+            <SimpleForm redirect={false} toolbar={<AppScaleToolbar onSave={onSave}/>}>
                 <NumberInput source="size" validate={validateSize} />
                 <NumberInput source="replicas" validate={validateReplicas} />
             </SimpleForm>
@@ -68,11 +68,12 @@ const scaleApp = (values: App, basePath: string, redirectTo: string) => {
 const AppScaleToolbar_ = (props: any) => {
     const handleClick = () => {
         logger.debug('handleClick')
-        const { handleSubmit, basePath, redirect, scaleApp } = props;
+        const { handleSubmit, basePath, redirect, scaleApp, onSave } = props;
 
         return handleSubmit((values: App) => {
             logger.debug(JSON.stringify(values))
             logger.debug('handleSubmit')
+            onSave()
             scaleApp(values, basePath, redirect)
         });
     }
