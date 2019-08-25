@@ -1,6 +1,6 @@
 import * as api from './api';
 
-interface App {
+export interface App {
     id: string;
     stack?: string; // TODO: make this required
     size: number;

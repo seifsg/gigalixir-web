@@ -2,10 +2,13 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import React from 'react';
-import { Edit, Loading, NumberInput, Query, Show, SimpleForm, SimpleShowLayout, TextField } from 'react-admin';
+import { crudUpdate, SaveButton, Toolbar, Edit, Loading, NumberInput, Query, Show, SimpleForm, SimpleShowLayout, TextField } from 'react-admin';
 import { Stats } from './api/stats';
 import { Chart } from './Chart';
-
+import { Route, Link } from 'react-router-dom'
+import logger from './logger';
+import { App } from './api/apps'
+import { connect } from 'react-redux'
 
 type ShowProps = any // fill this out?
 interface ChartsProps {
@@ -36,15 +39,55 @@ const maxValue = (max: number, message = 'Too big') =>
 const validateSize = [required(), number(), minValue(0.2, "Must be at least 0.2"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
 const validateReplicas = [number(), minValue(0, "Must be non-negative"), maxValue(16, "Please contact enterprise@gigalixir.com to scale above 16.")];
 
-type ScaleProps = any
-const AppScale = (props: ScaleProps) => (
-    <Edit {...props}>
-        <SimpleForm>
-            <NumberInput source="size" validate={validateSize} />
-            <NumberInput source="replicas" validate={validateReplicas} />
-        </SimpleForm>
-    </Edit>
-)
+type ScaleProps = {
+    id: string,
+    basePath: string,
+    resource: string,
+    onSave: (event: React.KeyboardEvent | React.MouseEvent) => void;
+}
+const AppScale = (props: ScaleProps) => {
+    const { onSave, ...sanitizedProps } = props
+    return (
+        <Edit title=" " {...sanitizedProps}>
+            <SimpleForm redirect={false} toolbar={<AppScaleToolbar />}>
+                <NumberInput source="size" validate={validateSize} />
+                <NumberInput source="replicas" validate={validateReplicas} />
+            </SimpleForm>
+        </Edit>
+
+    )
+}
+
+const scaleApp = (values: App, basePath: string, redirectTo: string) => {
+    logger.debug('scaleApp')
+    logger.debug(redirectTo)
+    logger.debug(basePath)
+    return crudUpdate('apps', values.id, values, undefined, basePath, redirectTo);
+}
+
+const AppScaleToolbar_ = (props: any) => {
+    const handleClick = () => {
+        logger.debug('handleClick')
+        const { handleSubmit, basePath, redirect, scaleApp } = props;
+
+        return handleSubmit((values: App) => {
+            logger.debug(JSON.stringify(values))
+            logger.debug('handleSubmit')
+            scaleApp(values, basePath, redirect)
+        });
+    }
+
+    return (
+        <Toolbar {...props}>
+            <SaveButton handleSubmitWithRedirect={handleClick}/>
+        </Toolbar>
+    )
+}
+const AppScaleToolbar = connect(
+    undefined,
+    { scaleApp }
+)(AppScaleToolbar_);
+
 
 const styles = {
     list: {
@@ -83,11 +126,12 @@ const AppShow_ = (props: ShowProps) => {
     // { "classes": { "list": "AppShow_-list-11", "fullList": "AppShow_-fullList-12" }, "basePath": "/apps", "id": "bar", "permissions": null, "match": { "path": "/apps/:id/show", "url": "/apps/bar/show", "isExact": true, "params": { "id": "bar" } }, "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" }, "history": { "length": 29, "action": "POP", "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" } }, "resource": "apps", "options": { }, "hasList": true, "hasEdit": false, "hasShow": true, "hasCreate": true }
     return (
         <React.Fragment>
+            <Button onClick={toggleDrawer('right', true)} variant="contained" color="primary">
+                Scale
+            </Button>
+
             <Show {...props}>
                 <SimpleShowLayout>
-                    <Button onClick={toggleDrawer('right', true)} variant="contained" color="primary">
-                        About Page
-                </Button>
                     <TextField source="id" />
                     <TextField source="size" />
                     <TextField source="replicas" />
@@ -100,9 +144,8 @@ const AppShow_ = (props: ShowProps) => {
                 onClose={toggleDrawer('right', false)}
                 onOpen={toggleDrawer('right', true)}
             >
-                <AppScale id={props.id} basePath="/apps" resource="apps" />
+                <AppScale id={props.id} basePath="/apps" resource="apps" onSave={toggleDrawer('right', false)} />
             </SwipeableDrawer>
-
         </React.Fragment>
     )
 }
