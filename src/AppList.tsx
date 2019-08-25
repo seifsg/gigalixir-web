@@ -18,7 +18,7 @@ const cardStyle = {
 const AppGrid = ({ ids, data }: { ids: string[], data: any }) => (
     <div style={{ margin: '1em' }}>
         {ids.map(id =>
-            // <Link to={`/apps/${id}/show`}>
+            <Link to={`/apps/${id}/show`}>
                 <Card key={id} style={cardStyle}>
                     <CardHeader
                         title={<TextField record={data[id]} source="id" />}
@@ -34,7 +34,7 @@ const AppGrid = ({ ids, data }: { ids: string[], data: any }) => (
                         <ShowButton resource="apps" basePath="/apps" record={data[id]} />
                     </CardActions>
                 </Card>
-            // </Link>
+            </Link>
         )}
     </div>
 );
