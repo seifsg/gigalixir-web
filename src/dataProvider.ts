@@ -1,6 +1,5 @@
 import * as apps from './api/apps';
 import * as stats from './api/stats';
-import logger from './logger';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams { }

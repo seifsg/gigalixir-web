@@ -1,6 +1,6 @@
-import { AUTH_GET_PERMISSIONS, AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
-import { check, login, logout } from './api/sessions'
-import logger from './logger'
+import { AUTH_CHECK, AUTH_ERROR, AUTH_LOGIN, AUTH_LOGOUT } from 'react-admin';
+import { check, login, logout } from './api/sessions';
+import logger from './logger';
 
 function logError<T>(reason: T): Promise<T> {
     logger.error(JSON.stringify(reason))

@@ -1,14 +1,10 @@
-import React from 'react';
-import { Stats } from './api/stats'
-import { Chart } from './Chart';
-import { Query, Loading } from 'react-admin'
-import { TextField, Show, SimpleShowLayout } from 'react-admin'
-import { Route } from 'react-router';
-import { Drawer } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import React from 'react';
+import { Edit, Loading, NumberInput, Query, Show, SimpleForm, SimpleShowLayout, TextField } from 'react-admin';
+import { Stats } from './api/stats';
+import { Chart } from './Chart';
 
 
 type ShowProps = any // fill this out?
@@ -30,8 +26,6 @@ export const Charts: React.FunctionComponent<ChartsProps> = (props): React.React
 
 const required = (message = 'Required') =>
     (value: any) => value ? undefined : message;
-const maxLength = (max: number, message = 'Too short') =>
-    (value: any) => value && value.length > max ? message : undefined;
 const number = (message = 'Must be a number') =>
     (value: any) => value && isNaN(Number(value)) ? message : undefined;
 const minValue = (min: number, message = 'Too small') =>
@@ -44,7 +38,12 @@ const validateReplicas = [number(), minValue(0, "Must be non-negative"), maxValu
 
 type ScaleProps = any
 const AppScale = (props: ScaleProps) => (
-    <div>hello</div>
+    <Edit {...props}>
+        <SimpleForm>
+            <NumberInput source="size" validate={validateSize} />
+            <NumberInput source="replicas" validate={validateReplicas} />
+        </SimpleForm>
+    </Edit>
 )
 
 const styles = {
@@ -81,6 +80,7 @@ const AppShow_ = (props: ShowProps) => {
         setState({ ...state, [side]: open });
     };
 
+    // { "classes": { "list": "AppShow_-list-11", "fullList": "AppShow_-fullList-12" }, "basePath": "/apps", "id": "bar", "permissions": null, "match": { "path": "/apps/:id/show", "url": "/apps/bar/show", "isExact": true, "params": { "id": "bar" } }, "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" }, "history": { "length": 29, "action": "POP", "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" } }, "resource": "apps", "options": { }, "hasList": true, "hasEdit": false, "hasShow": true, "hasCreate": true }
     return (
         <React.Fragment>
             <Show {...props}>
@@ -100,7 +100,7 @@ const AppShow_ = (props: ShowProps) => {
                 onClose={toggleDrawer('right', false)}
                 onOpen={toggleDrawer('right', true)}
             >
-                hello
+                <AppScale id={props.id} basePath="/apps" resource="apps" />
             </SwipeableDrawer>
 
         </React.Fragment>

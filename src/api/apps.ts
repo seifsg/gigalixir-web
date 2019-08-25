@@ -1,5 +1,4 @@
 import * as api from './api';
-import logger from '../logger';
 
 interface App {
     id: string;

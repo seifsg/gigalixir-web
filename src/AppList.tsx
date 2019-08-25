@@ -1,12 +1,10 @@
-import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import Avatar from '@material-ui/core/Avatar';
-import PersonIcon from '@material-ui/core/Avatar';
-import { List, TextField, DateField, ReferenceField, ShowButton } from "react-admin";
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { List, ShowButton, TextField } from "react-admin";
+import { Link } from 'react-router-dom';
 
 const cardStyle = {
     width: 300,

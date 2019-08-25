@@ -1,10 +1,9 @@
 import React from 'react';
-import { Edit, NumberInput, Show, SimpleShowLayout, SelectInput, List, SimpleList, Datagrid, TextField, NumberField, Create, SimpleForm, TextInput } from 'react-admin';
-import logger from './logger';
-import { AppList } from './AppList'
-import { AppShow } from './AppShow'
+import { Create, SelectInput, SimpleForm, TextInput } from 'react-admin';
+import { AppList } from './AppList';
+import { AppShow } from './AppShow';
 
-export { AppList, AppShow }
+export { AppList, AppShow };
 
 
 const regionChoices = (cloud: string): { defaultValue: string; choices: { id: string; name: string }[] } => {
