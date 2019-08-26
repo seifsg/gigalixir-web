@@ -99,7 +99,8 @@ const AppScaleToolbar_ = (props: any) => {
         });
     };
 
-    const { onSave, sanitizedProps } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { onSave, ...sanitizedProps } = props;
 
     return (
         <Toolbar {...sanitizedProps}>

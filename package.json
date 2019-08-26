@@ -7,6 +7,7 @@
         "node": "11.1.0"
     },
     "dependencies": {
+        "@material-ui/core": "^4.3.3",
         "axios": "^0.19.0",
         "chart.js": "^2.8.0",
         "funfix-core": "^7.0.1",
@@ -16,6 +17,7 @@
         "react-admin": "^2.9.3",
         "react-chartjs-2": "^2.7.6",
         "react-dom": "^16.9.0",
+        "react-redux": "^7.1.1",
         "react-scripts": "3.0.1",
         "typescript": "~3.4.5",
         "winston": "^3.2.1"
