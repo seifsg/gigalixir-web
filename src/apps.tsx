@@ -5,26 +5,24 @@ import { AppShow } from './AppShow';
 
 export { AppList, AppShow };
 
-
 const regionChoices = (cloud: string): { defaultValue: string; choices: { id: string; name: string }[] } => {
-    if (cloud === "gcp") {
+    if (cloud === 'gcp') {
         return {
-            defaultValue: 'v2018-us-central1', choices: [
+            defaultValue: 'v2018-us-central1',
+            choices: [
                 { id: 'v2018-us-central1', name: 'v2018-us-central1' },
                 { id: 'europe-west1', name: 'europe-west1' },
-            ]
-        }
+            ],
+        };
     } else if (cloud === 'aws') {
         return {
-            defaultValue: 'us-east-1', choices: [
-                { id: 'us-east-1', name: 'us-east-1' },
-                { id: 'us-west-2', name: 'us-west-2' },
-            ]
-        }
+            defaultValue: 'us-east-1',
+            choices: [{ id: 'us-east-1', name: 'us-east-1' }, { id: 'us-west-2', name: 'us-west-2' }],
+        };
     } else {
         return { defaultValue: '', choices: [] };
     }
-}
+};
 
 interface CreateProps {
     title: string;
@@ -40,14 +38,14 @@ export const AppCreate: React.FunctionComponent<CreateProps> = (props): React.Re
         <Create {...props}>
             <SimpleForm>
                 <TextInput source="name" label="App Name" />
-                <SelectInput source="cloud" defaultValue='gcp' choices={[
-                    { id: 'gcp', name: 'Google Cloud Platform' },
-                    { id: 'aws', name: 'Amazon Web Services' },
-                ]} onChange={(_event: React.FormEvent, key: string): void => setCloud(key)} />
-                {cloud !== "" &&
-                    <SelectInput source="region" {...regions} />
-                }
+                <SelectInput
+                    source="cloud"
+                    defaultValue="gcp"
+                    choices={[{ id: 'gcp', name: 'Google Cloud Platform' }, { id: 'aws', name: 'Amazon Web Services' }]}
+                    onChange={(_event: React.FormEvent, key: string): void => setCloud(key)}
+                />
+                {cloud !== '' && <SelectInput source="region" {...regions} />}
             </SimpleForm>
         </Create>
     );
-}
+};
