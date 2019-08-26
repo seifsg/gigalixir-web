@@ -108,4 +108,3 @@ export const scale = (name: string, size: number, replicas: number): Promise<{da
         return {data: {replicas: newApp.replicas, size: newApp.size}}
     })
 }
-

@@ -78,8 +78,10 @@ const AppScaleToolbar_ = (props: any) => {
         });
     }
 
+    const {onSave, sanitizedProps} = props;
+
     return (
-        <Toolbar {...props}>
+        <Toolbar {...sanitizedProps}>
             <SaveButton handleSubmitWithRedirect={handleClick}/>
         </Toolbar>
     )
