@@ -1,79 +1,79 @@
-import * as apps from './api/apps';
-import * as stats from './api/stats';
+import * as apps from './api/apps'
+import * as stats from './api/stats'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
 interface CreateParams {
-    data: {
-        name: string;
-        cloud: string;
-        region: string;
-    };
+  data: {
+    name: string
+    cloud: string
+    region: string
+  }
 }
 interface GetOneParams {
-    id: string;
+  id: string
 }
-interface UpdateParams {
-    id: string;
-    data: any;
-    previousData: any;
+interface UpdateParams<T> {
+  id: string
+  data: T
+  previousData: T
 }
 
-type DataProviderParams = CreateParams | GetListParams | GetOneParams | UpdateParams;
+type DataProviderParams<T> = CreateParams | GetListParams | GetOneParams | UpdateParams<T>
 
-const isGetList = (params: DataProviderParams, type: string): params is GetListParams => type === 'GET_LIST';
-const isCreate = (params: DataProviderParams, type: string): params is CreateParams => type === 'CREATE';
-const isGetOne = (params: DataProviderParams, type: string): params is GetOneParams => type === 'GET_ONE';
-const isUpdate = (params: DataProviderParams, type: string): params is UpdateParams => type === 'UPDATE';
+const isGetList = <T>(params: DataProviderParams<T>, type: string): params is GetListParams => type === 'GET_LIST'
+const isCreate = <T>(params: DataProviderParams<T>, type: string): params is CreateParams => type === 'CREATE'
+const isGetOne = <T>(params: DataProviderParams<T>, type: string): params is GetOneParams => type === 'GET_ONE'
+const isUpdate = <T>(params: DataProviderParams<T>, type: string): params is UpdateParams<T> => type === 'UPDATE'
 
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
 // type DataProviderType = typeof a[number]
-type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE';
+type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 
 // function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams
 //     : T extends 'GET_LIST' ? GetListParams
 //         : T extends 'GET_ONE' ? GetOneParams
 //             : UpdateParams): Promise<{}> {
-const dataProvider = <T extends DataProviderType>(
-    type: T,
-    resource: string,
-    params: DataProviderParams,
+const dataProvider = <T extends DataProviderType, P extends { replicas: number; size: number }>(
+  type: T,
+  resource: 'apps' | 'stats',
+  params: DataProviderParams<P>,
 ): Promise<{}> => {
-    if (isGetList(params, type)) {
-        if (resource === 'apps') {
-            return apps.list();
-        }
+  if (isGetList(params, type)) {
+    if (resource === 'apps') {
+      return apps.list()
     }
-    if (isCreate(params, type)) {
-        if (resource === 'apps') {
-            const { name, cloud, region } = params.data;
-            return apps.create(name, cloud, region);
-        }
+  }
+  if (isCreate(params, type)) {
+    if (resource === 'apps') {
+      const { name, cloud, region } = params.data
+      return apps.create(name, cloud, region)
     }
-    if (isGetOne(params, type)) {
-        if (resource === 'apps') {
-            return apps.get(params.id);
-        }
-        if (resource === 'stats') {
-            return stats.get(params.id);
-        }
+  }
+  if (isGetOne(params, type)) {
+    if (resource === 'apps') {
+      return apps.get(params.id)
     }
-    if (isUpdate(params, type)) {
-        if (resource === 'apps') {
-            return apps.scale(params.id, params.data.size, params.data.replicas).then(response => {
-                const data = response.data;
-                return {
-                    data: {
-                        id: params.id,
-                        size: data.size,
-                        replicas: data.replicas,
-                    },
-                };
-            });
-        }
+    if (resource === 'stats') {
+      return stats.get(params.id)
     }
-    throw new Error(`${type} ${resource} not implemented yet`);
-};
+  }
+  if (isUpdate(params, type)) {
+    if (resource === 'apps') {
+      return apps.scale(params.id, params.data.size, params.data.replicas).then(response => {
+        const { data } = response
+        return {
+          data: {
+            id: params.id,
+            size: data.size,
+            replicas: data.replicas,
+          },
+        }
+      })
+    }
+  }
+  throw new Error(`${type} ${resource} not implemented yet`)
+}
 
-export default dataProvider;
+export default dataProvider

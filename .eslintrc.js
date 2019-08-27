@@ -1,11 +1,12 @@
 module.exports = {
+    // from https://gist.github.com/1natsu172/a65a4b45faed2bd3fa74b24163e4256e
     parser: '@typescript-eslint/parser', // Specifies the ESLint parser
     extends: [
-        // 'airbnb',
-        'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
-        'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
-        'prettier/@typescript-eslint', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
-        'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+        "airbnb",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript",
+        "plugin:prettier/recommended",
+        "prettier/@typescript-eslint"
     ],
     parserOptions: {
         ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -18,8 +19,15 @@ module.exports = {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
-        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
         "@typescript-eslint/explicit-function-return-type": "off",
+        "prettier/prettier": [
+            "error", {
+                "singleQuote": true,
+                "semi": false,
+                "tabWidth": 2
+            }
+        ]
     },
     settings: {
         react: {

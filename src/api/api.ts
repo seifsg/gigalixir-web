@@ -7,16 +7,16 @@ const getCsrf = async (): Promise<string> => {
     return response.data.data;
 };
 
-export const get = (path: string): Promise<any> => axios.get(host + path, { withCredentials: true });
+export const get = <T>(path: string): Promise<T> => axios.get(host + path, { withCredentials: true });
 
-export const post = (path: string, data: object): Promise<any> =>
+export const post = <T>(path: string, data: object): Promise<T> =>
     getCsrf().then(
-        (csrfToken): Promise<any> =>
+        (csrfToken): Promise<T> =>
             axios.post(host + path, data, { headers: { 'X-CSRF-Token': csrfToken }, withCredentials: true }),
     );
 
-export const del = (path: string): Promise<any> =>
+export const del = <T>(path: string): Promise<T> =>
     getCsrf().then(
-        (csrfToken): Promise<any> =>
+        (csrfToken): Promise<T> =>
             axios.delete(host + path, { headers: { 'X-CSRF-Token': csrfToken }, withCredentials: true }),
     );

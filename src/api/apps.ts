@@ -8,6 +8,14 @@ export interface App {
     region: string;
     cloud: string;
 }
+interface Response {
+    unique_name: string;
+    stack?: string;
+    size: number;
+    replicas: number;
+    region: string;
+    cloud: string;
+}
 
 type Cloud = 'gcp' | 'aws';
 type GcpRegion = 'v2018-us-central1' | 'europe-west1';
@@ -29,9 +37,7 @@ interface Gcp extends CloudRegion {
 
 /* eslint-disable @typescript-eslint/camelcase */
 // using object spread operator to copy over all fields except unique_name field
-const renameIds = (
-    apps: { unique_name: string; stack: string; size: number; replicas: number; region: string; cloud: string }[],
-): App[] => {
+const renameIds = (apps: Response[]): App[] => {
     return apps.map(
         ({ unique_name, ...others }): App => ({
             id: unique_name,
@@ -41,7 +47,10 @@ const renameIds = (
 };
 
 export const list = (): Promise<{ data: App[]; total: number }> => {
-    return api.get('/frontend/api/apps').then((response): { data: App[]; total: number } => {
+    return api.get<{ data: { data: Response[] } }>('/frontend/api/apps').then((response): {
+        data: App[];
+        total: number;
+    } => {
         const apps = response.data.data;
         return {
             data: renameIds(apps),
@@ -51,7 +60,7 @@ export const list = (): Promise<{ data: App[]; total: number }> => {
 };
 
 export const get = (id: string): Promise<{ data: App }> => {
-    return api.get('/frontend/api/apps/' + id).then((response): { data: App } => {
+    return api.get<{ data: { data: Response } }>('/frontend/api/apps/' + id).then((response): { data: App } => {
         const { unique_name, ...others } = response.data.data;
         return {
             data: {
@@ -82,12 +91,12 @@ const readableError = (errors: { [k: string]: string[] }): string => {
 
 export const create = (name: string, cloud: string, region: string): Promise<{ data: App }> => {
     return api
-        .post('/frontend/api/apps', {
+        .post<{ data: { unique_name: string; replicas: number; size: number } }>('/frontend/api/apps', {
             unique_name: name,
             cloud: cloud,
             region: region,
         })
-        .then((response: { data: { unique_name: string; replicas: number; size: number } }): { data: App } => {
+        .then((response): { data: App } => {
             const app = response.data;
             return {
                 data: {
@@ -99,7 +108,7 @@ export const create = (name: string, cloud: string, region: string): Promise<{ d
                 },
             };
         })
-        .catch((error): never => {
+        .catch((error: { response: { data: { errors: { [k: string]: string[] } } } }): never => {
             const errors = error.response.data.errors;
             const result = readableError(errors);
             throw new Error(result);
@@ -115,11 +124,11 @@ export const scale = (
     replicas: number,
 ): Promise<{ data: { size: number; replicas: number } }> => {
     return api
-        .post(`/frontend/api/apps/${name}/scale`, {
+        .post<{ data: { replicas: number; size: number } }>(`/frontend/api/apps/${name}/scale`, {
             size: size,
             replicas: replicas,
         })
-        .then((response: { data: { replicas: number; size: number } }): {
+        .then((response): {
             data: { size: number; replicas: number };
         } => {
             const newApp = response.data;
