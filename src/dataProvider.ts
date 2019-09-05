@@ -1,5 +1,5 @@
 import * as apps from './api/apps'
-import * as stats from './api/stats'
+import get from './api/stats'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
@@ -56,7 +56,7 @@ const dataProvider = <T extends DataProviderType, P extends { replicas: number; 
       return apps.get(params.id)
     }
     if (resource === 'stats') {
-      return stats.get(params.id)
+      return get(params.id)
     }
   }
   if (isUpdate(params, type)) {

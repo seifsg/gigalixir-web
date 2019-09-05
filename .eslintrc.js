@@ -21,6 +21,13 @@ module.exports = {
         "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
         "@typescript-eslint/no-explicit-any": "warn",
         "@typescript-eslint/explicit-function-return-type": "off",
+
+        // conflicts with prettier
+        "react/jsx-one-expression-per-line": "off",
+
+        // would love to turn this back on, but not worth the effort since react-admin uses it so much, everywhere
+        "react/jsx-props-no-spreading": "off",
+        "no-underscore-dangle": "off",
         "prettier/prettier": [
             "error", {
                 "singleQuote": true,
