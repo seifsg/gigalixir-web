@@ -1,10 +1,10 @@
 import Card from '@material-ui/core/Card'
-// import CardActions from '@material-ui/core/CardActions'
+import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
-import { List, TextField } from 'react-admin'
-import { Link } from 'react-router-dom'
+import { List, ShowButton, TextField } from 'react-admin'
+// import { Link } from 'react-router-dom'
 
 const cardStyle = {
   width: 300,
@@ -25,21 +25,21 @@ interface Data {
 const AppGrid = ({ ids, data }: { ids: string[]; data: Data }) => (
   <div style={{ margin: '1em' }}>
     {ids.map(id => (
-      <Link key={id} to={`/apps/${id}/show`}>
-        <Card style={cardStyle}>
-          <CardHeader title={<TextField record={data[id]} source="id" />} />
-          <CardContent>
-            <TextField record={data[id]} source="replicas" />
-            <TextField record={data[id]} source="size" />
-            <TextField record={data[id]} source="cloud" />
-            <TextField record={data[id]} source="region" />
-            <TextField record={data[id]} source="stack" />
-          </CardContent>
-          {/* <CardActions style={{ textAlign: 'right' }}>
-            <ShowButton resource="apps" basePath="/apps" record={data[id]} />
-          </CardActions> */}
-        </Card>
-      </Link>
+      // <Link key={id} to={`/apps/${id}/show`}>
+      <Card style={cardStyle}>
+        <CardHeader title={<TextField record={data[id]} source="id" />} />
+        <CardContent>
+          <TextField record={data[id]} source="replicas" />
+          <TextField record={data[id]} source="size" />
+          <TextField record={data[id]} source="cloud" />
+          <TextField record={data[id]} source="region" />
+          <TextField record={data[id]} source="stack" />
+        </CardContent>
+        <CardActions style={{ textAlign: 'right' }}>
+          <ShowButton resource="apps" basePath="/apps" record={data[id]} />
+        </CardActions>
+      </Card>
+      // </Link>
     ))}
   </div>
 )
