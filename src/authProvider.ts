@@ -22,7 +22,7 @@ const isLogin = (params: AuthParams, type: AuthActions): params is AuthLoginPara
 const isError = (params: AuthParams, type: AuthActions): params is AuthErrorParams => type === 'AUTH_ERROR'
 
 // how to narrow return type based on params
-function authProvider(authType: AuthActions, params?: AuthParams): Promise<Session | {} | void> {
+function authProvider<T extends AuthActions>(authType: T, params?: AuthParams): Promise<Session | {} | void> {
   let result: Promise<Session | {} | void>
   if (isLogin(params, authType)) {
     // called when the user attempts to log in

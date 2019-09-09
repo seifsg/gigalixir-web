@@ -8,6 +8,9 @@ module.exports = {
         "plugin:prettier/recommended",
         "prettier/@typescript-eslint"
     ],
+    env: {
+        jest: true
+    },
     parserOptions: {
         ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
