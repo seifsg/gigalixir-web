@@ -1,9 +1,9 @@
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
+// import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
-import { List, ShowButton, TextField } from 'react-admin'
+import { List, TextField } from 'react-admin'
 import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -35,9 +35,9 @@ const AppGrid = ({ ids, data }: { ids: string[]; data: Data }) => (
             <TextField record={data[id]} source="region" />
             <TextField record={data[id]} source="stack" />
           </CardContent>
-          <CardActions style={{ textAlign: 'right' }}>
+          {/* <CardActions style={{ textAlign: 'right' }}>
             <ShowButton resource="apps" basePath="/apps" record={data[id]} />
-          </CardActions>
+          </CardActions> */}
         </Card>
       </Link>
     ))}
