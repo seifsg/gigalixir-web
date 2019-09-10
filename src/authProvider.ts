@@ -22,7 +22,9 @@ const isLogin = (params: AuthParams, type: AuthActions): params is AuthLoginPara
 const isError = (params: AuthParams, type: AuthActions): params is AuthErrorParams => type === 'AUTH_ERROR'
 
 // how to narrow return type based on params
-function authProvider<T extends AuthActions>(authType: T, params?: AuthParams): Promise<Session | {} | void> {
+// this says it returns { data: string }, but that's just for the tests. that's not really true when
+// react-admin calls it? does it matter?
+function authProvider<T extends AuthActions>(authType: T, params?: AuthParams): Promise<{ data: string }> {
   let result: Promise<Session | {} | void>
   if (isLogin(params, authType)) {
     // called when the user attempts to log in

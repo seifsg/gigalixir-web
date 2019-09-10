@@ -26,7 +26,7 @@ const AppGrid = ({ ids, data }: { ids: string[]; data: Data }) => (
   <div style={{ margin: '1em' }}>
     {ids.map(id => (
       // <Link key={id} to={`/apps/${id}/show`}>
-      <Card style={cardStyle}>
+      <Card key={id} style={cardStyle}>
         <CardHeader title={<TextField record={data[id]} source="id" />} />
         <CardContent>
           <TextField record={data[id]} source="replicas" />
