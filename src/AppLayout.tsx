@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Layout, AppBar, crudGetOne, UserMenu, MenuItemLink } from 'react-admin'
 import { connect } from 'react-redux'
-import SettingsIcon from '@material-ui/icons/Settings'
+import AccountCircle from '@material-ui/icons/AccountCircle'
 
 class MyUserMenuView extends Component<{
   getOne: (resource: string, id: string, basePath: string, refresh: boolean) => void
@@ -16,9 +16,9 @@ class MyUserMenuView extends Component<{
       // The resource
       'profile',
       // The id of the resource item to fetch
-      'my-profile',
+      'profile',
       // The base path. Mainly used on failure to fetch the data
-      '/my-profile',
+      '/profile',
       // Whether to refresh the current view. I don't need it here
       false,
     )
@@ -26,16 +26,16 @@ class MyUserMenuView extends Component<{
 
   public render() {
     return (
-      <UserMenu label="hello1">
-        <MenuItemLink to="/configuration" primaryText="Configuration" leftIcon={<SettingsIcon />} />
+      <UserMenu label="Profile">
+        <MenuItemLink to="/profile" primaryText="Profile" leftIcon={<AccountCircle />} />
       </UserMenu>
     )
   }
 }
 
-const mapStateToProps = (state: { admin: { resources: { profile: { data: { 'my-profile': {} } } } } }) => {
+const mapStateToProps = (state: { admin: { resources: { profile: { data: { profile: {} } } } } }) => {
   const resource = 'profile'
-  const id = 'my-profile'
+  const id = 'profile'
   const profileState = state.admin.resources[resource]
 
   return {

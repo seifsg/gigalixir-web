@@ -37,7 +37,7 @@ type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 //             : UpdateParams): Promise<{}> {
 const dataProvider = <T extends DataProviderType, P extends { replicas: number; size: number }>(
   type: T,
-  resource: 'apps' | 'stats',
+  resource: 'apps' | 'stats' | 'profile',
   params: DataProviderParams<P>,
 ): Promise<{}> => {
   if (isGetList(params, type)) {
@@ -57,6 +57,9 @@ const dataProvider = <T extends DataProviderType, P extends { replicas: number; 
     }
     if (resource === 'stats') {
       return get(params.id)
+    }
+    if (resource === 'profile') {
+      return Promise.resolve({ data: { id: 'profile' } })
     }
   }
   if (isUpdate(params, type)) {
