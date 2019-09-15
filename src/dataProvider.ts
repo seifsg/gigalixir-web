@@ -1,5 +1,6 @@
 import * as apps from './api/apps'
-import get from './api/stats'
+import getStats from './api/stats'
+import getUser from './api/users'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
@@ -56,10 +57,10 @@ const dataProvider = <T extends DataProviderType, P extends { replicas: number; 
       return apps.get(params.id)
     }
     if (resource === 'stats') {
-      return get(params.id)
+      return getStats(params.id)
     }
     if (resource === 'profile') {
-      return Promise.resolve({ data: { id: 'profile' } })
+      return getUser()
     }
   }
   if (isUpdate(params, type)) {

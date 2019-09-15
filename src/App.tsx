@@ -34,7 +34,9 @@ const ProfileEdit = (props: { staticContext: {} }) => {
       {...sanitizedProps}
     >
       <SimpleForm>
-        <TextInput source="nickname" validate={required()} />
+        <TextInput source="email"  />
+        <TextInput source="tier" />
+        <TextInput source="credit_cents" />
       </SimpleForm>
     </Edit>
   )
