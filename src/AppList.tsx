@@ -3,7 +3,7 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
-import { List, ShowButton, TextField } from 'react-admin'
+import { Datagrid, NumberField, List, ShowButton, TextField } from 'react-admin'
 // import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -58,7 +58,15 @@ interface ListProps {
 
 const AppList = (props: ListProps) => (
   <List title="All apps" pagination={null} bulkActions={false} {...props}>
-    <AppGrid />
+    {/* <AppGrid /> */}
+    <Datagrid rowClick="show">
+      <TextField source="id" />
+      <NumberField source="size" />
+      <NumberField source="replicas" />
+      <TextField source="cloud" />
+      <TextField source="region" />
+      <TextField source="stack" />
+    </Datagrid>
   </List>
 )
 
