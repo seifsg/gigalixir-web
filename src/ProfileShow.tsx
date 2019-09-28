@@ -1,5 +1,7 @@
 import React from 'react'
 import { Show, SimpleShowLayout, TextField } from 'react-admin';
+import {Elements, StripeProvider} from 'react-stripe-elements';
+import CheckoutForm from './CheckoutForm';
 
 const ProfileShow = (props: { staticContext: {} }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,6 +33,15 @@ const ProfileShow = (props: { staticContext: {} }) => {
         <TextField source="email" />
         <TextField source="tier" />
         <TextField source="credit_cents" />
+        <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
+        <div className="example">
+          <h1>React Stripe Elements Example</h1>
+          <Elements>
+            <CheckoutForm stripe={"hello"}/>
+          </Elements>
+        </div>
+      </StripeProvider>
+
       </SimpleShowLayout>
     </Show>
   )
