@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import * as api from './api/api';
 import {CardElement, injectStripe} from 'react-stripe-elements';
 
 class CheckoutForm extends Component<{stripe: any}> {
@@ -9,13 +10,20 @@ class CheckoutForm extends Component<{stripe: any}> {
 
   async submit(ev: any) {
     let {token} = await this.props.stripe.createToken({name: "Name"});
-    let response = await fetch("/charge", {
-      method: "POST",
-      headers: {"Content-Type": "text/plain"},
-      body: token.id
-    });
+    api.post("/frontend/api/upgrade", {
+        stripe_token: token.id
+    }).then((response) => {
+        console.log("upgraded")
+    })
+    // let response = await fetch("/frontend/api/upgrade", {
+    //   method: "POST",
+    //   headers: {"Content-Type": "text/plain"},
+    //   body: JSON.stringify({
+    //       stripe_token: token.id,
+    //   })
+    // })
   
-    if (response.ok) console.log("Purchase Complete!")
+    // if (response.ok) console.log("Purchase Complete!")
     }
 
   render() {

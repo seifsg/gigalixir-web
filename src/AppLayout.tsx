@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, AppBar, crudGetOne, UserMenu, MenuItemLink } from 'react-admin'
+import { Logout, Layout, AppBar, crudGetOne, UserMenu, MenuItemLink } from 'react-admin'
 import { connect } from 'react-redux'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
@@ -26,7 +26,7 @@ class MyUserMenuView extends Component<{
 
   public render() {
     return (
-      <UserMenu label="Profile">
+      <UserMenu label="Profile" logout={<Logout/>}>
         <MenuItemLink to="/profile" primaryText="Profile" leftIcon={<AccountCircle />} />
       </UserMenu>
     )
