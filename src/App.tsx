@@ -8,7 +8,9 @@ import dataProvider from './dataProvider'
 import MyLoginPage from './MyLoginPage'
 import ProfileShow from './ProfileShow'
 
-const customRoutes = [<Route key="profile" path="/profile" component={ProfileShow} />]
+const customRoutes = [
+  <Route key="profile" path="/profile" component={ProfileShow} />
+]
 
 const App = () => (
   <BrowserRouter>

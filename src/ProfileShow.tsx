@@ -1,7 +1,9 @@
 import React from 'react'
-import { Show, SimpleShowLayout, TextField } from 'react-admin'
+import { Loading, Query, Show, SimpleShowLayout, TextField } from 'react-admin'
 import { Elements, StripeProvider } from 'react-stripe-elements'
-import CheckoutForm from './CheckoutForm'
+import UpgradeForm from './UpgradeForm'
+import UpdatePaymentMethodForm from './UpdatePaymentMethodForm'
+import { PaymentMethod } from './api/payment_methods'
 
 const ProfileShow = (props: { staticContext: {} }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,13 +38,50 @@ const ProfileShow = (props: { staticContext: {} }) => {
           <TextField source="credit_cents" />
         </SimpleShowLayout>
       </Show>
+      <Query type="GET_ONE" resource="payment_methods">
+        {({
+          data,
+          loading,
+          error
+        }: {
+          data: PaymentMethod
+          loading: boolean
+          error: Error
+        }): React.ReactElement => {
+          if (loading) {
+            return <Loading />
+          }
+          if (error) {
+            return <div>Error: {error.message}</div>
+          }
+          return (
+            <div>
+              {data.brand}
+              {data.expMonth}
+              {data.expYear}
+              {data.last4}
+            </div>
+          )
+        }}
+      </Query>
+
       <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
         <div className="example">
-          <h1>React Stripe Elements Example</h1>
+          <h1>Upgrade</h1>
           <Elements>
-            // stripe parameter is injected automatically by StripeProvider, but 
-            // typescript complains about it if I don't put something here
-            <CheckoutForm stripe="hello" />
+            {/* stripe parameter is injected automatically by StripeProvider, but 
+                typescript complains about it if I don't put something here */}
+            <UpgradeForm stripe="hello" />
+          </Elements>
+        </div>
+      </StripeProvider>
+      <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
+        <div className="example">
+          <h1>Update</h1>
+          <Elements>
+            {/* stripe parameter is injected automatically by StripeProvider, but 
+                typescript complains about it if I don't put something here */}
+            <UpdatePaymentMethodForm stripe="hello" />
           </Elements>
         </div>
       </StripeProvider>

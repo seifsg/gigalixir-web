@@ -1,6 +1,7 @@
 import * as apps from './api/apps'
 import getStats from './api/stats'
 import getUser from './api/users'
+import { get as getPaymentMethod } from './api/payment_methods'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
@@ -20,12 +21,28 @@ interface UpdateParams<T> {
   previousData: T
 }
 
-type DataProviderParams<T> = CreateParams | GetListParams | GetOneParams | UpdateParams<T>
+type DataProviderParams<T> =
+  | CreateParams
+  | GetListParams
+  | GetOneParams
+  | UpdateParams<T>
 
-const isGetList = <T>(params: DataProviderParams<T>, type: string): params is GetListParams => type === 'GET_LIST'
-const isCreate = <T>(params: DataProviderParams<T>, type: string): params is CreateParams => type === 'CREATE'
-const isGetOne = <T>(params: DataProviderParams<T>, type: string): params is GetOneParams => type === 'GET_ONE'
-const isUpdate = <T>(params: DataProviderParams<T>, type: string): params is UpdateParams<T> => type === 'UPDATE'
+const isGetList = <T>(
+  params: DataProviderParams<T>,
+  type: string
+): params is GetListParams => type === 'GET_LIST'
+const isCreate = <T>(
+  params: DataProviderParams<T>,
+  type: string
+): params is CreateParams => type === 'CREATE'
+const isGetOne = <T>(
+  params: DataProviderParams<T>,
+  type: string
+): params is GetOneParams => type === 'GET_ONE'
+const isUpdate = <T>(
+  params: DataProviderParams<T>,
+  type: string
+): params is UpdateParams<T> => type === 'UPDATE'
 
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
@@ -36,10 +53,13 @@ type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 //     : T extends 'GET_LIST' ? GetListParams
 //         : T extends 'GET_ONE' ? GetOneParams
 //             : UpdateParams): Promise<{}> {
-const dataProvider = <T extends DataProviderType, P extends { replicas: number; size: number }>(
+const dataProvider = <
+  T extends DataProviderType,
+  P extends { replicas: number; size: number }
+>(
   type: T,
-  resource: 'apps' | 'stats' | 'profile',
-  params: DataProviderParams<P>,
+  resource: 'apps' | 'stats' | 'profile' | 'payment_methods',
+  params: DataProviderParams<P>
 ): Promise<{}> => {
   if (isGetList(params, type)) {
     if (resource === 'apps') {
@@ -62,19 +82,24 @@ const dataProvider = <T extends DataProviderType, P extends { replicas: number; 
     if (resource === 'profile') {
       return getUser()
     }
+    if (resource === 'payment_methods') {
+      return getPaymentMethod()
+    }
   }
   if (isUpdate(params, type)) {
     if (resource === 'apps') {
-      return apps.scale(params.id, params.data.size, params.data.replicas).then(response => {
-        const { data } = response
-        return {
-          data: {
-            id: params.id,
-            size: data.size,
-            replicas: data.replicas,
-          },
-        }
-      })
+      return apps
+        .scale(params.id, params.data.size, params.data.replicas)
+        .then(response => {
+          const { data } = response
+          return {
+            data: {
+              id: params.id,
+              size: data.size,
+              replicas: data.replicas
+            }
+          }
+        })
     }
   }
   throw new Error(`${type} ${resource} not implemented yet`)
