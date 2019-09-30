@@ -26,7 +26,7 @@ class MyUserMenuView extends Component<{
 
   public render() {
     return (
-      <UserMenu label="Profile" logout={<Logout/>}>
+      <UserMenu label="Profile" logout={<Logout />}>
         <MenuItemLink to="/profile" primaryText="Profile" leftIcon={<AccountCircle />} />
       </UserMenu>
     )

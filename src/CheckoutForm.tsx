@@ -15,16 +15,7 @@ class CheckoutForm extends Component<{stripe: any}> {
     }).then((response) => {
         console.log("upgraded")
     })
-    // let response = await fetch("/frontend/api/upgrade", {
-    //   method: "POST",
-    //   headers: {"Content-Type": "text/plain"},
-    //   body: JSON.stringify({
-    //       stripe_token: token.id,
-    //   })
-    // })
-  
-    // if (response.ok) console.log("Purchase Complete!")
-    }
+  }
 
   render() {
     return (
