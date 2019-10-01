@@ -28,6 +28,17 @@ module.exports = {
         // conflicts with prettier
         "react/jsx-one-expression-per-line": "off",
 
+        // conflicts with prettier
+        "react/jsx-wrap-multilines": {
+            "declaration": "parens",
+            "assignment": "parens",
+            "return": "parens",
+            "arrow": "parens",
+            "condition": "ignore",
+            "logical": "ignore",
+            "prop": "ignore"
+        },
+
         // would love to turn this back on, but not worth the effort since react-admin uses it so much, everywhere
         "react/jsx-props-no-spreading": "off",
         "no-underscore-dangle": "off",
