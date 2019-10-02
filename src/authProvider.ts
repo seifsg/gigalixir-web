@@ -9,7 +9,12 @@ function logError<T>(reason: T): Promise<T> {
 
 // copied from https://github.com/marmelab/react-admin/blob/089bae3b288aa3771799ffe82afa1c4e19bed729/packages/ra-core/src/types.ts
 // how to import it?
-type AuthActions = 'AUTH_LOGIN' | 'AUTH_LOGOUT' | 'AUTH_ERROR' | 'AUTH_CHECK' | 'AUTH_GET_PERMISSIONS'
+type AuthActions =
+  | 'AUTH_LOGIN'
+  | 'AUTH_LOGOUT'
+  | 'AUTH_ERROR'
+  | 'AUTH_CHECK'
+  | 'AUTH_GET_PERMISSIONS'
 interface AuthLoginParams {
   username: string
   password: string
@@ -18,13 +23,22 @@ interface AuthErrorParams {
   status: number
 }
 type AuthParams = AuthLoginParams | AuthErrorParams | {} | undefined
-const isLogin = (params: AuthParams, type: AuthActions): params is AuthLoginParams => type === 'AUTH_LOGIN'
-const isError = (params: AuthParams, type: AuthActions): params is AuthErrorParams => type === 'AUTH_ERROR'
+const isLogin = (
+  params: AuthParams,
+  type: AuthActions
+): params is AuthLoginParams => type === 'AUTH_LOGIN'
+const isError = (
+  params: AuthParams,
+  type: AuthActions
+): params is AuthErrorParams => type === 'AUTH_ERROR'
 
 // how to narrow return type based on params
 // this says it returns { data: string }, but that's just for the tests. that's not really true when
 // react-admin calls it? does it matter?
-function authProvider<T extends AuthActions>(authType: T, params?: AuthParams): Promise<{ data: string }> {
+function authProvider<T extends AuthActions>(
+  authType: T,
+  params?: AuthParams
+): Promise<{ data: string }> {
   let result: Promise<Session | {} | void>
   if (isLogin(params, authType)) {
     // called when the user attempts to log in
