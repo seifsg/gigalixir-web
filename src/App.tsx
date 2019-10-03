@@ -7,7 +7,7 @@ import authProvider from './authProvider'
 import dataProvider from './dataProvider'
 import MyLoginPage from './MyLoginPage'
 import ProfileShow from './ProfileShow'
-import RegisterPage from './TestRegisterPage'
+import RegisterPage from './RegisterPage'
 
 const customRoutes = [
   <Route path="/profile" component={ProfileShow} />,
