@@ -56,10 +56,12 @@ const ProfileShow = (props: { staticContext: {} }) => {
           }
           return (
             <div>
-              {data.brand}
-              {data.expMonth}
-              {data.expYear}
-              {data.last4}
+              <h1>Current Credit Card</h1>
+              <ul>
+          <li>Brand: {data.brand}</li>
+             <li> Expiration: {data.expMonth}/{data.expYear}</li>
+              <li>Last 4: {data.last4}</li>
+              </ul>
             </div>
           )
         }}
@@ -68,6 +70,36 @@ const ProfileShow = (props: { staticContext: {} }) => {
       <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
         <div className="example">
           <h1>Upgrade</h1>
+          <div className="upgradeMarketing">
+            <h3>Upgrade</h3>
+            <p>You are currently on the free plan.</p>
+            <p>Standard plan features include</p>
+            <ul>
+              <li>Larger replica sizes</li>
+              <li>Multiple replicas</li>
+              <li>Team access controls</li>
+              <li>No inactivity checks</li>
+              <li>Production-grade postgres</li>
+            </ul>
+            <p>
+              For more details about the standard tier, see the{' '}
+              <a href="https://gigalixir.readthedocs.io/en/latest/main.html#tiers">
+                Tier Comparison
+              </a>
+            </p>
+            <p>
+              The standard plan costs $10/mo per 200MB of memory. CPU, power,
+              &amp; bandwidth are free. Pro-rated to the second.{' '}
+              <a href="https://gigalixir.readthedocs.io/en/latest/main.html#pricing-details">
+                Pricing Details
+              </a>
+            </p>
+            <p>
+              To estimate costs, try our <a href="/pricing">Cost Estimator</a>
+            </p>
+            <p>Please enter your credit card information below to upgrade.</p>
+          </div>
+
           <Elements>
             {/* stripe parameter is injected automatically by StripeProvider, but 
                 typescript complains about it if I don't put something here */}
@@ -77,7 +109,8 @@ const ProfileShow = (props: { staticContext: {} }) => {
       </StripeProvider>
       <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
         <div className="example">
-          <h1>Update</h1>
+          <h1>Update Credit Card</h1>
+          Enter your new credit card information below
           <Elements>
             {/* stripe parameter is injected automatically by StripeProvider, but 
                 typescript complains about it if I don't put something here */}

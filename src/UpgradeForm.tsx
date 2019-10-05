@@ -1,33 +1,40 @@
-import React, {Component} from 'react';
-import * as api from './api/api';
-import {CardElement, injectStripe} from 'react-stripe-elements';
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { Component } from 'react'
+import { CardElement, injectStripe } from 'react-stripe-elements'
+import * as api from './api/api'
 
-class UpgradeForm extends Component<{stripe: any}> {
-  constructor(props: any) {
-    super(props);
-    this.submit = this.submit.bind(this);
+class UpgradeForm extends Component<{ stripe: any }> {
+  public constructor(props: any) {
+    super(props)
+    this.submit = this.submit.bind(this)
   }
 
-  async submit(ev: any) {
-    let {token} = await this.props.stripe.createToken({name: "Name"});
+  public async submit() {
+    const { stripe } = this.props
+    const { token } = await stripe.createToken({ name: 'Name' })
 
     // TODO: move into user.ts?
-    api.post("/frontend/api/upgrade", {
+    api
+      .post('/frontend/api/upgrade', {
+        // eslint-disable-next-line @typescript-eslint/camelcase
         stripe_token: token.id
-    }).then((response) => {
-        console.log("upgraded")
-    })
+      })
+      .then(() => {
+        console.log('upgraded')
+      })
   }
 
-  render() {
+  public render() {
     return (
       <div className="checkout">
-        <p>upgrade?</p>
         <CardElement />
-        <button onClick={this.submit}>Upgrade</button>
+        <button type="submit" onClick={this.submit}>
+          Upgrade
+        </button>
       </div>
-    );
+    )
   }
 }
 
-export default injectStripe(UpgradeForm);
+export default injectStripe(UpgradeForm)
