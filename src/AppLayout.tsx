@@ -30,7 +30,7 @@ class MyUserMenuView extends Component<{
       // The id of the resource item to fetch
       'profile',
       // The base path. Mainly used on failure to fetch the data
-      '/',
+      '/login',
       // Whether to refresh the current view. I don't need it here
       false
     )

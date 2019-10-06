@@ -11,7 +11,7 @@ const cardStyle = {
   minHeight: 300,
   margin: '0.5em',
   display: 'inline-block',
-  verticalAlign: 'top',
+  verticalAlign: 'top'
 }
 interface Data {
   [id: string]: {
@@ -45,7 +45,7 @@ const AppGrid = ({ ids, data }: { ids: string[]; data: Data }) => (
 )
 AppGrid.defaultProps = {
   data: {},
-  ids: [],
+  ids: []
 }
 
 // not gonna go thru and do a whole list of stuff from here

@@ -24,7 +24,7 @@ const ProfileShow = (props: { staticContext: {} }) => {
         */
 
         resource="profile"
-        basePath="/profile"
+        basePath="/login"
         redirect="" // I don't need any redirection here, there's no list page
         /*
           I also customized the page title as it'll make more sense to the user
@@ -58,9 +58,11 @@ const ProfileShow = (props: { staticContext: {} }) => {
             <div>
               <h1>Current Credit Card</h1>
               <ul>
-          <li>Brand: {data.brand}</li>
-             <li> Expiration: {data.expMonth}/{data.expYear}</li>
-              <li>Last 4: {data.last4}</li>
+                <li>Brand: {data.brand}</li>
+                <li>
+                  Expiration: {data.expMonth}/{data.expYear}
+                </li>
+                <li>Last 4: {data.last4}</li>
               </ul>
             </div>
           )
