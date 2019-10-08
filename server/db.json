@@ -1,0 +1,51 @@
+{
+    "sessions": {
+        "session": {
+            "email": "jesse@gigalixir.com",
+            "password": "secret"
+        }
+    },
+    "users": {
+        "data": {
+            "tier": "STANDARD",
+            "email": "fake.user@gigalixir.com",
+            "credit_cents": 0
+        }
+    },
+    "apps": [{
+            "id": "bar",
+            "unique_name": "bar",
+            "stack": "gigalixir-14",
+            "size": 2.3,
+            "replicas": 1,
+            "region": "us-central1",
+            "cloud": "gcp"
+        },
+        {
+            "id": "foo",
+            "unique_name": "foo",
+            "stack": "gigalixir-18",
+            "size": 0.5,
+            "replicas": 0,
+            "region": "v2018-us-central1",
+            "cloud": "gcp"
+        }
+    ],
+    "payment_methods": {
+        "data": {
+            "last4": 1111,
+            "exp_year": 2034,
+            "exp_month": 12,
+            "brand": "Visa"
+        }
+    },
+    "stats": {
+        "data": {
+            "mem": [],
+            "cpu": []
+        }
+    },
+    "csrf": {
+        "data": "fake-csrf"
+    }
+}

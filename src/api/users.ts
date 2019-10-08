@@ -10,19 +10,21 @@ interface User extends Response {
   id: 'profile'
 }
 const get = (): Promise<{ data: User }> => {
-  return api.get<{ data: { data: Response } }>(`/frontend/api/users`).then((response): { data: User } => {
-    // logger.debug(JSON.stringify(response))
-    // debug = {
-    //   data: { data: { tier: 'STANDARD', email: 'fake@email.com', credit_cents: 0 } },
-    // }
+  return api
+    .get<{ data: { data: Response } }>(`/frontend/api/users`)
+    .then((response): { data: User } => {
+      // logger.debug(JSON.stringify(response))
+      // debug = {
+      //   data: { data: { tier: 'STANDARD', email: 'fake@email.com', credit_cents: 0 } },
+      // }
 
-    return {
-      data: {
-        id: 'profile',
-        ...response.data.data,
-      },
-    }
-  })
+      return {
+        data: {
+          id: 'profile',
+          ...response.data.data
+        }
+      }
+    })
 }
 
 export default get
