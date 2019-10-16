@@ -17,12 +17,8 @@ import {
   WithStyles,
   Theme
 } from '@material-ui/core/styles'
-import {
-  withTranslate,
-  userLogin,
-  TranslationContextProps,
-  ReduxState
-} from 'ra-core'
+import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
+import { userRegister } from './userRegisterSaga'
 
 interface Props {
   redirectTo?: string
@@ -71,8 +67,9 @@ const renderInput = ({
     fullWidth
   />
 )
+
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>
-  dispatch(userLogin(auth, redirectTo))
+  dispatch(userRegister(auth, redirectTo))
 
 const LoginForm: SFC<Props & EnhancedProps> = ({
   classes,
@@ -88,7 +85,7 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
           id="username"
           name="username"
           component={renderInput}
-          label={translate('ra.auth.username')}
+          label="Email"
           disabled={isLoading}
         />
       </div>

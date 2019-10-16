@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
-import { goBack } from 'react-router-redux'
+import { goBack, RouterAction } from 'react-router-redux'
 
 interface Props {
-  myGoBack: () => void
+  myGoBack: () => RouterAction
 }
 
 class BackButton extends Component<Props> {
