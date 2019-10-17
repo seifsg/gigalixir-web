@@ -28,7 +28,8 @@
         "redux-form": "~7.4.0",
         "redux-saga": "~0.16.0",
         "typescript": "~3.4.5",
-        "winston": "^3.2.1"
+        "winston": "^3.2.1",
+        "lodash": "~4.17.5"
     },
     "scripts": {
         "server": "node_modules/.bin/json-server --watch server/db.json --port 3080 --routes server/routes.json --middlewares server/middleware.js",

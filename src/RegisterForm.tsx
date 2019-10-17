@@ -18,7 +18,7 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
-import { userRegister } from './userRegisterSaga'
+import userRegister from './userRegisterSaga'
 
 interface Props {
   redirectTo?: string
