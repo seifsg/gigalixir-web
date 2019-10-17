@@ -58,7 +58,7 @@ const dataProvider = <
   P extends { replicas: number; size: number }
 >(
   type: T,
-  resource: 'apps' | 'stats' | 'profile' | 'payment_methods',
+  resource: 'apps' | 'stats' | 'profile' | 'payment_methods' | 'users',
   params: DataProviderParams<P>
 ): Promise<{}> => {
   if (isGetList(params, type)) {
@@ -70,6 +70,9 @@ const dataProvider = <
     if (resource === 'apps') {
       const { name, cloud, region } = params.data
       return apps.create(name, cloud, region)
+    }
+    if (resource === 'users') {
+      console.log('creating new user with ', JSON.stringify(params))
     }
   }
   if (isGetOne(params, type)) {

@@ -69,7 +69,7 @@ const renderInput = ({
 )
 
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>
-  dispatch(userRegister(auth, redirectTo))
+  dispatch(userRegister(auth, '/', redirectTo))
 
 const LoginForm: SFC<Props & EnhancedProps> = ({
   classes,
