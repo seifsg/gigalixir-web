@@ -13,6 +13,7 @@
         "chart.js": "^2.8.0",
         "classnames": "~2.2.5",
         "funfix-core": "^7.0.1",
+        "lodash": "~4.17.5",
         "prop-types": "~15.6.1",
         "ra-core": "^2.9.6",
         "react": "^16.9.0",
@@ -25,11 +26,11 @@
         "react-scripts": "3.0.1",
         "react-stripe-elements": "^5.0.1",
         "recompose": "~0.26.0",
+        "redux": "~3.7.2",
         "redux-form": "~7.4.0",
         "redux-saga": "~0.16.0",
         "typescript": "~3.4.5",
-        "winston": "^3.2.1",
-        "lodash": "~4.17.5"
+        "winston": "^3.2.1"
     },
     "scripts": {
         "server": "node_modules/.bin/json-server --watch server/db.json --port 3080 --routes server/routes.json --middlewares server/middleware.js",

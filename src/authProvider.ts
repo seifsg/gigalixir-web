@@ -16,7 +16,7 @@ type AuthActions =
   | 'AUTH_CHECK'
   | 'AUTH_GET_PERMISSIONS'
 interface AuthLoginParams {
-  username: string
+  email: string
   password: string
 }
 interface AuthErrorParams {
@@ -42,8 +42,8 @@ function authProvider<T extends AuthActions>(
   let result: Promise<Session | {} | void>
   if (isLogin(params, authType)) {
     // called when the user attempts to log in
-    const { username, password } = params
-    result = login(username, password)
+    const { email, password } = params
+    result = login(email, password)
   } else if (authType === AUTH_LOGOUT) {
     // called when the user clicks on the logout button
     result = logout()

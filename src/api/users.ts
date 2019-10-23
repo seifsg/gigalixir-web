@@ -35,14 +35,14 @@ interface CreateErrorResponse {
 export const create = (
   email: string,
   password: string
-): Promise<{} | CreateErrorResponse> => {
+): Promise<{ data: { id: string } } | CreateErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users`, {
       email,
       password
     })
-    .then((): {} => {
-      return {}
+    .then((): { data: { id: string } } => {
+      return { data: { id: email } }
     })
     .catch(
       (reason: {
