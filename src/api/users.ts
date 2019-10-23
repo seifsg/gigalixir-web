@@ -28,26 +28,17 @@ export const get = (): Promise<{ data: User }> => {
     })
 }
 
-const renameProp = (
-  oldProp: string,
-  newProp: string,
-  { [oldProp]: old, ...others }
-) => ({
-  [newProp]: old,
-  ...others
-})
-
 interface CreateErrorResponse {
   errors: { [x: string]: string[] }
 }
 
 export const create = (
-  username: string,
+  email: string,
   password: string
 ): Promise<{} | CreateErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users`, {
-      email: username,
+      email,
       password
     })
     .then((): {} => {
@@ -60,7 +51,7 @@ export const create = (
         // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
         const { errors } = reason.response.data
         throw new HttpError('fake-message', reason.response.status, {
-          errors: renameProp('email', 'username', errors)
+          errors
         })
       }
     )

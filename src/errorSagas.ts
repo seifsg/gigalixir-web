@@ -26,10 +26,11 @@ export function* crudCreateFailure(action: {
     console.log('crudCreateFailure', action)
 
     const violations = {
-      username: extractError(action.payload.errors, 'username'),
+      email: extractError(action.payload.errors, 'email'),
       password: extractError(action.payload.errors, 'password')
     }
     const a = stopSubmit('signUp', violations)
+    console.log(a)
     yield put(a)
   }
 }

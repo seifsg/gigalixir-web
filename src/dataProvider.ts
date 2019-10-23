@@ -7,7 +7,7 @@ import { get as getPaymentMethod } from './api/payment_methods'
 interface GetListParams {}
 interface CreateUserParams {
   data: {
-    username: string
+    email: string
     password: string
   }
 }
@@ -87,8 +87,8 @@ const dataProvider = <
   }
   if (isCreateUser(params, resource, type)) {
     if (resource === 'users') {
-      const { username, password } = params.data
-      return users.create(username, password)
+      const { email, password } = params.data
+      return users.create(email, password)
     }
   }
   if (isGetOne(params, type)) {

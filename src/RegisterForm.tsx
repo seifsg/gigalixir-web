@@ -25,7 +25,7 @@ interface Props {
 }
 
 interface FormData {
-  username: string
+  email: string
   password: string
 }
 
@@ -82,8 +82,8 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
       <div className={classes.input}>
         <Field
           autoFocus
-          id="username"
-          name="username"
+          id="email"
+          name="email"
           component={renderInput}
           label="Email"
           disabled={isLoading}
@@ -128,10 +128,10 @@ const enhance = compose<Props & EnhancedProps, Props>(
   reduxForm({
     form: 'signUp',
     validate: (values: FormData, props: TranslationContextProps) => {
-      const errors = { username: '', password: '' }
+      const errors = { email: '', password: '' }
       const { translate } = props
-      if (!values.username) {
-        errors.username = translate('ra.validation.required')
+      if (!values.email) {
+        errors.email = translate('ra.validation.required')
       }
       if (!values.password) {
         errors.password = translate('ra.validation.required')
