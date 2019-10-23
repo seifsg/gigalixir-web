@@ -8,6 +8,7 @@ import dataProvider from './dataProvider'
 import MyLoginPage from './MyLoginPage'
 import ProfileShow from './ProfileShow'
 import RegisterPage from './RegisterPage'
+import errorSagas from './errorSagas'
 
 const customRoutes = [
   <Route path="/profile" component={ProfileShow} />,
@@ -17,6 +18,7 @@ const customRoutes = [
 const App = () => (
   <BrowserRouter>
     <Admin
+      customSagas={[errorSagas]}
       customRoutes={customRoutes}
       appLayout={AppLayout}
       loginPage={MyLoginPage}

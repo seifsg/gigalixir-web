@@ -126,7 +126,7 @@ const enhance = compose<Props & EnhancedProps, Props>(
   withTranslate,
   connect(mapStateToProps),
   reduxForm({
-    form: 'signIn',
+    form: 'signUp',
     validate: (values: FormData, props: TranslationContextProps) => {
       const errors = { username: '', password: '' }
       const { translate } = props

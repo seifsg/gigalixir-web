@@ -1,11 +1,17 @@
 import * as apps from './api/apps'
 import getStats from './api/stats'
-import getUser from './api/users'
+import * as users from './api/users'
 import { get as getPaymentMethod } from './api/payment_methods'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
-interface CreateParams {
+interface CreateUserParams {
+  data: {
+    username: string
+    password: string
+  }
+}
+interface CreateAppParams {
   data: {
     name: string
     cloud: string
@@ -22,7 +28,8 @@ interface UpdateParams<T> {
 }
 
 type DataProviderParams<T> =
-  | CreateParams
+  | CreateAppParams
+  | CreateUserParams
   | GetListParams
   | GetOneParams
   | UpdateParams<T>
@@ -31,10 +38,16 @@ const isGetList = <T>(
   params: DataProviderParams<T>,
   type: string
 ): params is GetListParams => type === 'GET_LIST'
-const isCreate = <T>(
+const isCreateApp = <T>(
   params: DataProviderParams<T>,
+  resource: string,
   type: string
-): params is CreateParams => type === 'CREATE'
+): params is CreateAppParams => type === 'CREATE' && resource === 'apps'
+const isCreateUser = <T>(
+  params: DataProviderParams<T>,
+  resource: string,
+  type: string
+): params is CreateUserParams => type === 'CREATE' && resource === 'users'
 const isGetOne = <T>(
   params: DataProviderParams<T>,
   type: string
@@ -66,13 +79,16 @@ const dataProvider = <
       return apps.list()
     }
   }
-  if (isCreate(params, type)) {
+  if (isCreateApp(params, resource, type)) {
     if (resource === 'apps') {
       const { name, cloud, region } = params.data
       return apps.create(name, cloud, region)
     }
+  }
+  if (isCreateUser(params, resource, type)) {
     if (resource === 'users') {
-      console.log('creating new user with ', JSON.stringify(params))
+      const { username, password } = params.data
+      return users.create(username, password)
     }
   }
   if (isGetOne(params, type)) {
@@ -83,7 +99,7 @@ const dataProvider = <
       return getStats(params.id)
     }
     if (resource === 'profile') {
-      return getUser()
+      return users.get()
     }
     if (resource === 'payment_methods') {
       return getPaymentMethod()

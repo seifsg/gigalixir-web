@@ -1,3 +1,4 @@
+import { HttpError } from 'ra-core'
 import * as api from './api'
 
 type tier = 'STANDARD' | 'FREE'
@@ -9,7 +10,7 @@ interface Response {
 interface User extends Response {
   id: 'profile'
 }
-const get = (): Promise<{ data: User }> => {
+export const get = (): Promise<{ data: User }> => {
   return api
     .get<{ data: { data: Response } }>(`/frontend/api/users`)
     .then((response): { data: User } => {
@@ -27,4 +28,40 @@ const get = (): Promise<{ data: User }> => {
     })
 }
 
-export default get
+const renameProp = (
+  oldProp: string,
+  newProp: string,
+  { [oldProp]: old, ...others }
+) => ({
+  [newProp]: old,
+  ...others
+})
+
+interface CreateErrorResponse {
+  errors: { [x: string]: string[] }
+}
+
+export const create = (
+  username: string,
+  password: string
+): Promise<{} | CreateErrorResponse> => {
+  return api
+    .post<{ data: {} }>(`/frontend/api/users`, {
+      email: username,
+      password
+    })
+    .then((): {} => {
+      return {}
+    })
+    .catch(
+      (reason: {
+        response: { data: CreateErrorResponse; status: number }
+      }): CreateErrorResponse => {
+        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+        const { errors } = reason.response.data
+        throw new HttpError('fake-message', reason.response.status, {
+          errors: renameProp('email', 'username', errors)
+        })
+      }
+    )
+}
