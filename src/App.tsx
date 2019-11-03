@@ -8,11 +8,13 @@ import dataProvider from './dataProvider'
 import MyLoginPage from './MyLoginPage'
 import ProfileShow from './ProfileShow'
 import RegisterPage from './RegisterPage'
+import NotifyPage from './NotifyPage'
 import errorSagas from './errorSagas'
 
 const customRoutes = [
   <Route path="/profile" component={ProfileShow} />,
-  <Route exact path="/register" component={RegisterPage} noLayout />
+  <Route exact path="/register" component={RegisterPage} noLayout />,
+  <Route exact path="/notify" component={NotifyPage} noLayout />
 ]
 
 const App = () => (
