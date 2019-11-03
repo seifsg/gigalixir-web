@@ -1,30 +1,35 @@
-import React, { Component } from "react";
-import * as payment_methods from "./api/payment_methods";
-import { CardElement, injectStripe } from "react-stripe-elements";
+import React, { Component } from 'react'
+import { CardElement, injectStripe } from 'react-stripe-elements'
+import * as paymentMethods from './api/payment_methods'
 
 class UpdatePaymentMethodForm extends Component<{ stripe: any }> {
-  constructor(props: any) {
-    super(props);
-    this.submit = this.submit.bind(this);
+  public constructor(props: any) {
+    super(props)
+    console.log(JSON.stringify(props))
+    this.submit = this.submit.bind(this)
   }
 
-  async submit(ev: any) {
+  public async submit(ev: any) {
     // TODO: name is not used
-    let { token } = await this.props.stripe.createToken({ name: "Name" });
-    payment_methods.put(token.id).then(response => {
-      console.log("updated!");
-    });
+    const { stripe } = this.props
+    // TODO: how does createToken get the card info?
+    const { token } = await stripe.createToken({ name: 'Name' })
+    paymentMethods.put(token.id).then(response => {
+      console.log('updated!')
+    })
   }
 
-  render() {
+  public render() {
     return (
       <div className="checkout">
         <p>update?</p>
         <CardElement />
-        <button onClick={this.submit}>Update</button>
+        <button type="submit" onClick={this.submit}>
+          Update
+        </button>
       </div>
-    );
+    )
   }
 }
 
-export default injectStripe(UpdatePaymentMethodForm);
+export default injectStripe(UpdatePaymentMethodForm)
