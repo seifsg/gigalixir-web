@@ -2,6 +2,7 @@ import * as apps from './api/apps'
 import getStats from './api/stats'
 import * as users from './api/users'
 import { get as getPaymentMethod } from './api/payment_methods'
+import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
@@ -76,7 +77,22 @@ const dataProvider = <
 ): Promise<{}> => {
   if (isGetList(params, type)) {
     if (resource === 'apps') {
-      return apps.list()
+      const result = apps.list()
+        return result.catch(e => {
+          if (e.message === "Request failed with status code 401") {
+            logger.error(JSON.stringify(e))
+            // return Promise.reject(e)
+            // return Promise.reject({
+            //     message: "fake-message"
+            // })
+            // return Promise.reject("error-as-string")
+            // semantically, probably better to reject here since it's an error, but
+            // this is the only way I can figure out to stop showing 401 notifications.
+            return Promise.resolve({data: [], total: 0})
+          } else {
+              return Promise.reject(e)
+          }
+        })
     }
   }
   if (isCreateApp(params, resource, type)) {
@@ -99,7 +115,14 @@ const dataProvider = <
       return getStats(params.id)
     }
     if (resource === 'profile') {
-      return users.get()
+      return users.get().catch(e => {
+          if (e.message === "Request failed with status code 401") {
+          logger.error(JSON.stringify(e))
+          return Promise.resolve({data: {id: 'profile'}})
+          } else {
+              return Promise.reject(e)
+          }
+      })
     }
     if (resource === 'payment_methods') {
       return getPaymentMethod()
