@@ -22,41 +22,56 @@ interface CreateAppParams {
 interface GetOneParams {
   id: string
 }
+interface UpdateConfirmationParams {
+  email: string
+}
+interface UpdateAppParams {
+    replicas: number,
+        size: number
+}
 interface UpdateParams<T> {
   id: string
   data: T
   previousData: T
 }
-
-type DataProviderParams<T> =
+type DataProviderParams =
   | CreateAppParams
   | CreateUserParams
   | GetListParams
   | GetOneParams
-  | UpdateParams<T>
+  | UpdateParams<
+     UpdateAppParams
+    | UpdateConfirmationParams
+    >
 
-const isGetList = <T>(
-  params: DataProviderParams<T>,
+const isGetList = (
+  params: DataProviderParams,
   type: string
 ): params is GetListParams => type === 'GET_LIST'
-const isCreateApp = <T>(
-  params: DataProviderParams<T>,
+const isCreateApp = (
+  params: DataProviderParams,
   resource: string,
   type: string
 ): params is CreateAppParams => type === 'CREATE' && resource === 'apps'
-const isCreateUser = <T>(
-  params: DataProviderParams<T>,
+const isCreateUser = (
+  params: DataProviderParams,
   resource: string,
   type: string
 ): params is CreateUserParams => type === 'CREATE' && resource === 'users'
-const isGetOne = <T>(
-  params: DataProviderParams<T>,
+const isGetOne = (
+  params: DataProviderParams,
   type: string
 ): params is GetOneParams => type === 'GET_ONE'
-const isUpdate = <T>(
-  params: DataProviderParams<T>,
+const isUpdateApp = (
+  params: DataProviderParams,
+    resource: string,
   type: string
-): params is UpdateParams<T> => type === 'UPDATE'
+): params is UpdateParams<UpdateAppParams> => type === 'UPDATE' && resource === 'apps'
+const isUpdateConfirmation = (
+  params: DataProviderParams,
+    resource: string,
+  type: string
+): params is UpdateParams<UpdateConfirmationParams> => type === 'UPDATE' && resource === 'confirmation'
 
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
@@ -69,11 +84,10 @@ type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
 //             : UpdateParams): Promise<{}> {
 const dataProvider = <
   T extends DataProviderType,
-  P extends { replicas: number; size: number }
 >(
   type: T,
-  resource: 'apps' | 'stats' | 'profile' | 'payment_methods' | 'users',
-  params: DataProviderParams<P>
+  resource: 'apps' | 'stats' | 'profile' | 'payment_methods' | 'users' | 'password' | 'confirmation',
+  params: DataProviderParams
 ): Promise<{}> => {
   if (isGetList(params, type)) {
     if (resource === 'apps') {
@@ -128,7 +142,7 @@ const dataProvider = <
       return getPaymentMethod()
     }
   }
-  if (isUpdate(params, type)) {
+  if (isUpdateApp(params, resource, type)) {
     if (resource === 'apps') {
       return apps
         .scale(params.id, params.data.size, params.data.replicas)
@@ -142,6 +156,17 @@ const dataProvider = <
             }
           }
         })
+    }
+  }
+  if (isUpdateConfirmation(params, resource, type)) {
+    if (resource === 'confirmation') {
+            logger.debug(JSON.stringify(params))
+      return Promise.resolve({
+                data: {
+                    id: params.data.email
+                }
+            }
+        )
     }
   }
   throw new Error(`${type} ${resource} not implemented yet`)
