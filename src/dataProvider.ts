@@ -6,22 +6,26 @@ import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
+interface CreateParams<T> {
+    data: T
+}
 interface CreateUserParams {
-  data: {
     email: string
     password: string
-  }
 }
 interface CreateAppParams {
-  data: {
     name: string
     cloud: string
     region: string
-  }
 }
+interface CreatePasswordParams {
+    email: string
+}
+
 interface GetOneParams {
   id: string
 }
+
 interface UpdateConfirmationParams {
   email: string
 }
@@ -35,13 +39,16 @@ interface UpdateParams<T> {
   previousData: T
 }
 type DataProviderParams =
-  | CreateAppParams
-  | CreateUserParams
+    CreateParams<
+      CreateAppParams
+      | CreateUserParams
+      | CreatePasswordParams
+    >
   | GetListParams
   | GetOneParams
   | UpdateParams<
-     UpdateAppParams
-    | UpdateConfirmationParams
+      UpdateAppParams
+      | UpdateConfirmationParams
     >
 
 const isGetList = (
@@ -52,12 +59,17 @@ const isCreateApp = (
   params: DataProviderParams,
   resource: string,
   type: string
-): params is CreateAppParams => type === 'CREATE' && resource === 'apps'
+): params is CreateParams<CreateAppParams> => type === 'CREATE' && resource === 'apps'
 const isCreateUser = (
   params: DataProviderParams,
   resource: string,
   type: string
-): params is CreateUserParams => type === 'CREATE' && resource === 'users'
+): params is CreateParams<CreateUserParams> => type === 'CREATE' && resource === 'users'
+const isCreatePassword = (
+  params: DataProviderParams,
+  resource: string,
+  type: string
+): params is CreateParams<CreatePasswordParams> => type === 'CREATE' && resource === 'password'
 const isGetOne = (
   params: DataProviderParams,
   type: string
@@ -72,6 +84,7 @@ const isUpdateConfirmation = (
     resource: string,
   type: string
 ): params is UpdateParams<UpdateConfirmationParams> => type === 'UPDATE' && resource === 'confirmation'
+
 
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
@@ -111,16 +124,12 @@ const dataProvider = <
     }
   }
   if (isCreateApp(params, resource, type)) {
-    if (resource === 'apps') {
-      const { name, cloud, region } = params.data
-      return apps.create(name, cloud, region)
-    }
+    const { name, cloud, region } = params.data
+    return apps.create(name, cloud, region)
   }
   if (isCreateUser(params, resource, type)) {
-    if (resource === 'users') {
       const { email, password } = params.data
       return users.create(email, password)
-    }
   }
   if (isGetOne(params, type)) {
     if (resource === 'apps') {
@@ -144,7 +153,6 @@ const dataProvider = <
     }
   }
   if (isUpdateApp(params, resource, type)) {
-    if (resource === 'apps') {
       return apps
         .scale(params.id, params.data.size, params.data.replicas)
         .then(response => {
@@ -157,12 +165,18 @@ const dataProvider = <
             }
           }
         })
-    }
   }
+
+    // resend confirmation
+    // should I use type == 'RESEND' instead of 'UPDATE'?
   if (isUpdateConfirmation(params, resource, type)) {
-    if (resource === 'confirmation') {
       return users.resend_confirmation(params.data.email)
-    }
+  }
+
+    // reset password vs set password
+    // should I use type == 'RESET' instead of 'CREATE'?
+  if (isCreatePassword(params, resource, type)) {
+      return users.reset_password(params.data.email)
   }
   throw new Error(`${type} ${resource} not implemented yet`)
 }

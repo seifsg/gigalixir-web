@@ -107,7 +107,7 @@ export const crudUpdate = (
 });
 
 const action = (values: any, dispatch: any, { redirectTo }: any) => {
-  return dispatch(crudUpdate('confirmation', 'resend', values, {}, '/', 'Confirmation Email Sent. Please check your email.', false))
+  return dispatch(crudUpdate('confirmation', 'resend', values, {}, '/', 'Confirmation email sent. Please check your email.', false))
 }
 
 // duplicated in RegisterForm
@@ -147,7 +147,7 @@ const Form: SFC<Props & EnhancedProps> = ({
       <Button
         type="submit"
       >
-      Resend
+      Resend Confirmation
       </Button>
     </div>
   </form>

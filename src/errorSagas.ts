@@ -1,4 +1,5 @@
 import { CRUD_CREATE_FAILURE, CRUD_UPDATE_FAILURE } from 'react-admin'
+import {SagaIterator} from 'redux-saga';
 import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
@@ -69,6 +70,19 @@ function* userRegisterFailure(action: CrudFailureAction) {
     throw new Error('userRegisterFailure with no payload')
   }
 }
+function* resetPasswordFailure(action: CrudFailureAction) {
+    console.log('resetPasswordFailure')
+  if (action.payload) {
+    const violations = {
+      email: extractError(action.payload.errors, 'email'),
+    }
+    const a = stopSubmit('resetPassword', violations)
+    yield put(a)
+  } else {
+    throw new Error('resetPasswordFailure with no payload')
+  }
+}
+
 
 function* resendConfirmationFailureSaga() {
   yield takeEvery((action: CrudFailureAction): boolean => {
@@ -94,6 +108,18 @@ function* userRegisterFailureSaga() {
   }, userRegisterFailure)
 }
 
+function* crudFailureSaga(type: string, resource: string, fetchResponse: string, callback: (action: CrudFailureAction) => SagaIterator) {
+  yield takeEvery((action: CrudFailureAction): boolean => {
+    return (
+      action.type === type &&
+      action.meta !== undefined &&
+      action.meta.resource === resource &&
+      action.meta.fetchResponse === fetchResponse &&
+      action.payload !== undefined
+    )
+  }, callback)
+}
+
 function* userLoginFailureSaga() {
   yield takeEvery((action: UserLoginFailureAction): boolean => {
     return (
@@ -107,6 +133,8 @@ function* userLoginFailureSaga() {
 }
 
 export default function* errorSagas() {
-  yield all([userRegisterFailureSaga(), userLoginFailureSaga()
-  , resendConfirmationFailureSaga()])
+  yield all([userRegisterFailureSaga()
+      , userLoginFailureSaga()
+      , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
+      , resendConfirmationFailureSaga()])
 }
