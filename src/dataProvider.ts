@@ -102,6 +102,7 @@ const dataProvider = <
             // return Promise.reject("error-as-string")
             // semantically, probably better to reject here since it's an error, but
             // this is the only way I can figure out to stop showing 401 notifications.
+            // maybe try overriding the Notification component instead!
             return Promise.resolve({data: [], total: 0})
           } else {
               return Promise.reject(e)
@@ -160,13 +161,7 @@ const dataProvider = <
   }
   if (isUpdateConfirmation(params, resource, type)) {
     if (resource === 'confirmation') {
-            logger.debug(JSON.stringify(params))
-      return Promise.resolve({
-                data: {
-                    id: params.data.email
-                }
-            }
-        )
+      return users.resend_confirmation(params.data.email)
     }
   }
   throw new Error(`${type} ${resource} not implemented yet`)

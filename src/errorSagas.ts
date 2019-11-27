@@ -1,4 +1,4 @@
-import { CRUD_CREATE_FAILURE } from 'react-admin'
+import { CRUD_CREATE_FAILURE, CRUD_UPDATE_FAILURE } from 'react-admin'
 import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
@@ -17,7 +17,7 @@ const extractError = (
   return _.join('. ', errorListWithKey)
 }
 
-interface CrudCreateFailureAction extends Action {
+interface CrudFailureAction extends Action {
   payload?: { errors: { [k: string]: string[] } }
   meta?: { resource: string; fetchResponse: string }
 }
@@ -46,7 +46,18 @@ function* userLoginFailure(action: UserLoginFailureAction) {
   }
 }
 
-function* userRegisterFailure(action: CrudCreateFailureAction) {
+function* resendConfirmationFailure(action: CrudFailureAction) {
+  if (action.payload) {
+    const violations = {
+      email: extractError(action.payload.errors, 'email'),
+    }
+    const a = stopSubmit('resendConfirmation', violations)
+    yield put(a)
+  } else {
+    throw new Error('resendConfirmationFailure with no payload')
+  }
+}
+function* userRegisterFailure(action: CrudFailureAction) {
   if (action.payload) {
     const violations = {
       email: extractError(action.payload.errors, 'email'),
@@ -59,8 +70,20 @@ function* userRegisterFailure(action: CrudCreateFailureAction) {
   }
 }
 
+function* resendConfirmationFailureSaga() {
+  yield takeEvery((action: CrudFailureAction): boolean => {
+    return (
+      action.type === CRUD_UPDATE_FAILURE &&
+      action.meta !== undefined &&
+      action.meta.resource === 'confirmation' &&
+      action.meta.fetchResponse === 'UPDATE' &&
+      action.payload !== undefined
+    )
+  }, resendConfirmationFailure)
+}
+
 function* userRegisterFailureSaga() {
-  yield takeEvery((action: CrudCreateFailureAction): boolean => {
+  yield takeEvery((action: CrudFailureAction): boolean => {
     return (
       action.type === CRUD_CREATE_FAILURE &&
       action.meta !== undefined &&
@@ -84,5 +107,6 @@ function* userLoginFailureSaga() {
 }
 
 export default function* errorSagas() {
-  yield all([userRegisterFailureSaga(), userLoginFailureSaga()])
+  yield all([userRegisterFailureSaga(), userLoginFailureSaga()
+  , resendConfirmationFailureSaga()])
 }

@@ -28,14 +28,14 @@ export const get = (): Promise<{ data: User }> => {
     })
 }
 
-interface CreateErrorResponse {
+interface ErrorResponse {
   errors: { [x: string]: string[] }
 }
 
 export const create = (
   email: string,
   password: string
-): Promise<{ data: { id: string } } | CreateErrorResponse> => {
+): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users`, {
       email,
@@ -46,11 +46,34 @@ export const create = (
     })
     .catch(
       (reason: {
-        response: { data: CreateErrorResponse; status: number }
-      }): CreateErrorResponse => {
+        response: { data: ErrorResponse; status: number }
+      }): ErrorResponse => {
         // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
         const { errors } = reason.response.data
-        throw new HttpError('fake-message', reason.response.status, {
+        throw new HttpError('', reason.response.status, {
+          errors
+        })
+      }
+    )
+}
+
+export const resend_confirmation = (
+    email: string
+): Promise<{ data: { id: string } } | ErrorResponse> => {
+  return api
+    .post<{ data: {} }>(`/frontend/api/users/reconfirm_email`, {
+      email
+    })
+    .then((): { data: { id: string } } => {
+      return { data: { id: email } }
+    })
+    .catch(
+      (reason: {
+        response: { data: ErrorResponse; status: number }
+      }): ErrorResponse => {
+        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+        const { errors } = reason.response.data
+        throw new HttpError('', reason.response.status, {
           errors
         })
       }

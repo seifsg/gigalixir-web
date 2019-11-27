@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { Notification, CRUD_UPDATE, UPDATE} from 'react-admin'
-import { Identifier, RedirectionSideEffect, RefreshSideEffect, CrudUpdateAction} from 'ra-core'
+import { Identifier, RedirectionSideEffect, NotificationSideEffect, RefreshSideEffect} from 'ra-core'
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
@@ -45,6 +45,31 @@ interface EnhancedProps
   isLoading: boolean
 }
 
+interface RequestPayload {
+    id: Identifier;
+    data: any;
+    previousData?: any;
+}
+
+export interface CrudUpdateAction {
+    readonly type: typeof CRUD_UPDATE;
+    readonly payload: RequestPayload;
+    readonly meta: {
+        resource: string;
+        fetch: typeof UPDATE;
+        onSuccess: {
+            notification: NotificationSideEffect;
+            redirectTo: RedirectionSideEffect;
+            refresh: RefreshSideEffect;
+            basePath: string;
+        };
+        onFailure: {
+            notification?: NotificationSideEffect;
+        };
+    };
+}
+
+
 export const crudUpdate = (
     resource: string,
     id: Identifier,
@@ -73,10 +98,10 @@ export const crudUpdate = (
             basePath,
         },
         onFailure: {
-            notification: {
-                body: 'ra.notification.http_error',
-                level: 'warning',
-            },
+            /* notification: { */
+            /*     body: 'ra.notification.http_error', */
+            /*     level: 'warning', */
+            /* }, */
         },
     },
 });
