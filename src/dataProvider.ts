@@ -29,6 +29,10 @@ interface GetOneParams {
 interface UpdateConfirmationParams {
   email: string
 }
+interface UpdatePasswordParams {
+    token: string,
+        newPassword: string
+}
 interface UpdateAppParams {
     replicas: number,
         size: number
@@ -48,6 +52,7 @@ type DataProviderParams =
   | GetOneParams
   | UpdateParams<
       UpdateAppParams
+      | UpdatePasswordParams
       | UpdateConfirmationParams
     >
 
@@ -74,6 +79,11 @@ const isGetOne = (
   params: DataProviderParams,
   type: string
 ): params is GetOneParams => type === 'GET_ONE'
+const isUpdatePassword = (
+  params: DataProviderParams,
+    resource: string,
+  type: string
+): params is UpdateParams<UpdatePasswordParams> => type === 'UPDATE' && resource === 'password'
 const isUpdateApp = (
   params: DataProviderParams,
     resource: string,
@@ -177,6 +187,9 @@ const dataProvider = <
     // should I use type == 'RESET' instead of 'CREATE'?
   if (isCreatePassword(params, resource, type)) {
       return users.reset_password(params.data.email)
+  }
+  if (isUpdatePassword(params, resource, type)) {
+      return users.set_password(params.data.token, params.data.newPassword)
   }
   throw new Error(`${type} ${resource} not implemented yet`)
 }

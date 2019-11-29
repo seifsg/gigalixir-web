@@ -1,3 +1,6 @@
+// most of this is copied from ConfirmationResendPage. refactor
+import qs from 'query-string'
+import { showNotification } from 'react-admin'
 import React, { SFC } from 'react'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
@@ -12,13 +15,15 @@ import { Notification} from 'react-admin'
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import {crudUpdate} from './crudUpdate'
+import { crudUpdate } from './crudUpdate'
 
 interface Props {
+  search: string
 }
 
 interface FormData {
-  email: string
+  token: string,
+  newPassword: string
 }
 
 const styles = ({ spacing }: Theme) =>
@@ -45,8 +50,16 @@ interface EnhancedProps
   isLoading: boolean
 }
 
-const action = (values: any, dispatch: any, { redirectTo }: any) => {
-  return dispatch(crudUpdate('confirmation', 'resend', values, {}, '/', 'Confirmation email sent. Please check your email.', false))
+const action = (search: string) => (values: any, dispatch: any, { redirectTo }: any) => {
+  const params = qs.parse(search)
+  console.log(JSON.stringify(params))
+  if (typeof params.token === 'string') {
+    let token = params.token
+    console.log(token)
+    return dispatch(crudUpdate('password', 'set', { token, ...values}, {}, '/', 'Password changed', false))
+    } else {
+    return dispatch(showNotification('Token missing'))
+  }
 }
 
 // duplicated in RegisterForm
@@ -69,24 +82,26 @@ const Form: SFC<Props & EnhancedProps> = ({
   classes,
   isLoading,
   handleSubmit,
-  translate
+  translate,
+  search
 }) => (
-  <form onSubmit={handleSubmit(action)}>
+  <form onSubmit={handleSubmit(action(search))}>
     <div className={classes.form}>
       <div className={classes.input}>
         <Field
           autoFocus
-          id="email"
-          name="email"
+          id="newPassword"
+          name="newPassword"
           component={renderInput}
-          label="Email"
+          label="New Password"
+          type="password"
           disabled={isLoading}
         />
       </div>
       <Button
         type="submit"
       >
-      Resend Confirmation
+      Set Password
       </Button>
     </div>
   </form>
@@ -100,12 +115,12 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   withTranslate,
   connect(mapStateToProps),
   reduxForm({
-    form: 'resendConfirmation',
+    form: 'setPassword',
     validate: (values: FormData, props: TranslationContextProps) => {
-      const errors = { email: '', password: '' }
+      const errors = { newPassword: ''}
       const { translate } = props
-      if (!values.email) {
-        errors.email = translate('ra.validation.required')
+      if (!values.newPassword) {
+        errors.newPassword = translate('ra.validation.required')
       }
       return errors
     }
@@ -113,9 +128,13 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
 )(Form)
 
 const Page = (props: {
+  location: {search: string}
 }) => {
+const { location: { search } } = props
+console.log('search')
+console.log(search)
   return (<div>
-  <EnhancedForm/>
+  <EnhancedForm search={ search }/>
           <Notification />
   </div>)
 }

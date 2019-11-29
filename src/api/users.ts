@@ -94,6 +94,32 @@ export const reset_password = (
       (reason: {
         response: { data: ErrorResponse; status: number }
       }): ErrorResponse => {
+          console.log('set_password error')
+        const { errors } = reason.response.data
+          console.log(JSON.stringify(errors))
+        throw new HttpError('', reason.response.status, {
+          errors
+        })
+      }
+    )
+}
+
+export const set_password = (
+    token: string,
+    newPassword: string
+): Promise<{ data: { id: string } } | ErrorResponse> => {
+  return api
+    .post<{ data: {} }>(`/frontend/api/users/set_password`, {
+        token: token,
+     password: newPassword
+    })
+    .then((): { data: { id: string } } => {
+      return { data: { id: token } }
+    })
+    .catch(
+      (reason: {
+        response: { data: ErrorResponse; status: number }
+      }): ErrorResponse => {
           console.log('reset_password error')
         const { errors } = reason.response.data
           console.log(JSON.stringify(errors))

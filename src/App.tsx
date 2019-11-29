@@ -10,6 +10,7 @@ import ProfileShow from './ProfileShow'
 import RegisterPage from './RegisterPage'
 import NotifyPage from './NotifyPage'
 import PasswordResetPage from './PasswordResetPage'
+import PasswordSetPage from './PasswordSetPage'
 import ConfirmationResendPage from './ConfirmationResendPage'
 import errorSagas from './errorSagas'
 
@@ -18,6 +19,7 @@ const customRoutes = [
   <Route exact path="/register" component={RegisterPage} noLayout />,
   <Route exact path="/notify" component={NotifyPage} noLayout />,
   <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,
+  <Route exact path="/password/set" component={PasswordSetPage} noLayout />,
   <Route exact path="/confirmation/resend" component={ConfirmationResendPage} noLayout />
 ]
 

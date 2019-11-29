@@ -1,4 +1,5 @@
 import { CRUD_CREATE_FAILURE, CRUD_UPDATE_FAILURE } from 'react-admin'
+import { showNotification } from 'react-admin'
 import {SagaIterator} from 'redux-saga';
 import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
@@ -70,11 +71,35 @@ function* userRegisterFailure(action: CrudFailureAction) {
     throw new Error('userRegisterFailure with no payload')
   }
 }
+function* setPasswordFailure(action: CrudFailureAction) {
+    console.log('setPasswordFailure')
+  if (action.payload) {
+    const tokenViolation = extractError(action.payload.errors, 'token')
+    const violations = {
+      newPassword: extractError(action.payload.errors, 'password'),
+      token: tokenViolation
+    }
+      console.log(tokenViolation)
+      if (tokenViolation) {
+          console.log('hi')
+        yield put(
+        showNotification(tokenViolation, 'error')
+    );
+
+}
+
+    const a = stopSubmit('setPassword', violations)
+    yield put(a)
+  } else {
+    throw new Error('setPasswordFailure with no payload')
+  }
+}
+
 function* resetPasswordFailure(action: CrudFailureAction) {
     console.log('resetPasswordFailure')
   if (action.payload) {
     const violations = {
-      email: extractError(action.payload.errors, 'email'),
+      email: extractError(action.payload.errors, 'email')
     }
     const a = stopSubmit('resetPassword', violations)
     yield put(a)
@@ -136,5 +161,6 @@ export default function* errorSagas() {
   yield all([userRegisterFailureSaga()
       , userLoginFailureSaga()
       , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
+      , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
       , resendConfirmationFailureSaga()])
 }
