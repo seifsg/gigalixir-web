@@ -84,3 +84,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+### Notes
+
+Important that in package.json, the material-ui versions match react-admin.
+See https://github.com/marmelab/react-admin/issues/1782
+
+Ideally, we would just remove them, but that causes warnings and stuff with eslint I think.
