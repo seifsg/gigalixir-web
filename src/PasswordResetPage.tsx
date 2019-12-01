@@ -34,8 +34,8 @@ const styles = ({ spacing }: Theme) =>
       width: '100%'
     },
     icon: {
-      // marginRight: spacing.unit
-      marginRight: spacing(1)
+      marginRight: spacing.unit
+      // marginRight: spacing(1)
     }
   })
 
