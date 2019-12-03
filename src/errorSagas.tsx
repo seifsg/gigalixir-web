@@ -1,3 +1,4 @@
+import React from 'react'
 import { CRUD_CREATE_FAILURE, CRUD_UPDATE_FAILURE } from 'react-admin'
 import { showNotification } from 'react-admin'
 import {SagaIterator} from 'redux-saga';
@@ -34,10 +35,26 @@ interface UserLoginFailureAction extends Action {
   }
 }
 
+function extractEmailError(
+  errors: { [k: string]: string[] }
+) {
+  const key = "email"
+  const errorList = _.get(key, errors) || []
+  console.log(JSON.stringify(errorList))
+  const msg = extractError(errors, key)
+  //
+  // TODO: extremely brittle. if error msg ever changes, this won't work. what to do instead?
+  // we can't return jsx elements through http so we need to use a code or something instead
+  // but then that won't work well with the CLI which needs text..
+  if (_.includes('not yet confirmed.', errorList)) {
+    return <span>{msg}. <a href="/#/confirmation/resend">Resend Confirmation</a></span>
+  }
+  return msg
+}
 function* userLoginFailure(action: UserLoginFailureAction) {
   if (action.error) {
     const violations = {
-      email: extractError(action.error.response.data.errors, 'email'),
+      email: extractEmailError(action.error.response.data.errors),
       password: extractError(action.error.response.data.errors, 'password')
     }
 

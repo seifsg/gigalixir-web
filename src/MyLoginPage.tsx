@@ -63,7 +63,8 @@ const renderInput = ({
   meta: { touched, error } = { touched: false, error: '' }, // eslint-disable-line react/prop-types
   input: { ...inputProps }, // eslint-disable-line react/prop-types
   ...props
-}) => (
+}) => {
+  return (
   <TextField
     error={!!(touched && error)}
     helperText={touched && error}
@@ -71,7 +72,8 @@ const renderInput = ({
     {...props}
     fullWidth
   />
-)
+  )
+}
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>
   dispatch(userLogin(auth, redirectTo))
 

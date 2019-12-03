@@ -150,12 +150,11 @@ const dataProvider = <
     }
     if (resource === 'profile') {
       return users.get().catch(e => {
-          if (e.message === "Request failed with status code 401") {
+        if (e.message === "Request failed with status code 401") {
           logger.error(JSON.stringify(e))
           return Promise.resolve({data: {id: 'profile'}})
-          } else {
-              return Promise.reject(e)
-          }
+        }
+        return Promise.reject(e)
       })
     }
     if (resource === 'payment_methods') {
