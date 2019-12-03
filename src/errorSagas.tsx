@@ -48,6 +48,8 @@ function extractEmailError(
   // but then that won't work well with the CLI which needs text..
   if (_.includes('not yet confirmed.', errorList)) {
     return <span>{msg}. <a href="/#/confirmation/resend">Resend Confirmation</a></span>
+  } else if (_.includes('or password is incorrect.', errorList)) {
+    return <span>{msg}. <a href="/#/password/reset">Reset Password</a></span>
   }
   return msg
 }
