@@ -22,7 +22,6 @@ class UpdatePaymentMethodForm extends Component<{ stripe: any }> {
   public render() {
     return (
       <div className="checkout">
-        <p>update?</p>
         <CardElement />
         <button type="submit" onClick={this.submit}>
           Update
