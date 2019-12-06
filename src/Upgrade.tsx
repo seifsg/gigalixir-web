@@ -2,10 +2,12 @@ import React from 'react'
 import UpgradeForm from './UpgradeForm'
 import { Elements, StripeProvider } from 'react-stripe-elements'
 
+const stripeKey = process.env.STRIPE_API_KEY || "missing!"
+
 export default (props: {record: {tier: string}}) => {
     if (props.record.tier === "FREE") {
     return (
-      <StripeProvider apiKey="pk_test_6tMDkFKTz4N0wIFQZHuzOUyW">
+      <StripeProvider apiKey={stripeKey}>
         <div className="example">
           <h1>Upgrade</h1>
           <div className="upgradeMarketing">
