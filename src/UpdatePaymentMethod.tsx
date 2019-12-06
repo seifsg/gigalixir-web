@@ -2,7 +2,7 @@ import React from 'react'
 import UpdatePaymentMethodForm from './UpdatePaymentMethodForm'
 import { Elements, StripeProvider } from 'react-stripe-elements'
 
-const stripeKey = process.env.STRIPE_API_KEY || "missing!"
+const stripeKey = process.env.REACT_APP_STRIPE_API_KEY  || "missing"
 
 export default (props: {record: {tier: string}}) => {
     console.log(JSON.stringify(props.record))
