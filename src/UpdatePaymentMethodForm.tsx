@@ -1,25 +1,34 @@
 import React, { Component } from 'react'
-import { CardElement, injectStripe } from 'react-stripe-elements'
-import * as paymentMethods from './api/payment_methods'
+import compose from 'recompose/compose';
+import { CrudUpdateAction } from './crudUpdate'
+import { CRUD_UPDATE, UPDATE} from 'react-admin'
 
-class UpdatePaymentMethodForm extends Component<{ stripe: any }> {
+import { connect } from 'react-redux';
+import { CardElement, injectStripe } from 'react-stripe-elements'
+
+class UpdatePaymentMethodForm extends Component<{ isLoading: boolean, stripe: any, updatePaymentMethod: (token: string) => void }> {
   public constructor(props: any) {
     super(props)
     console.log(JSON.stringify(props))
     this.submit = this.submit.bind(this)
   }
 
-  public async submit(ev: any) {
+  public submit = (ev: any) => {
     // TODO: name is not used
-    const { stripe } = this.props
+    const { stripe, updatePaymentMethod } = this.props
     // TODO: how does createToken get the card info?
-    const { token } = await stripe.createToken({ name: 'Name' })
-    paymentMethods.put(token.id).then(response => {
-      console.log('updated!')
-    })
+      stripe.createToken({ name: 'Name' }).then((response: {token: {id: string}}) => {
+        updatePaymentMethod(response.token.id)
+      })
+
+    // TODO: use dataProvider instead so we can set onSuccess notification and refresh/redirect
+    // should we use withDataProvider or Mutation component?
+    // paymentMethods.put(token.id).then(response => {
+    //   console.log('updated!')
+    // })
   }
 
-  public render() {
+  public render = () => {
     return (
       <div className="checkout">
         <CardElement />
@@ -31,4 +40,45 @@ class UpdatePaymentMethodForm extends Component<{ stripe: any }> {
   }
 }
 
-export default injectStripe(UpdatePaymentMethodForm)
+function mapStateToProps(state: any, props: any) {
+    return {
+        isLoading: state.admin.loading > 0,
+    };
+}
+
+const updatePaymentMethod = (token: string): CrudUpdateAction => ({
+    type: CRUD_UPDATE,
+    payload: { id: token, data: { token } },
+    meta: {
+        resource: "payment_methods",
+        fetch: UPDATE,
+        onSuccess: {
+            notification: {
+                body: 'Credit Card Updated',
+                level: 'info',
+                messageArgs: {
+                    smart_count: 1,
+                },
+            },
+            refresh: true, // refresh
+            redirectTo: false,
+            basePath: "/",
+        },
+        onFailure: {
+            notification: {
+                body: 'ra.notification.http_error',
+                level: 'warning',
+            },
+        },
+    },
+})
+
+export default compose(
+  injectStripe,
+  connect(
+    mapStateToProps,
+    {
+      updatePaymentMethod
+    }
+  )
+)(UpdatePaymentMethodForm)

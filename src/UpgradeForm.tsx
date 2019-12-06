@@ -14,7 +14,6 @@ class UpgradeForm extends Component<{ stripe: any }> {
     const { stripe } = this.props
     const { token } = await stripe.createToken({ name: 'Name' })
 
-    // TODO: move into user.ts?
     api
       .post('/frontend/api/upgrade', {
         // eslint-disable-next-line @typescript-eslint/camelcase

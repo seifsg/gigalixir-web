@@ -121,6 +121,7 @@ const Page = (props: {
   </div>)
 }
 
+// todo: what does this do?
 export default connect(
   null,
   {

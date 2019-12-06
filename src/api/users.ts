@@ -129,3 +129,11 @@ export const set_password = (
       }
     )
 }
+
+export const upgrade = (token: string): Promise<{}> => {
+    return api
+      .post('/frontend/api/upgrade', {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        stripe_token: token
+      })
+}

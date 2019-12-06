@@ -1,7 +1,7 @@
 import * as apps from './api/apps'
 import getStats from './api/stats'
 import * as users from './api/users'
-import { get as getPaymentMethod } from './api/payment_methods'
+import * as payment_methods from './api/payment_methods'
 import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -31,11 +31,17 @@ interface UpdateConfirmationParams {
 }
 interface UpdatePasswordParams {
     token: string,
-        newPassword: string
+    newPassword: string
+}
+interface UpdatePaymentMethodParams {
+    token: string,
+}
+interface UpdateUserParams {
+    token: string
 }
 interface UpdateAppParams {
     replicas: number,
-        size: number
+    size: number
 }
 interface UpdateParams<T> {
   id: string
@@ -52,6 +58,8 @@ type DataProviderParams =
   | GetOneParams
   | UpdateParams<
       UpdateAppParams
+      | UpdatePaymentMethodParams
+      | UpdateUserParams
       | UpdatePasswordParams
       | UpdateConfirmationParams
     >
@@ -84,6 +92,16 @@ const isUpdatePassword = (
     resource: string,
   type: string
 ): params is UpdateParams<UpdatePasswordParams> => type === 'UPDATE' && resource === 'password'
+const isUpdatePaymentMethod = (
+  params: DataProviderParams,
+    resource: string,
+  type: string
+): params is UpdateParams<UpdatePaymentMethodParams> => type === 'UPDATE' && resource === 'payment_methods'
+const isUpdateUser = (
+  params: DataProviderParams,
+    resource: string,
+  type: string
+): params is UpdateParams<UpdateUserParams> => type === 'UPDATE' && resource === 'users'
 const isUpdateApp = (
   params: DataProviderParams,
     resource: string,
@@ -158,8 +176,22 @@ const dataProvider = <
       })
     }
     if (resource === 'payment_methods') {
-      return getPaymentMethod()
+      return payment_methods.get()
     }
+  }
+  if (isUpdatePaymentMethod(params, resource, type)) {
+      return payment_methods.update(params.data.token).then(response => {
+          const { data } = response
+          return {
+              data: {
+                  id: params.data.token,
+                  ...data
+              }
+          }
+      })
+  }
+  if (isUpdateUser(params, resource, type)) {
+      return users.upgrade(params.data.token)
   }
   if (isUpdateApp(params, resource, type)) {
       return apps

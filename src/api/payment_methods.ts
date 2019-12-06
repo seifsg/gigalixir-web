@@ -15,7 +15,7 @@ export interface PaymentMethod {
   last4: number
 }
 
-export const put = (token: string): Promise<{ data: {} }> => {
+export const update = (token: string): Promise<{ data: {} }> => {
   return api
     .put<{ data: {} }>(`/frontend/api/payment_methods`, {
       // eslint-disable-next-line @typescript-eslint/camelcase
