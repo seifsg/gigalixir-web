@@ -21,11 +21,6 @@ class UpdatePaymentMethodForm extends Component<{ isLoading: boolean, stripe: an
         updatePaymentMethod(response.token.id)
       })
 
-    // TODO: use dataProvider instead so we can set onSuccess notification and refresh/redirect
-    // should we use withDataProvider or Mutation component?
-    // paymentMethods.put(token.id).then(response => {
-    //   console.log('updated!')
-    // })
   }
 
   public render = () => {

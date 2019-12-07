@@ -1,4 +1,5 @@
 import { HttpError } from 'ra-core'
+import _ from 'lodash/fp'
 import * as api from './api'
 
 type tier = 'STANDARD' | 'FREE'
@@ -35,7 +36,7 @@ interface ErrorResponse {
 export const create = (
   email: string,
   password: string
-): Promise<{ data: { id: string } } | ErrorResponse> => {
+): Promise<{ data: { id: string } }> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users`, {
       email,
@@ -47,7 +48,7 @@ export const create = (
     .catch(
       (reason: {
         response: { data: ErrorResponse; status: number }
-      }): ErrorResponse => {
+      }) => {
         // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
         const { errors } = reason.response.data
         throw new HttpError('', reason.response.status, {
@@ -94,9 +95,7 @@ export const reset_password = (
       (reason: {
         response: { data: ErrorResponse; status: number }
       }): ErrorResponse => {
-          console.log('set_password error')
         const { errors } = reason.response.data
-          console.log(JSON.stringify(errors))
         throw new HttpError('', reason.response.status, {
           errors
         })
@@ -120,9 +119,7 @@ export const set_password = (
       (reason: {
         response: { data: ErrorResponse; status: number }
       }): ErrorResponse => {
-          console.log('reset_password error')
         const { errors } = reason.response.data
-          console.log(JSON.stringify(errors))
         throw new HttpError('', reason.response.status, {
           errors
         })
@@ -136,4 +133,15 @@ export const upgrade = (token: string): Promise<{}> => {
         // eslint-disable-next-line @typescript-eslint/camelcase
         stripe_token: token
       })
+    .catch(
+      (reason: {
+        response: { data: ErrorResponse; status: number }
+      }): ErrorResponse => {
+        const { errors } = reason.response.data
+          // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
+        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
+          errors
+        })
+      }
+    )
 }

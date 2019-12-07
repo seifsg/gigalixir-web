@@ -43,7 +43,7 @@ export default (props: {record: {tier: string}}) => {
           <Elements>
             {/* stripe parameter is injected automatically by StripeProvider, but 
                 typescript complains about it if I don't put something here */}
-            <UpgradeForm stripe="override-me" />
+            <UpgradeForm />
           </Elements>
         </div>
       </StripeProvider>

@@ -109,7 +109,7 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
     </div>
     <CardActions>
       <Button
-        // variant="raised"
+        variant="raised"
         type="submit"
         color="primary"
         disabled={isLoading}

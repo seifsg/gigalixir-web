@@ -17,6 +17,9 @@ export interface PaymentMethod {
   last4: number
 }
 
+interface ErrorResponse {
+  errors: { [x: string]: string[] }
+}
 export const update = (token: string): Promise<{ data: {} }> => {
   return api
     .put<{ data: {} }>(`/frontend/api/payment_methods`, {
@@ -24,9 +27,9 @@ export const update = (token: string): Promise<{ data: {} }> => {
       stripe_token: token
     }).catch(
       (reason: {
-          response: { data: {errors: string[]}, status: number } }) => {
+          response: { data: ErrorResponse, status: number } }) => {
         const { errors } = reason.response.data
-        throw new HttpError(_.join('. ', errors), reason.response.status, {
+        throw new HttpError(_.join('. ', errors.stripe_token), reason.response.status, {
           errors
         })
       }
