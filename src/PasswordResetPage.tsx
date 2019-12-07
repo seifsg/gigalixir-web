@@ -85,7 +85,11 @@ const Form: SFC<Props & EnhancedProps> = ({
         />
       </div>
       <Button
+        variant="raised"
         type="submit"
+        color="primary"
+        disabled={isLoading}
+        className={classes.button}
       >
       Reset Password
       </Button>

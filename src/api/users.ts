@@ -133,6 +133,9 @@ export const upgrade = (token: string): Promise<{}> => {
         // eslint-disable-next-line @typescript-eslint/camelcase
         stripe_token: token
       })
+    .then((): { data: { id: string } } => {
+      return { data: { id: token } }
+    })
     .catch(
       (reason: {
         response: { data: ErrorResponse; status: number }

@@ -25,6 +25,9 @@ export const update = (token: string): Promise<{ data: {} }> => {
     .put<{ data: {} }>(`/frontend/api/payment_methods`, {
       // eslint-disable-next-line @typescript-eslint/camelcase
       stripe_token: token
+    })
+    .then((): { data: { id: string } } => {
+      return { data: { id: token } }
     }).catch(
       (reason: {
           response: { data: ErrorResponse, status: number } }) => {

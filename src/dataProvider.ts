@@ -180,15 +180,7 @@ const dataProvider = <
     }
   }
   if (isUpdatePaymentMethod(params, resource, type)) {
-      return payment_methods.update(params.data.token).then(response => {
-          const { data } = response
-          return {
-              data: {
-                  id: params.data.token,
-                  ...data
-              }
-          }
-      })
+      return payment_methods.update(params.data.token)
   }
   if (isUpdateUser(params, resource, type)) {
       return users.upgrade(params.data.token)
