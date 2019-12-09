@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Button from '@material-ui/core/Button'
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import _ from 'lodash/fp'
@@ -27,17 +28,21 @@ class UpdatePaymentMethodForm extends Component<{ error: string | undefined, isL
   }
 
   public render = () => {
-      console.log(this.props.error)
+    const { isLoading, error } = this.props
     return (
       <div className="checkout">
-        <CardElement />
+        <CardElement disabled={isLoading} />
         <FormHelperText error={ true }>
-            {this.props.error}
+            {error}
         </FormHelperText>
 
-        <button type="submit" onClick={this.submit}>
+      <Button type="submit" 
+        variant="raised" 
+        color="primary" 
+        onClick={this.submit} 
+        disabled={isLoading}>
           Update
-        </button>
+        </Button>
       </div>
     )
   }

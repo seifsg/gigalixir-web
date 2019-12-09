@@ -1,13 +1,16 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import _ from 'lodash/fp'
 import { connect } from 'react-redux';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Button from '@material-ui/core/Button'
 import { CrudUpdateAction } from './crudUpdate'
 import { CRUD_UPDATE, UPDATE} from 'react-admin'
 import compose from 'recompose/compose';
 import React, { Component } from 'react'
 import { CardElement, injectStripe } from 'react-stripe-elements'
 
-class UpgradeForm extends Component<{ upgrade: (token: string) => void, stripe: any }> {
+class UpgradeForm extends Component<{ upgrade: (token: string) => void, isLoading: boolean, error: string | undefined, stripe: any }> {
   public constructor(props: any) {
     super(props)
     this.submit = this.submit.bind(this)
@@ -20,12 +23,20 @@ class UpgradeForm extends Component<{ upgrade: (token: string) => void, stripe: 
   }
 
   public render() {
+    const { isLoading, error } = this.props
     return (
       <div className="checkout">
-        <CardElement />
-        <button type="submit" onClick={this.submit}>
+        <CardElement disabled={isLoading}/>
+        <FormHelperText error={ true }>
+            {error}
+        </FormHelperText>
+      <Button type="submit" 
+        variant="raised" 
+        color="primary" 
+        onClick={this.submit} 
+        disabled={isLoading}>
           Upgrade
-        </button>
+        </Button>
       </div>
     )
   }
@@ -59,10 +70,20 @@ const upgrade = (token: string): CrudUpdateAction => ({
     },
 })
 
+function mapStateToProps(state: any, props: any) {
+  console.log(JSON.stringify(state))
+    const error = _.get('form.upgradeUser.submitErrors.token', state)
+    console.log(error)
+    return {
+        isLoading: state.admin.loading > 0,
+        error: error
+    };
+}
+
 export default compose(
   injectStripe,
   connect(
-    null,
+    mapStateToProps,
     {
       upgrade
     }

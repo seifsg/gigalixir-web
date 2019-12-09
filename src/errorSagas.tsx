@@ -97,6 +97,25 @@ function* userRegisterFailure(action: CrudFailureAction) {
     throw new Error('userRegisterFailure with no payload')
   }
 }
+function* upgradeUserFailure(action: CrudFailureAction) {
+  if (action.payload) {
+      // since we use token here, but '' in the api, maybe translate it
+      // back to token before we get it here to keep it consistent within gigalixir-web
+      //
+      // also, we don't want the key in the error this time.. maybe we should
+      // always omit the key and make all other errors consistent?
+    const tokenViolation = extractErrorValue(action.payload.errors, '')
+    const violations = {
+      token: tokenViolation
+    }
+
+    const a = stopSubmit('upgradeUser', violations)
+    yield put(a)
+  } else {
+    throw new Error('upgradeUserFailure with no payload')
+  }
+}
+
 function* updatePaymentMethodFailure(action: CrudFailureAction) {
   if (action.payload) {
       // since we use token here, but stripe_token in the api, maybe translate it
@@ -204,5 +223,6 @@ export default function* errorSagas() {
       , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
       , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
       , crudFailureSaga(CRUD_UPDATE_FAILURE, 'payment_methods', 'UPDATE', updatePaymentMethodFailure)
+      , crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
       , resendConfirmationFailureSaga()])
 }
