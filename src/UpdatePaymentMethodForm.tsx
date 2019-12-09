@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText';
+
+import _ from 'lodash/fp'
 import compose from 'recompose/compose';
 import { CrudUpdateAction } from './crudUpdate'
 import { CRUD_UPDATE, UPDATE} from 'react-admin'
@@ -6,10 +9,10 @@ import { CRUD_UPDATE, UPDATE} from 'react-admin'
 import { connect } from 'react-redux';
 import { CardElement, injectStripe } from 'react-stripe-elements'
 
-class UpdatePaymentMethodForm extends Component<{ isLoading: boolean, stripe: any, updatePaymentMethod: (token: string) => void }> {
+class UpdatePaymentMethodForm extends Component<{ error: string | undefined, isLoading: boolean, stripe: any, updatePaymentMethod: (token: string) => void }> {
   public constructor(props: any) {
     super(props)
-    console.log(JSON.stringify(props))
+    // console.log(JSON.stringify(props))
     this.submit = this.submit.bind(this)
   }
 
@@ -24,9 +27,14 @@ class UpdatePaymentMethodForm extends Component<{ isLoading: boolean, stripe: an
   }
 
   public render = () => {
+      console.log(this.props.error)
     return (
       <div className="checkout">
         <CardElement />
+        <FormHelperText error={ true }>
+            {this.props.error}
+        </FormHelperText>
+
         <button type="submit" onClick={this.submit}>
           Update
         </button>
@@ -36,8 +44,11 @@ class UpdatePaymentMethodForm extends Component<{ isLoading: boolean, stripe: an
 }
 
 function mapStateToProps(state: any, props: any) {
+    const error = _.get('form.updatePaymentMethod.submitErrors.token', state)
+    console.log(error)
     return {
         isLoading: state.admin.loading > 0,
+        error: error
     };
 }
 

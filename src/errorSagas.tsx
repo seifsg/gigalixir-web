@@ -8,6 +8,14 @@ import { Action } from 'redux'
 import _ from 'lodash/fp'
 import { USER_LOGIN_FAILURE } from 'ra-core'
 
+const extractErrorValue = (
+  errors: { [k: string]: string[] },
+  key: string
+): string => {
+  const errorList = _.get(key, errors) || []
+  return _.join('. ', errorList)
+}
+
 const extractError = (
   errors: { [k: string]: string[] },
   key: string
@@ -40,7 +48,6 @@ function extractEmailError(
 ) {
   const key = "email"
   const errorList = _.get(key, errors) || []
-  console.log(JSON.stringify(errorList))
   const msg = extractError(errors, key)
   //
   // TODO: extremely brittle. if error msg ever changes, this won't work. what to do instead?
@@ -90,19 +97,35 @@ function* userRegisterFailure(action: CrudFailureAction) {
     throw new Error('userRegisterFailure with no payload')
   }
 }
+function* updatePaymentMethodFailure(action: CrudFailureAction) {
+  if (action.payload) {
+      // since we use token here, but stripe_token in the api, maybe translate it
+      // back to token before we get it here to keep it consistent within gigalixir-web
+      //
+      // also, we don't want the key in the error this time.. maybe we should
+      // always omit the key and make all other errors consistent?
+    const tokenViolation = extractErrorValue(action.payload.errors, 'stripe_token')
+    const violations = {
+      token: tokenViolation
+    }
+
+    const a = stopSubmit('updatePaymentMethod', violations)
+    yield put(a)
+  } else {
+    throw new Error('updatePaymentMethodFailure with no payload')
+  }
+}
+
 function* setPasswordFailure(action: CrudFailureAction) {
-    console.log('setPasswordFailure')
   if (action.payload) {
     const tokenViolation = extractError(action.payload.errors, 'token')
     const violations = {
       newPassword: extractError(action.payload.errors, 'password'),
       token: tokenViolation
     }
-      console.log(tokenViolation)
       if (tokenViolation) {
-          console.log('hi')
         yield put(
-        showNotification(tokenViolation, 'error')
+        showNotification(tokenViolation, 'warning')
     );
 
 }
@@ -115,7 +138,6 @@ function* setPasswordFailure(action: CrudFailureAction) {
 }
 
 function* resetPasswordFailure(action: CrudFailureAction) {
-    console.log('resetPasswordFailure')
   if (action.payload) {
     const violations = {
       email: extractError(action.payload.errors, 'email')
@@ -181,5 +203,6 @@ export default function* errorSagas() {
       , userLoginFailureSaga()
       , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
       , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
+      , crudFailureSaga(CRUD_UPDATE_FAILURE, 'payment_methods', 'UPDATE', updatePaymentMethodFailure)
       , resendConfirmationFailureSaga()])
 }
