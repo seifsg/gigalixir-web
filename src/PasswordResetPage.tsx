@@ -1,5 +1,7 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import React, { SFC } from 'react'
+import { extractError } from './errorSagas'
+import { SubmissionError } from 'redux-form'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
 import {
@@ -47,7 +49,10 @@ interface EnhancedProps
 }
 
 const action = (values: any, dispatch: any, { redirectTo }: any) => {
-  return dispatch(crudCreate('password', values, '/', 'Reset password email sent. Please check your email.', false))
+  const msg = "Reset password email sent. Please check your email."
+   return new Promise((resolve, reject) => { dispatch(crudCreate('password', values, '/',  `/success?msg=${encodeURIComponent(msg)}`, false, resolve, ({payload: {errors}}) => {
+    reject(new SubmissionError({email: extractError(errors, "email")}))
+  })) }) 
 }
 
 // duplicated in RegisterForm
@@ -71,7 +76,8 @@ const Form: SFC<Props & EnhancedProps> = ({
   isLoading,
   handleSubmit,
   translate
-}) => (
+}) => { 
+  return (
   <form onSubmit={handleSubmit(action)}>
     <div className={classes.form}>
       <div className={classes.input}>
@@ -83,23 +89,26 @@ const Form: SFC<Props & EnhancedProps> = ({
           label="Email"
           disabled={isLoading}
         />
-      </div>
-      <Button
-        variant="raised"
-        type="submit"
-        color="primary"
-        disabled={isLoading}
-        className={classes.button}
-      >
-      Reset Password
-      </Button>
-    </div>
-  </form>
-)
+            </div>
+              <Button
+                variant="raised"
+                type="submit"
+                color="primary"
+                disabled={isLoading}
+                className={classes.button}
+              >
+                  Reset Password
+                </Button>
+                  </div>
+                    </form>
+                      ) }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: ReduxState) => {
+  console.log(JSON.stringify(state))
+  return {
   isLoading: state.admin.loading > 0
-})
+}
+}
 const EnhancedForm = compose<Props & EnhancedProps, Props>(
   withStyles(styles),
   withTranslate,

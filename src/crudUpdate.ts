@@ -16,12 +16,14 @@ export interface CrudUpdateAction {
         resource: string;
         fetch: typeof UPDATE;
         onSuccess: {
-            notification: NotificationSideEffect;
+            callback?: Function
+            notification?: NotificationSideEffect;
             redirectTo: RedirectionSideEffect;
             refresh: RefreshSideEffect;
             basePath: string;
         };
         onFailure: {
+            callback?: Function
             notification?: NotificationSideEffect;
         };
     };
@@ -34,9 +36,11 @@ export const crudUpdate = (
     data: any,
     previousData: any,
     basePath: string,
-    successNotification: string,
+    // successNotification: string,
     redirectTo: RedirectionSideEffect = 'show',
-    refresh: RefreshSideEffect = true
+    refresh: RefreshSideEffect = true,
+    resolve: Function,
+    failureCallback: (params: {payload: {errors: { [k: string]: string[] }}}) => void
 ): CrudUpdateAction => ({
     type: CRUD_UPDATE,
     payload: { id, data, previousData },
@@ -44,18 +48,27 @@ export const crudUpdate = (
         resource,
         fetch: UPDATE,
         onSuccess: {
-            notification: {
-                body: successNotification,
-                level: 'info',
-                messageArgs: {
-                    smart_count: 1,
-                },
+            callback: () => {
+                resolve()
             },
+            // notification: {
+            //     body: successNotification,
+            //     level: 'info',
+            //     messageArgs: {
+            //         smart_count: 1,
+            //     },
+            // },
             refresh,
             redirectTo,
             basePath,
         },
         onFailure: {
+            callback: failureCallback
+            // callback: (params: any) => {
+                // console.log('onFailure callback')
+                // console.log(JSON.stringify(params))
+                // reject(new SubmissionError(params.payload.errors))
+            // }
             /* notification: { */
             /*     body: 'ra.notification.http_error', */
             /*     level: 'warning', */

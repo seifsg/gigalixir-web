@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
 import React, { SFC } from 'react'
+import { extractError } from './errorSagas'
+import { SubmissionError } from 'redux-form'
 import PropTypes from 'prop-types'
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import { connect } from 'react-redux'
@@ -18,7 +20,7 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
-import userRegister from './userRegisterSaga'
+import { crudCreate } from './crudCreate'
 
 interface Props {
   redirectTo?: string
@@ -68,14 +70,22 @@ const renderInput = ({
 )
 
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>
-  dispatch(userRegister(auth, '/', false))
+{  
+  const msg = "Confirmation email sent. Please check your email."
+    return new Promise((resolve, reject) => { dispatch(crudCreate('users', auth, '/', `/success?msg=${encodeURIComponent(msg)}`, false, resolve, ({payload: {errors}}) => {
+    reject(new SubmissionError({
+      email: extractError(errors, 'email'),
+      password: extractError(errors, 'password')
+    }))
+  })) }) }
 
 const LoginForm: SFC<Props & EnhancedProps> = ({
   classes,
   isLoading,
   handleSubmit,
   translate
-}) => (
+}) => { 
+  return (
   <form onSubmit={handleSubmit(login)}>
     <div className={classes.form}>
       <div className={classes.input}>
@@ -87,18 +97,18 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
           label="Email"
           disabled={isLoading}
         />
-      </div>
-      <div className={classes.input}>
-        <Field
-          id="password"
-          name="password"
-          component={renderInput}
-          label={translate('ra.auth.password')}
-          type="password"
-          disabled={isLoading}
-        />
-      </div>
-    </div>
+            </div>
+  <div className={classes.input}>
+    <Field
+      id="password"
+      name="password"
+      component={renderInput}
+      label={translate('ra.auth.password')}
+      type="password"
+      disabled={isLoading}
+    />
+        </div>
+  </div>
     <CardActions>
       <Button
         variant="raised"
@@ -107,18 +117,19 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
         disabled={isLoading}
         className={classes.button}
       >
-        {isLoading && (
-          <CircularProgress className={classes.icon} size={18} thickness={2} />
-        )}
-        Register
-      </Button>
+          {isLoading && (
+            <CircularProgress className={classes.icon} size={18} thickness={2} />
+              )}
+  Register
+    </Button>
     </CardActions>
-  </form>
-)
-
-const mapStateToProps = (state: ReduxState) => ({
+      </form>
+        ) } 
+const mapStateToProps = (state: ReduxState) => { 
+  console.log(JSON.stringify(state))
+  return ({
   isLoading: state.admin.loading > 0
-})
+}) }
 
 const enhance = compose<Props & EnhancedProps, Props>(
   withStyles(styles),

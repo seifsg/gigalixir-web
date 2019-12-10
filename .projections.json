@@ -1,0 +1,72 @@
+{
+  "src/*.tsx": {
+    "alternate": "src/{}.test.tsx"
+  },
+  "src/*.test.tsx": {
+    "alternate": "src/{}.tsx"
+  },
+  "src/*.ts": {
+    "alternate": "src/{}.test.ts"
+  },
+  "src/*.test.ts": {
+    "alternate": "src/{}.ts"
+  },
+  "src/actions/*.ts": {
+    "type": "action"
+  },
+  "src/containers/*.tsx": {
+    "type": "container",
+    "template": [
+      "import React from 'react'",
+      "import { connect } from 'react-redux'",
+      "",
+      "export const {capitalize} = (props: {open}{close}) => {",
+      "  return (",
+      "  );",
+      "}",
+      "",
+      "export default connect(",
+      "  null,",
+      "  // state => ({open}state: state{close}),",
+      "  {open}{close}",
+      "  // dispatch => ({open}actions: bindActionCreators(actions, dispatch){close})",
+      ")({capitalize});"
+    ]
+  },
+  "src/components/*.tsx": {
+    "type": "component",
+    "template": [
+      "import React from 'react';\n",
+      "export default (props: {open}{close}) => {",
+      "  return (",
+      "  );",
+      "}",
+    ]
+  },
+  "src/reducers/*.ts": {
+    "type": "reducer"
+  },
+  "package.json": {
+    "type": "package"
+  },
+  "src/services/*Service.ts": {
+    "type": "service"
+  },
+  "src/styles/*.ts": {
+    "type": "style",
+    "template": [
+      "import {open} Platform, StyleSheet {close} from 'react-native';",
+      "import COLORS from '../config/Colors';",
+      "import FONTS from '../config/Fonts';\n",
+      "export default StyleSheet.create({",
+      "});"
+    ]
+  },
+  "src/Store.ts": {
+    "type": "store"
+  },
+  "src/Root.ts": {
+    "type": "root"
+  }
+}
+

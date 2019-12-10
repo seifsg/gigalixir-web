@@ -1,6 +1,5 @@
 import React from 'react'
-import { CRUD_CREATE_FAILURE, CRUD_UPDATE_FAILURE } from 'react-admin'
-import { showNotification } from 'react-admin'
+import { CRUD_UPDATE_FAILURE } from 'react-admin'
 import {SagaIterator} from 'redux-saga';
 import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
@@ -8,7 +7,7 @@ import { Action } from 'redux'
 import _ from 'lodash/fp'
 import { USER_LOGIN_FAILURE } from 'ra-core'
 
-const extractErrorValue = (
+export const extractErrorValue = (
   errors: { [k: string]: string[] },
   key: string
 ): string => {
@@ -16,7 +15,7 @@ const extractErrorValue = (
   return _.join('. ', errorList)
 }
 
-const extractError = (
+export const extractError = (
   errors: { [k: string]: string[] },
   key: string
 ): string => {
@@ -74,29 +73,30 @@ function* userLoginFailure(action: UserLoginFailureAction) {
   }
 }
 
-function* resendConfirmationFailure(action: CrudFailureAction) {
-  if (action.payload) {
-    const violations = {
-      email: extractError(action.payload.errors, 'email'),
-    }
-    const a = stopSubmit('resendConfirmation', violations)
-    yield put(a)
-  } else {
-    throw new Error('resendConfirmationFailure with no payload')
-  }
-}
-function* userRegisterFailure(action: CrudFailureAction) {
-  if (action.payload) {
-    const violations = {
-      email: extractError(action.payload.errors, 'email'),
-      password: extractError(action.payload.errors, 'password')
-    }
-    const a = stopSubmit('signUp', violations)
-    yield put(a)
-  } else {
-    throw new Error('userRegisterFailure with no payload')
-  }
-}
+//function* resendConfirmationFailure(action: CrudFailureAction) {
+//    console.log('resendConfirmationFailure')
+//  if (action.payload) {
+//    const violations = {
+//      email: extractError(action.payload.errors, 'email'),
+//    }
+//    const a = stopSubmit('resendConfirmation', violations)
+//    yield put(a)
+//  } else {
+//    throw new Error('resendConfirmationFailure with no payload')
+//  }
+//}
+// function* userRegisterFailure(action: CrudFailureAction) {
+//   if (action.payload) {
+//     const violations = {
+//       email: extractError(action.payload.errors, 'email'),
+//       password: extractError(action.payload.errors, 'password')
+//     }
+//     const a = stopSubmit('signUp', violations)
+//     yield put(a)
+//   } else {
+//     throw new Error('userRegisterFailure with no payload')
+//   }
+// }
 function* upgradeUserFailure(action: CrudFailureAction) {
   if (action.payload) {
       // since we use token here, but '' in the api, maybe translate it
@@ -135,63 +135,63 @@ function* updatePaymentMethodFailure(action: CrudFailureAction) {
   }
 }
 
-function* setPasswordFailure(action: CrudFailureAction) {
-  if (action.payload) {
-    const tokenViolation = extractError(action.payload.errors, 'token')
-    const violations = {
-      newPassword: extractError(action.payload.errors, 'password'),
-      token: tokenViolation
-    }
-      if (tokenViolation) {
-        yield put(
-        showNotification(tokenViolation, 'warning')
-    );
+// function* setPasswordFailure(action: CrudFailureAction) {
+//   if (action.payload) {
+//     const tokenViolation = extractError(action.payload.errors, 'token')
+//     const violations = {
+//       newPassword: extractError(action.payload.errors, 'password'),
+//       token: tokenViolation
+//     }
+//       if (tokenViolation) {
+//         yield put(
+//         showNotification(tokenViolation, 'warning')
+//     );
 
-}
+// }
 
-    const a = stopSubmit('setPassword', violations)
-    yield put(a)
-  } else {
-    throw new Error('setPasswordFailure with no payload')
-  }
-}
+//     const a = stopSubmit('setPassword', violations)
+//     yield put(a)
+//   } else {
+//     throw new Error('setPasswordFailure with no payload')
+//   }
+// }
 
-function* resetPasswordFailure(action: CrudFailureAction) {
-  if (action.payload) {
-    const violations = {
-      email: extractError(action.payload.errors, 'email')
-    }
-    const a = stopSubmit('resetPassword', violations)
-    yield put(a)
-  } else {
-    throw new Error('resetPasswordFailure with no payload')
-  }
-}
+// function* resetPasswordFailure(action: CrudFailureAction) {
+//   if (action.payload) {
+//     const violations = {
+//       email: extractError(action.payload.errors, 'email')
+//     }
+//     const a = stopSubmit('resetPassword', violations)
+//     yield put(a)
+//   } else {
+//     throw new Error('resetPasswordFailure with no payload')
+//   }
+// }
 
 
-function* resendConfirmationFailureSaga() {
-  yield takeEvery((action: CrudFailureAction): boolean => {
-    return (
-      action.type === CRUD_UPDATE_FAILURE &&
-      action.meta !== undefined &&
-      action.meta.resource === 'confirmation' &&
-      action.meta.fetchResponse === 'UPDATE' &&
-      action.payload !== undefined
-    )
-  }, resendConfirmationFailure)
-}
+// function* resendConfirmationFailureSaga() {
+//   yield takeEvery((action: CrudFailureAction): boolean => {
+//     return (
+//       action.type === CRUD_UPDATE_FAILURE &&
+//       action.meta !== undefined &&
+//       action.meta.resource === 'confirmation' &&
+//       action.meta.fetchResponse === 'UPDATE' &&
+//       action.payload !== undefined
+//     )
+//   }, resendConfirmationFailure)
+// }
 
-function* userRegisterFailureSaga() {
-  yield takeEvery((action: CrudFailureAction): boolean => {
-    return (
-      action.type === CRUD_CREATE_FAILURE &&
-      action.meta !== undefined &&
-      action.meta.resource === 'users' &&
-      action.meta.fetchResponse === 'CREATE' &&
-      action.payload !== undefined
-    )
-  }, userRegisterFailure)
-}
+// function* userRegisterFailureSaga() {
+//   yield takeEvery((action: CrudFailureAction): boolean => {
+//     return (
+//       action.type === CRUD_CREATE_FAILURE &&
+//       action.meta !== undefined &&
+//       action.meta.resource === 'users' &&
+//       action.meta.fetchResponse === 'CREATE' &&
+//       action.payload !== undefined
+//     )
+//   }, userRegisterFailure)
+// }
 
 function* crudFailureSaga(type: string, resource: string, fetchResponse: string, callback: (action: CrudFailureAction) => SagaIterator) {
   yield takeEvery((action: CrudFailureAction): boolean => {
@@ -218,11 +218,13 @@ function* userLoginFailureSaga() {
 }
 
 export default function* errorSagas() {
-  yield all([userRegisterFailureSaga()
-      , userLoginFailureSaga()
-      , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
-      , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
+    yield all([
+        // userRegisterFailureSaga()
+       userLoginFailureSaga()
+      // , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
+      // , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
       , crudFailureSaga(CRUD_UPDATE_FAILURE, 'payment_methods', 'UPDATE', updatePaymentMethodFailure)
       , crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
-      , resendConfirmationFailureSaga()])
+  ])
+      // , resendConfirmationFailureSaga()])
 }
