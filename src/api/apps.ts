@@ -41,34 +41,38 @@ const renameIds = (apps: Response[]): App[] => {
   return apps.map(
     ({ unique_name, ...others }): App => ({
       id: unique_name,
-      ...others,
-    }),
+      ...others
+    })
   )
 }
 
 export const list = (): Promise<{ data: App[]; total: number }> => {
-  return api.get<{ data: { data: Response[] } }>('/frontend/api/apps').then((response): {
-    data: App[]
-    total: number
-  } => {
-    const apps = response.data.data
-    return {
-      data: renameIds(apps),
-      total: apps.length,
-    }
-  })
+  return api
+    .get<{ data: { data: Response[] } }>('/frontend/api/apps')
+    .then((response): {
+      data: App[]
+      total: number
+    } => {
+      const apps = response.data.data
+      return {
+        data: renameIds(apps),
+        total: apps.length
+      }
+    })
 }
 
 export const get = (id: string): Promise<{ data: App }> => {
-  return api.get<{ data: { data: Response } }>(`/frontend/api/apps/${id}`).then((response): { data: App } => {
-    const { unique_name, ...others } = response.data.data
-    return {
-      data: {
-        id: unique_name,
-        ...others,
-      },
-    }
-  })
+  return api
+    .get<{ data: { data: Response } }>(`/frontend/api/apps/${id}`)
+    .then((response): { data: App } => {
+      const { unique_name, ...others } = response.data.data
+      return {
+        data: {
+          id: unique_name,
+          ...others
+        }
+      }
+    })
 }
 
 function capitalizeFirstLetter(string: string): string {
@@ -89,13 +93,20 @@ const readableError = (errors: { [k: string]: string[] }): string => {
     .join('. ')
 }
 
-export const create = (name: string, cloud: string, region: string): Promise<{ data: App }> => {
+export const create = (
+  name: string,
+  cloud: string,
+  region: string
+): Promise<{ data: App }> => {
   return api
-    .post<{ data: { unique_name: string; replicas: number; size: number } }>('/frontend/api/apps', {
-      unique_name: name,
-      cloud,
-      region,
-    })
+    .post<{ data: { unique_name: string; replicas: number; size: number } }>(
+      '/frontend/api/apps',
+      {
+        unique_name: name,
+        cloud,
+        region
+      }
+    )
     .then((response): { data: App } => {
       const app = response.data
       return {
@@ -104,15 +115,19 @@ export const create = (name: string, cloud: string, region: string): Promise<{ d
           cloud,
           region,
           replicas: app.replicas,
-          size: app.size,
-        },
+          size: app.size
+        }
       }
     })
-    .catch((error: { response: { data: { errors: { [k: string]: string[] } } } }): never => {
-      const { errors } = error.response.data
-      const result = readableError(errors)
-      throw new Error(result)
-    })
+    .catch(
+      (error: {
+        response: { data: { errors: { [k: string]: string[] } } }
+      }): never => {
+        const { errors } = error.response.data
+        const result = readableError(errors)
+        throw new Error(result)
+      }
+    )
 }
 /* eslint-enable @typescript-eslint/camelcase */
 
@@ -121,13 +136,16 @@ export const create = (name: string, cloud: string, region: string): Promise<{ d
 export const scale = (
   name: string,
   size: number,
-  replicas: number,
+  replicas: number
 ): Promise<{ data: { size: number; replicas: number } }> => {
   return api
-    .post<{ data: { replicas: number; size: number } }>(`/frontend/api/apps/${name}/scale`, {
-      size,
-      replicas,
-    })
+    .post<{ data: { replicas: number; size: number } }>(
+      `/frontend/api/apps/${name}/scale`,
+      {
+        size,
+        replicas
+      }
+    )
     .then((response): {
       data: { size: number; replicas: number }
     } => {

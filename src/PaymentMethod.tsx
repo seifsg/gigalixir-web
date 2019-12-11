@@ -2,8 +2,8 @@ import React from 'react'
 import { Query } from 'react-admin'
 import { PaymentMethod } from './api/payment_methods'
 
-export default (props: {record: {tier: string}}) => {
-    if (props.record.tier === "STANDARD") {
+export default (props: { record: { tier: string } }) => {
+  if (props.record.tier === 'STANDARD') {
     return (
       <Query type="GET_ONE" resource="payment_methods">
         {({
@@ -38,8 +38,7 @@ export default (props: {record: {tier: string}}) => {
           return <span />
         }}
       </Query>
-          )
-} else {
-    return <span />
-        }
-    }
+    )
+  }
+  return <span />
+}

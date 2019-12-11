@@ -1,11 +1,11 @@
 import React from 'react'
-import UpgradeForm from './UpgradeForm'
 import { Elements, StripeProvider } from 'react-stripe-elements'
+import UpgradeForm from './UpgradeForm'
 
-const stripeKey = process.env.REACT_APP_STRIPE_API_KEY  || "missing"
+const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
-export default (props: {record: {tier: string}}) => {
-    if (props.record.tier === "FREE") {
+export default (props: { record: { tier: string } }) => {
+  if (props.record.tier === 'FREE') {
     return (
       <StripeProvider apiKey={stripeKey}>
         <div className="example">
@@ -47,8 +47,7 @@ export default (props: {record: {tier: string}}) => {
           </Elements>
         </div>
       </StripeProvider>
-          )
-} else {
-    return <span />
-        }
-    }
+    )
+  }
+  return <span />
+}

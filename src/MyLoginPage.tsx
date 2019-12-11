@@ -65,13 +65,13 @@ const renderInput = ({
   ...props
 }) => {
   return (
-  <TextField
-    error={!!(touched && error)}
-    helperText={touched && error}
-    {...inputProps}
-    {...props}
-    fullWidth
-  />
+    <TextField
+      error={!!(touched && error)}
+      helperText={touched && error}
+      {...inputProps}
+      {...props}
+      fullWidth
+    />
   )
 }
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>

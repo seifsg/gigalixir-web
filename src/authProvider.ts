@@ -44,15 +44,15 @@ function authProvider<T extends AuthActions>(
     // called when the user attempts to log in
     const { email, password } = params
 
-      // if there is a login error, just discard the msg since it is not a good one: "401 something"
-      // this notification system is really bothering me. in this case we can not override the
-      // action and remove the meta notification or onFailure section because the sideEffect/auth saga 
-      // itself checks for the error and dispatches the notification. I'm not sure how to hide the
-      // notification here, but we can change the msg to be better than "401". i think we probably need
-      // to override the Notification element at some point since this is getting really messy.
+    // if there is a login error, just discard the msg since it is not a good one: "401 something"
+    // this notification system is really bothering me. in this case we can not override the
+    // action and remove the meta notification or onFailure section because the sideEffect/auth saga
+    // itself checks for the error and dispatches the notification. I'm not sure how to hide the
+    // notification here, but we can change the msg to be better than "401". i think we probably need
+    // to override the Notification element at some point since this is getting really messy.
     result = login(email, password).catch(e => {
-        e.message = undefined
-        return Promise.reject(e)
+      e.message = undefined
+      return Promise.reject(e)
     })
   } else if (authType === AUTH_LOGOUT) {
     // called when the user clicks on the logout button

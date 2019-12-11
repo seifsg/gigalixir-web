@@ -1,6 +1,10 @@
 import React, { SFC } from 'react'
-import { extractError } from './errorSagas'
-import { SubmissionError } from 'redux-form'
+import {
+  SubmissionError,
+  Field,
+  reduxForm,
+  InjectedFormProps
+} from 'redux-form'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
 import {
@@ -10,14 +14,14 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import { Notification} from 'react-admin'
-import { Field, reduxForm, InjectedFormProps } from 'redux-form'
+import { Notification } from 'react-admin'
+
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import {crudUpdate} from './crudUpdate'
+import { extractError } from './errorSagas'
+import { crudUpdate } from './crudUpdate'
 
-interface Props {
-}
+interface Props {}
 
 interface FormData {
   email: string
@@ -47,10 +51,24 @@ interface EnhancedProps
 }
 
 const action = (values: any, dispatch: any, { redirectTo }: any) => {
-  const msg = "Confirmation email resent. Please check your email."
-  return new Promise((resolve, reject) => { dispatch(crudUpdate('confirmation', 'resend', values, {}, '/', `/success?msg=${encodeURIComponent(msg)}`, false, resolve, ({payload: {errors}}) => {
-    reject(new SubmissionError({email: extractError(errors, "email")}))
-  })) }) 
+  const msg = 'Confirmation email resent. Please check your email.'
+  return new Promise((resolve, reject) => {
+    dispatch(
+      crudUpdate(
+        'confirmation',
+        'resend',
+        values,
+        {},
+        '/',
+        `/success?msg=${encodeURIComponent(msg)}`,
+        false,
+        resolve,
+        ({ payload: { errors } }) => {
+          reject(new SubmissionError({ email: extractError(errors, 'email') }))
+        }
+      )
+    )
+  })
 }
 
 // duplicated in RegisterForm
@@ -75,36 +93,37 @@ const Form: SFC<Props & EnhancedProps> = ({
   handleSubmit,
   // submitSucceeded,
   translate
-}) => { 
+}) => {
   // if (submitSucceeded) {
   //   return <div>Confirmation email resent. Please check your email.</div>
-  // } else { 
+  // } else {
   return (
-  <form onSubmit={handleSubmit(action)}>
-    <div className={classes.form}>
-      <div className={classes.input}>
-        <Field
-          autoFocus
-          id="email"
-          name="email"
-          component={renderInput}
-          label="Email"
+    <form onSubmit={handleSubmit(action)}>
+      <div className={classes.form}>
+        <div className={classes.input}>
+          <Field
+            autoFocus
+            id="email"
+            name="email"
+            component={renderInput}
+            label="Email"
+            disabled={isLoading}
+          />
+        </div>
+        <Button
+          variant="raised"
+          type="submit"
+          color="primary"
           disabled={isLoading}
-        />
-            </div>
-  <Button
-    variant="raised"
-    type="submit"
-    color="primary"
-    disabled={isLoading}
-    className={classes.button}
-  >
-      Resend Confirmation
-    </Button>
-  </div>
+          className={classes.button}
+        >
+          Resend Confirmation
+        </Button>
+      </div>
     </form>
-      ) } 
-      // }
+  )
+}
+// }
 
 const mapStateToProps = (state: ReduxState) => ({
   isLoading: state.admin.loading > 0
@@ -126,16 +145,16 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   })
 )(Form)
 
-const Page = (props: {
-}) => {
-  return (<div>
-  <EnhancedForm/>
-          <Notification />
-  </div>)
+const Page = (props: {}) => {
+  return (
+    <div>
+      <EnhancedForm />
+      <Notification />
+    </div>
+  )
 }
 
 export default connect(
   null,
-  {
-  }
+  {}
 )(Page)

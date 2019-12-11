@@ -1,6 +1,6 @@
-import * as api from './api'
 import _ from 'lodash/fp'
 import { HttpError } from 'ra-core'
+import * as api from './api'
 
 interface Response {
   brand: string
@@ -28,15 +28,17 @@ export const update = (token: string): Promise<{ data: {} }> => {
     })
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
-    }).catch(
-      (reason: {
-          response: { data: ErrorResponse, status: number } }) => {
-        const { errors } = reason.response.data
-        throw new HttpError(_.join('. ', errors.stripe_token), reason.response.status, {
+    })
+    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+      const { errors } = reason.response.data
+      throw new HttpError(
+        _.join('. ', errors.stripe_token),
+        reason.response.status,
+        {
           errors
-        })
-      }
-    )
+        }
+      )
+    })
 }
 
 export const get = (): Promise<{ data: PaymentMethod }> => {

@@ -22,10 +22,11 @@ const formatStatsPointForChart = (p: point): ChartPoint => {
   }
   return {
     x,
-    y,
+    y
   }
 }
-const formatStatsForChart = (data: point[]): ChartPoint[] => data.map(formatStatsPointForChart)
+const formatStatsForChart = (data: point[]): ChartPoint[] =>
+  data.map(formatStatsPointForChart)
 
 const Chart = (props: ChartProps) => {
   const { data, title } = props
@@ -33,32 +34,32 @@ const Chart = (props: ChartProps) => {
     datasets: [
       {
         pointRadius: 1,
-        data: formatStatsForChart(data),
-      },
-    ],
+        data: formatStatsForChart(data)
+      }
+    ]
   }
   const options = {
     title: {
       display: true,
-      text: title,
+      text: title
     },
     legend: {
-      display: false,
+      display: false
     },
     scales: {
       xAxes: [
         {
-          type: 'time',
-        },
+          type: 'time'
+        }
       ],
       yAxes: [
         {
           ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
-    },
+            beginAtZero: true
+          }
+        }
+      ]
+    }
   }
   return <Line data={datasets} options={options} />
 }

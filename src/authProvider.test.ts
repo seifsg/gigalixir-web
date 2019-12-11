@@ -4,11 +4,18 @@ import authProvider from './authProvider'
 
 it('logs in', done => {
   const csrfMock = jest.spyOn(axios, 'get')
-  csrfMock.mockReturnValueOnce(Promise.resolve({ data: { data: 'fake-csrf-token' } }))
+  csrfMock.mockReturnValueOnce(
+    Promise.resolve({ data: { data: 'fake-csrf-token' } })
+  )
   const createSessionMock = jest.spyOn(axios, 'post')
-  createSessionMock.mockReturnValueOnce(Promise.resolve({ data: { data: 'fake-session' } }))
+  createSessionMock.mockReturnValueOnce(
+    Promise.resolve({ data: { data: 'fake-session' } })
+  )
 
-  const result = authProvider(AUTH_LOGIN, { username: 'fake-email', password: 'fake-password' })
+  const result = authProvider(AUTH_LOGIN, {
+    username: 'fake-email',
+    password: 'fake-password'
+  })
   result
     .then(r => {
       expect(r.data).toBe('fake-session')
@@ -30,9 +37,14 @@ it('rejects csrf error', done => {
   csrfMock.mockRejectedValueOnce({ data: { errors: 'some-error' } })
   //   csrfMock.mockReturnValueOnce(Promise.reject({ data: { errors: 'some-error' } }))
   const createSessionMock = jest.spyOn(axios, 'post')
-  createSessionMock.mockReturnValueOnce(Promise.resolve({ data: { data: 'fake-session' } }))
+  createSessionMock.mockReturnValueOnce(
+    Promise.resolve({ data: { data: 'fake-session' } })
+  )
 
-  const result = authProvider(AUTH_LOGIN, { username: 'fake-email', password: 'fake-password' })
+  const result = authProvider(AUTH_LOGIN, {
+    username: 'fake-email',
+    password: 'fake-password'
+  })
   result
     .then(() => {
       done.fail('The promise should have failed')

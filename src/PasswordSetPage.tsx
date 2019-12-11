@@ -1,8 +1,7 @@
 // most of this is copied from ConfirmationResendPage. refactor
-import { extractError } from './errorSagas'
 import { SubmissionError } from 'redux-form'
 import qs from 'query-string'
-import { showNotification } from 'react-admin'
+import { showNotification, Notification } from 'react-admin'
 import React, { SFC } from 'react'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
@@ -13,10 +12,11 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import { Notification} from 'react-admin'
+
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface FormData {
-  token: string,
+  token: string
   newPassword: string
 }
 
@@ -51,20 +51,39 @@ interface EnhancedProps
   isLoading: boolean
 }
 
-const action = (search: string) => (values: any, dispatch: any, { redirectTo }: any) => {
+const action = (search: string) => (
+  values: any,
+  dispatch: any,
+  { redirectTo }: any
+) => {
   const params = qs.parse(search)
   if (typeof params.token === 'string') {
-    let token = params.token
-      return new Promise((resolve, reject) => { dispatch(crudUpdate('password', 'set', { token, ...values}, {}, '/','/apps', false, resolve, ({payload: {errors}}) => {
-       reject(new SubmissionError({
-           token: extractError(errors, "token"),
-           newPassword: extractError(errors, "password")
-       }))
-  })) }) 
-    } else {
-    dispatch(showNotification('Token missing'))
-        return Promise.reject(new SubmissionError({token: 'Token missing'}))
+    const { token } = params
+    return new Promise((resolve, reject) => {
+      dispatch(
+        crudUpdate(
+          'password',
+          'set',
+          { token, ...values },
+          {},
+          '/',
+          '/apps',
+          false,
+          resolve,
+          ({ payload: { errors } }) => {
+            reject(
+              new SubmissionError({
+                token: extractError(errors, 'token'),
+                newPassword: extractError(errors, 'password')
+              })
+            )
+          }
+        )
+      )
+    })
   }
+  dispatch(showNotification('Token missing'))
+  return Promise.reject(new SubmissionError({ token: 'Token missing' }))
 }
 
 // duplicated in RegisterForm
@@ -89,32 +108,33 @@ const Form: SFC<Props & EnhancedProps> = ({
   handleSubmit,
   translate,
   search
-}) => { 
-     return (
+}) => {
+  return (
     <form onSubmit={handleSubmit(action(search))}>
-        <div className={classes.form}>
-            <div className={classes.input}>
-                <Field
-                    autoFocus
-                    id="newPassword"
-                    name="newPassword"
-                    component={renderInput}
-                    label="New Password"
-                    type="password"
-                    disabled={isLoading}
-                />
-                        </div>
-    <Button
-        variant="raised"
-        color="primary"
-        disabled={isLoading}
-        type="submit"
-    >
-            Set Password
+      <div className={classes.form}>
+        <div className={classes.input}>
+          <Field
+            autoFocus
+            id="newPassword"
+            name="newPassword"
+            component={renderInput}
+            label="New Password"
+            type="password"
+            disabled={isLoading}
+          />
+        </div>
+        <Button
+          variant="raised"
+          color="primary"
+          disabled={isLoading}
+          type="submit"
+        >
+          Set Password
         </Button>
-    </div>
-        </form>
-            ) } 
+      </div>
+    </form>
+  )
+}
 
 const mapStateToProps = (state: ReduxState) => ({
   isLoading: state.admin.loading > 0
@@ -126,7 +146,7 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   reduxForm({
     form: 'setPassword',
     validate: (values: FormData, props: TranslationContextProps) => {
-      const errors = { newPassword: ''}
+      const errors = { newPassword: '' }
       const { translate } = props
       if (!values.newPassword) {
         errors.newPassword = translate('ra.validation.required')
@@ -136,18 +156,19 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   })
 )(Form)
 
-const Page = (props: {
-  location: {search: string}
-}) => {
-const { location: { search } } = props
-  return (<div>
-  <EnhancedForm search={ search }/>
-          <Notification />
-  </div>)
+const Page = (props: { location: { search: string } }) => {
+  const {
+    location: { search }
+  } = props
+  return (
+    <div>
+      <EnhancedForm search={search} />
+      <Notification />
+    </div>
+  )
 }
 
 export default connect(
   null,
-  {
-  }
+  {}
 )(Page)

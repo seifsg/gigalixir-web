@@ -21,7 +21,12 @@ const customRoutes = [
   <Route exact path="/notify" component={NotifyPage} noLayout />,
   <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,
   <Route exact path="/password/set" component={PasswordSetPage} noLayout />,
-  <Route exact path="/confirmation/resend" component={ConfirmationResendPage} noLayout />,
+  <Route
+    exact
+    path="/confirmation/resend"
+    component={ConfirmationResendPage}
+    noLayout
+  />,
   <Route exact path="/success" component={SuccessPage} noLayout />
 ]
 

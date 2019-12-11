@@ -9,7 +9,7 @@ const logger = winston.createLogger({
   format: winston.format.simple(),
   // format: winston.format.json(),
   transports: [new winston.transports.Console({})],
-  silent: isSilent(process.env.NODE_ENV),
+  silent: isSilent(process.env.NODE_ENV)
 })
 
 export default logger

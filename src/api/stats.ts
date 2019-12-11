@@ -12,17 +12,19 @@ export type value = number | null
 export type point = (value)[]
 
 const get = (id: string): Promise<{ data: Stats }> => {
-  return api.get<{ data: Stats }>(`/frontend/api/apps/${id}/stats`).then((response): {
-    data: Stats
-  } => {
-    const { data } = response.data
-    return {
-      data: {
-        id,
-        data,
-      },
-    }
-  })
+  return api
+    .get<{ data: Stats }>(`/frontend/api/apps/${id}/stats`)
+    .then((response): {
+      data: Stats
+    } => {
+      const { data } = response.data
+      return {
+        data: {
+          id,
+          data
+        }
+      }
+    })
 }
 
 export default get

@@ -1,7 +1,11 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import React, { SFC } from 'react'
-import { extractError } from './errorSagas'
-import { SubmissionError } from 'redux-form'
+import {
+  SubmissionError,
+  Field,
+  reduxForm,
+  InjectedFormProps
+} from 'redux-form'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
 import {
@@ -11,14 +15,14 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import { Notification} from 'react-admin'
-import { Field, reduxForm, InjectedFormProps } from 'redux-form'
+import { Notification } from 'react-admin'
+
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 
-interface Props {
-}
+interface Props {}
 
 interface FormData {
   email: string
@@ -49,10 +53,22 @@ interface EnhancedProps
 }
 
 const action = (values: any, dispatch: any, { redirectTo }: any) => {
-  const msg = "Reset password email sent. Please check your email."
-   return new Promise((resolve, reject) => { dispatch(crudCreate('password', values, '/',  `/success?msg=${encodeURIComponent(msg)}`, false, resolve, ({payload: {errors}}) => {
-    reject(new SubmissionError({email: extractError(errors, "email")}))
-  })) }) 
+  const msg = 'Reset password email sent. Please check your email.'
+  return new Promise((resolve, reject) => {
+    dispatch(
+      crudCreate(
+        'password',
+        values,
+        '/',
+        `/success?msg=${encodeURIComponent(msg)}`,
+        false,
+        resolve,
+        ({ payload: { errors } }) => {
+          reject(new SubmissionError({ email: extractError(errors, 'email') }))
+        }
+      )
+    )
+  })
 }
 
 // duplicated in RegisterForm
@@ -76,38 +92,39 @@ const Form: SFC<Props & EnhancedProps> = ({
   isLoading,
   handleSubmit,
   translate
-}) => { 
+}) => {
   return (
-  <form onSubmit={handleSubmit(action)}>
-    <div className={classes.form}>
-      <div className={classes.input}>
-        <Field
-          autoFocus
-          id="email"
-          name="email"
-          component={renderInput}
-          label="Email"
+    <form onSubmit={handleSubmit(action)}>
+      <div className={classes.form}>
+        <div className={classes.input}>
+          <Field
+            autoFocus
+            id="email"
+            name="email"
+            component={renderInput}
+            label="Email"
+            disabled={isLoading}
+          />
+        </div>
+        <Button
+          variant="raised"
+          type="submit"
+          color="primary"
           disabled={isLoading}
-        />
-            </div>
-              <Button
-                variant="raised"
-                type="submit"
-                color="primary"
-                disabled={isLoading}
-                className={classes.button}
-              >
-                  Reset Password
-                </Button>
-                  </div>
-                    </form>
-                      ) }
+          className={classes.button}
+        >
+          Reset Password
+        </Button>
+      </div>
+    </form>
+  )
+}
 
 const mapStateToProps = (state: ReduxState) => {
   console.log(JSON.stringify(state))
   return {
-  isLoading: state.admin.loading > 0
-}
+    isLoading: state.admin.loading > 0
+  }
 }
 const EnhancedForm = compose<Props & EnhancedProps, Props>(
   withStyles(styles),
@@ -126,17 +143,17 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   })
 )(Form)
 
-const Page = (props: {
-}) => {
-  return (<div>
-  <EnhancedForm/>
-          <Notification />
-  </div>)
+const Page = (props: {}) => {
+  return (
+    <div>
+      <EnhancedForm />
+      <Notification />
+    </div>
+  )
 }
 
 // todo: what does this do?
 export default connect(
   null,
-  {
-  }
+  {}
 )(Page)

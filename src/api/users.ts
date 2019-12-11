@@ -45,21 +45,17 @@ export const create = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(
-      (reason: {
-        response: { data: ErrorResponse; status: number }
-      }) => {
-        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+      // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+      const { errors } = reason.response.data
+      throw new HttpError('', reason.response.status, {
+        errors
+      })
+    })
 }
 
 export const resend_confirmation = (
-    email: string
+  email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reconfirm_email`, {
@@ -82,7 +78,7 @@ export const resend_confirmation = (
 }
 
 export const reset_password = (
-    email: string
+  email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reset_password`, {
@@ -104,13 +100,13 @@ export const reset_password = (
 }
 
 export const set_password = (
-    token: string,
-    newPassword: string
+  token: string,
+  newPassword: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/set_password`, {
-        token: token,
-     password: newPassword
+      token,
+      password: newPassword
     })
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
@@ -128,11 +124,11 @@ export const set_password = (
 }
 
 export const upgrade = (token: string): Promise<{}> => {
-    return api
-      .post('/frontend/api/upgrade', {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        stripe_token: token
-      })
+  return api
+    .post('/frontend/api/upgrade', {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      stripe_token: token
+    })
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
@@ -141,7 +137,7 @@ export const upgrade = (token: string): Promise<{}> => {
         response: { data: ErrorResponse; status: number }
       }): ErrorResponse => {
         const { errors } = reason.response.data
-          // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
+        // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
         throw new HttpError(_.join('. ', errors['']), reason.response.status, {
           errors
         })

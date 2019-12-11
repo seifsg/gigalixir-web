@@ -1,16 +1,21 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash/fp'
-import { connect } from 'react-redux';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import { connect } from 'react-redux'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import Button from '@material-ui/core/Button'
-import { CrudUpdateAction } from './crudUpdate'
-import { CRUD_UPDATE, UPDATE} from 'react-admin'
-import compose from 'recompose/compose';
+import { CRUD_UPDATE, UPDATE } from 'react-admin'
+import compose from 'recompose/compose'
 import React, { Component } from 'react'
 import { CardElement, injectStripe } from 'react-stripe-elements'
+import { CrudUpdateAction } from './crudUpdate'
 
-class UpgradeForm extends Component<{ upgrade: (token: string) => void, isLoading: boolean, error: string | undefined, stripe: any }> {
+class UpgradeForm extends Component<{
+  upgrade: (token: string) => void
+  isLoading: boolean
+  error: string | undefined
+  stripe: any
+}> {
   public constructor(props: any) {
     super(props)
     this.submit = this.submit.bind(this)
@@ -26,15 +31,15 @@ class UpgradeForm extends Component<{ upgrade: (token: string) => void, isLoadin
     const { isLoading, error } = this.props
     return (
       <div className="checkout">
-        <CardElement disabled={isLoading}/>
-        <FormHelperText error={ true }>
-            {error}
-        </FormHelperText>
-      <Button type="submit" 
-        variant="raised" 
-        color="primary" 
-        onClick={this.submit} 
-        disabled={isLoading}>
+        <CardElement disabled={isLoading} />
+        <FormHelperText error>{error}</FormHelperText>
+        <Button
+          type="submit"
+          variant="raised"
+          color="primary"
+          onClick={this.submit}
+          disabled={isLoading}
+        >
           Upgrade
         </Button>
       </div>
@@ -42,42 +47,41 @@ class UpgradeForm extends Component<{ upgrade: (token: string) => void, isLoadin
   }
 }
 
-
 const upgrade = (token: string): CrudUpdateAction => ({
-    type: CRUD_UPDATE,
-    payload: { id: token, data: { token } },
-    meta: {
-        resource: "users",
-        fetch: UPDATE,
-        onSuccess: {
-            notification: {
-                body: 'Account Upgraded',
-                level: 'info',
-                messageArgs: {
-                    smart_count: 1,
-                },
-            },
-            refresh: true, // refresh
-            redirectTo: false,
-            basePath: "/",
-        },
-        onFailure: {
-            notification: {
-                body: 'ra.notification.http_error',
-                level: 'warning',
-            },
-        },
+  type: CRUD_UPDATE,
+  payload: { id: token, data: { token } },
+  meta: {
+    resource: 'users',
+    fetch: UPDATE,
+    onSuccess: {
+      notification: {
+        body: 'Account Upgraded',
+        level: 'info',
+        messageArgs: {
+          smart_count: 1
+        }
+      },
+      refresh: true, // refresh
+      redirectTo: false,
+      basePath: '/'
     },
+    onFailure: {
+      notification: {
+        body: 'ra.notification.http_error',
+        level: 'warning'
+      }
+    }
+  }
 })
 
 function mapStateToProps(state: any, props: any) {
   console.log(JSON.stringify(state))
-    const error = _.get('form.upgradeUser.submitErrors.token', state)
-    console.log(error)
-    return {
-        isLoading: state.admin.loading > 0,
-        error: error
-    };
+  const error = _.get('form.upgradeUser.submitErrors.token', state)
+  console.log(error)
+  return {
+    isLoading: state.admin.loading > 0,
+    error
+  }
 }
 
 export default compose(

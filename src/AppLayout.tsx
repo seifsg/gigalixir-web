@@ -16,7 +16,7 @@ class MyUserMenuView extends Component<{
     id: string,
     basePath: string,
     refresh: boolean
-  ) => void,
+  ) => void
   profile: {} | null
 }> {
   public componentDidMount() {

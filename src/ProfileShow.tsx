@@ -1,6 +1,6 @@
 import React from 'react'
-import PaymentMethod from './PaymentMethod'
 import { Show, SimpleShowLayout, TextField } from 'react-admin'
+import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
 import Upgrade from './Upgrade'
 
@@ -35,12 +35,11 @@ const ProfileShow = (props: { staticContext: {} }) => {
           <TextField source="email" />
           <TextField source="tier" />
           <TextField source="credit_cents" />
-          <PaymentMethod record={{tier: "override-me"}}/>
-          <UpdatePaymentMethod record={{tier: "override-me"}}/>
-          <Upgrade record={{tier: "override-me"}}/>
+          <PaymentMethod record={{ tier: 'override-me' }} />
+          <UpdatePaymentMethod record={{ tier: 'override-me' }} />
+          <Upgrade record={{ tier: 'override-me' }} />
         </SimpleShowLayout>
       </Show>
-
     </div>
   )
 }
