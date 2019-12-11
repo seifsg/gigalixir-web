@@ -91,3 +91,6 @@ Important that in package.json, the material-ui versions match react-admin.
 See https://github.com/marmelab/react-admin/issues/1782
 
 Ideally, we would just remove them, but that causes warnings and stuff with eslint I think.
+
+Run eslint on all files
+node_modules/.bin/eslint src/**.{ts,tsx} --fix
