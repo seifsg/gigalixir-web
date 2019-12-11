@@ -1,12 +1,12 @@
-import React from 'react'
-import PaymentMethod from './PaymentMethod'
-import { Show, SimpleShowLayout, TextField } from 'react-admin'
-import UpdatePaymentMethod from './UpdatePaymentMethod'
-import Upgrade from './Upgrade'
+import React from "react";
+import PaymentMethod from "./PaymentMethod";
+import { Show, SimpleShowLayout, TextField } from "react-admin";
+import UpdatePaymentMethod from "./UpdatePaymentMethod";
+import Upgrade from "./Upgrade";
 
 const ProfileShow = (props: { staticContext: {} }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { staticContext, ...sanitizedProps } = props
+  const { staticContext, ...sanitizedProps } = props;
   return (
     <div>
       <Show
@@ -35,14 +35,13 @@ const ProfileShow = (props: { staticContext: {} }) => {
           <TextField source="email" />
           <TextField source="tier" />
           <TextField source="credit_cents" />
-          <PaymentMethod record={{tier: "override-me"}}/>
-          <UpdatePaymentMethod record={{tier: "override-me"}}/>
-          <Upgrade record={{tier: "override-me"}}/>
+          <PaymentMethod record={{ tier: "override-me" }} />
+          <UpdatePaymentMethod record={{ tier: "override-me" }} />
+          <Upgrade record={{ tier: "override-me" }} />
         </SimpleShowLayout>
       </Show>
-
     </div>
-  )
-}
+  );
+};
 
-export default ProfileShow
+export default ProfileShow;

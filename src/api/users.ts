@@ -1,15 +1,15 @@
-import { HttpError } from 'ra-core'
-import _ from 'lodash/fp'
-import * as api from './api'
+import { HttpError } from "ra-core";
+import _ from "lodash/fp";
+import * as api from "./api";
 
-type tier = 'STANDARD' | 'FREE'
+type tier = "STANDARD" | "FREE";
 interface Response {
-  tier: tier
-  email: string
-  credit_cents: number
+  tier: tier;
+  email: string;
+  credit_cents: number;
 }
 interface User extends Response {
-  id: 'profile'
+  id: "profile";
 }
 export const get = (): Promise<{ data: User }> => {
   return api
@@ -22,15 +22,15 @@ export const get = (): Promise<{ data: User }> => {
 
       return {
         data: {
-          id: 'profile',
+          id: "profile",
           ...response.data.data
         }
-      }
-    })
-}
+      };
+    });
+};
 
 interface ErrorResponse {
-  errors: { [x: string]: string[] }
+  errors: { [x: string]: string[] };
 }
 
 export const create = (
@@ -43,108 +43,104 @@ export const create = (
       password
     })
     .then((): { data: { id: string } } => {
-      return { data: { id: email } }
+      return { data: { id: email } };
     })
-    .catch(
-      (reason: {
-        response: { data: ErrorResponse; status: number }
-      }) => {
-        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
-}
+    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+      // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+      const { errors } = reason.response.data;
+      throw new HttpError("", reason.response.status, {
+        errors
+      });
+    });
+};
 
 export const resend_confirmation = (
-    email: string
+  email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reconfirm_email`, {
       email
     })
     .then((): { data: { id: string } } => {
-      return { data: { id: email } }
+      return { data: { id: email } };
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
+        response: { data: ErrorResponse; status: number };
       }): ErrorResponse => {
         // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
+        const { errors } = reason.response.data;
+        throw new HttpError("", reason.response.status, {
           errors
-        })
+        });
       }
-    )
-}
+    );
+};
 
 export const reset_password = (
-    email: string
+  email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reset_password`, {
       email
     })
     .then((): { data: { id: string } } => {
-      return { data: { id: email } }
+      return { data: { id: email } };
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
+        response: { data: ErrorResponse; status: number };
       }): ErrorResponse => {
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
+        const { errors } = reason.response.data;
+        throw new HttpError("", reason.response.status, {
           errors
-        })
+        });
       }
-    )
-}
+    );
+};
 
 export const set_password = (
-    token: string,
-    newPassword: string
+  token: string,
+  newPassword: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/set_password`, {
-        token: token,
-     password: newPassword
+      token: token,
+      password: newPassword
     })
     .then((): { data: { id: string } } => {
-      return { data: { id: token } }
+      return { data: { id: token } };
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
+        response: { data: ErrorResponse; status: number };
       }): ErrorResponse => {
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
+        const { errors } = reason.response.data;
+        throw new HttpError("", reason.response.status, {
           errors
-        })
+        });
       }
-    )
-}
+    );
+};
 
 export const upgrade = (token: string): Promise<{}> => {
-    return api
-      .post('/frontend/api/upgrade', {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        stripe_token: token
-      })
+  return api
+    .post("/frontend/api/upgrade", {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      stripe_token: token
+    })
     .then((): { data: { id: string } } => {
-      return { data: { id: token } }
+      return { data: { id: token } };
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
+        response: { data: ErrorResponse; status: number };
       }): ErrorResponse => {
-        const { errors } = reason.response.data
-          // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
-        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
+        const { errors } = reason.response.data;
+        // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
+        throw new HttpError(_.join(". ", errors[""]), reason.response.status, {
           errors
-        })
+        });
       }
-    )
-}
+    );
+};

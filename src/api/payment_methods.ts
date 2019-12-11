@@ -1,24 +1,24 @@
-import * as api from './api'
-import _ from 'lodash/fp'
-import { HttpError } from 'ra-core'
+import * as api from "./api";
+import _ from "lodash/fp";
+import { HttpError } from "ra-core";
 
 interface Response {
-  brand: string
-  exp_month: number
-  exp_year: number
-  last4: number
+  brand: string;
+  exp_month: number;
+  exp_year: number;
+  last4: number;
 }
 
 export interface PaymentMethod {
-  id: undefined // any way to not have this?
-  brand: string
-  expMonth: number
-  expYear: number
-  last4: number
+  id: undefined; // any way to not have this?
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  last4: number;
 }
 
 interface ErrorResponse {
-  errors: { [x: string]: string[] }
+  errors: { [x: string]: string[] };
 }
 export const update = (token: string): Promise<{ data: {} }> => {
   return api
@@ -27,21 +27,23 @@ export const update = (token: string): Promise<{ data: {} }> => {
       stripe_token: token
     })
     .then((): { data: { id: string } } => {
-      return { data: { id: token } }
-    }).catch(
-      (reason: {
-          response: { data: ErrorResponse, status: number } }) => {
-        const { errors } = reason.response.data
-        throw new HttpError(_.join('. ', errors.stripe_token), reason.response.status, {
+      return { data: { id: token } };
+    })
+    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+      const { errors } = reason.response.data;
+      throw new HttpError(
+        _.join(". ", errors.stripe_token),
+        reason.response.status,
+        {
           errors
-        })
-      }
-    )
-}
+        }
+      );
+    });
+};
 
 export const get = (): Promise<{ data: PaymentMethod }> => {
   return api
-    .get<{ data: { data: Response } }>('/frontend/api/payment_methods')
+    .get<{ data: { data: Response } }>("/frontend/api/payment_methods")
     .then((response): { data: PaymentMethod } => {
       return {
         data: {
@@ -51,6 +53,6 @@ export const get = (): Promise<{ data: PaymentMethod }> => {
           expYear: response.data.data.exp_year,
           last4: response.data.data.last4
         }
-      }
-    })
-}
+      };
+    });
+};
