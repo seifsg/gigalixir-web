@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Logout,
   Layout,
@@ -6,9 +6,9 @@ import {
   crudGetOne,
   UserMenu,
   MenuItemLink
-} from "react-admin";
-import { connect } from "react-redux";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+} from 'react-admin'
+import { connect } from 'react-redux'
+import AccountCircle from '@material-ui/icons/AccountCircle'
 
 class MyUserMenuView extends Component<{
   getOne: (
@@ -16,26 +16,26 @@ class MyUserMenuView extends Component<{
     id: string,
     basePath: string,
     refresh: boolean
-  ) => void;
-  profile: {} | null;
+  ) => void,
+  profile: {} | null
 }> {
   public componentDidMount() {
-    this.fetchProfile();
+    this.fetchProfile()
   }
 
   private fetchProfile = () => {
-    const { getOne } = this.props;
+    const { getOne } = this.props
     getOne(
       // The resource
-      "profile",
+      'profile',
       // The id of the resource item to fetch
-      "profile",
+      'profile',
       // The base path. Mainly used on failure to fetch the data
-      "/login",
+      '/login',
       // Whether to refresh the current view. I don't need it here
       false
-    );
-  };
+    )
+  }
 
   public render() {
     return (
@@ -46,28 +46,28 @@ class MyUserMenuView extends Component<{
           leftIcon={<AccountCircle />}
         />
       </UserMenu>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: {
-  admin: { resources: { profile: { data: { profile: {} } } } };
+  admin: { resources: { profile: { data: { profile: {} } } } }
 }) => {
-  const resource = "profile";
-  const id = "profile";
-  const profileState = state.admin.resources[resource];
+  const resource = 'profile'
+  const id = 'profile'
+  const profileState = state.admin.resources[resource]
 
   return {
     profile: profileState ? profileState.data[id] : null
-  };
-};
+  }
+}
 
 const MyUserMenu = connect(
   mapStateToProps,
   { getOne: crudGetOne }
-)(MyUserMenuView);
+)(MyUserMenuView)
 
-const MyAppBar = (props: {}) => <AppBar {...props} userMenu={<MyUserMenu />} />;
-const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} />;
+const MyAppBar = (props: {}) => <AppBar {...props} userMenu={<MyUserMenu />} />
+const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} />
 
-export default MyLayout;
+export default MyLayout

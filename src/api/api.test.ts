@@ -1,24 +1,24 @@
-import axios from "axios";
-import { get } from "./api";
+import axios from 'axios'
+import { get } from './api'
 
-describe("gets", () => {
-  it("just gets", done => {
-    const content = "fake-content";
-    const mock = jest.spyOn(axios, "get");
-    mock.mockResolvedValueOnce({ data: { data: content } });
+describe('gets', () => {
+  it('just gets', done => {
+    const content = 'fake-content'
+    const mock = jest.spyOn(axios, 'get')
+    mock.mockResolvedValueOnce({ data: { data: content } })
 
-    const result = get<{ data: { data: string } }>("/foo");
+    const result = get<{ data: { data: string } }>('/foo')
     result
       .then((r: { data: { data: string } }) => {
-        expect(r.data.data).toStrictEqual(content);
-        expect(mock).toHaveBeenCalled();
+        expect(r.data.data).toStrictEqual(content)
+        expect(mock).toHaveBeenCalled()
       })
       .catch((reason: { message: string }) => {
-        done.fail(reason);
+        done.fail(reason)
       })
       .finally(() => {
-        mock.mockRestore();
-        done();
-      });
-  });
-});
+        mock.mockRestore()
+        done()
+      })
+  })
+})

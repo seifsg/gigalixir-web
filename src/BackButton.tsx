@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import Button from "@material-ui/core/Button";
-import { goBack, RouterAction } from "react-router-redux";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Button from '@material-ui/core/Button'
+import { goBack, RouterAction } from 'react-router-redux'
 
 interface Props {
-  myGoBack: () => RouterAction;
+  myGoBack: () => RouterAction
 }
 
 class BackButton extends Component<Props> {
   public handleClick = () => {
-    const { myGoBack } = this.props;
-    myGoBack();
-  };
+    const { myGoBack } = this.props
+    myGoBack()
+  }
 
   public render() {
     return (
       <Button variant="contained" color="primary" onClick={this.handleClick}>
         Go Back
       </Button>
-    );
+    )
   }
 }
 
@@ -27,4 +27,4 @@ export default connect(
   {
     myGoBack: goBack
   }
-)(BackButton);
+)(BackButton)

@@ -1,11 +1,11 @@
-import React from "react";
-import UpgradeForm from "./UpgradeForm";
-import { Elements, StripeProvider } from "react-stripe-elements";
+import React from 'react'
+import UpgradeForm from './UpgradeForm'
+import { Elements, StripeProvider } from 'react-stripe-elements'
 
-const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || "missing";
+const stripeKey = process.env.REACT_APP_STRIPE_API_KEY  || "missing"
 
-export default (props: { record: { tier: string } }) => {
-  if (props.record.tier === "FREE") {
+export default (props: {record: {tier: string}}) => {
+    if (props.record.tier === "FREE") {
     return (
       <StripeProvider apiKey={stripeKey}>
         <div className="example">
@@ -22,14 +22,14 @@ export default (props: { record: { tier: string } }) => {
               <li>Production-grade postgres</li>
             </ul>
             <p>
-              For more details about the standard tier, see the{" "}
+              For more details about the standard tier, see the{' '}
               <a href="https://gigalixir.readthedocs.io/en/latest/main.html#tiers">
                 Tier Comparison
               </a>
             </p>
             <p>
               The standard plan costs $10/mo per 200MB of memory. CPU, power,
-              &amp; bandwidth are free. Pro-rated to the second.{" "}
+              &amp; bandwidth are free. Pro-rated to the second.{' '}
               <a href="https://gigalixir.readthedocs.io/en/latest/main.html#pricing-details">
                 Pricing Details
               </a>
@@ -47,8 +47,8 @@ export default (props: { record: { tier: string } }) => {
           </Elements>
         </div>
       </StripeProvider>
-    );
-  } else {
-    return <span />;
-  }
-};
+          )
+} else {
+    return <span />
+        }
+    }

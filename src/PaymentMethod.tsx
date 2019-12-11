@@ -1,9 +1,9 @@
-import React from "react";
-import { Query } from "react-admin";
-import { PaymentMethod } from "./api/payment_methods";
+import React from 'react'
+import { Query } from 'react-admin'
+import { PaymentMethod } from './api/payment_methods'
 
-export default (props: { record: { tier: string } }) => {
-  if (props.record.tier === "STANDARD") {
+export default (props: {record: {tier: string}}) => {
+    if (props.record.tier === "STANDARD") {
     return (
       <Query type="GET_ONE" resource="payment_methods">
         {({
@@ -11,9 +11,9 @@ export default (props: { record: { tier: string } }) => {
           loading,
           error
         }: {
-          data: PaymentMethod;
-          loading: boolean;
-          error: Error;
+          data: PaymentMethod
+          loading: boolean
+          error: Error
         }): React.ReactElement => {
           // if (loading) {
           //   return <Loading />
@@ -33,13 +33,13 @@ export default (props: { record: { tier: string } }) => {
                   <li>Last 4: {data.last4}</li>
                 </ul>
               </div>
-            );
+            )
           }
-          return <span />;
+          return <span />
         }}
       </Query>
-    );
-  } else {
-    return <span />;
-  }
-};
+          )
+} else {
+    return <span />
+        }
+    }

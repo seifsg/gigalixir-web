@@ -1,19 +1,19 @@
-import React from "react";
-import { Admin, Resource } from "react-admin";
-import { BrowserRouter, Route } from "react-router-dom";
-import AppLayout from "./AppLayout";
-import { AppCreate, AppList, AppShow } from "./apps";
-import authProvider from "./authProvider";
-import dataProvider from "./dataProvider";
-import MyLoginPage from "./MyLoginPage";
-import ProfileShow from "./ProfileShow";
-import RegisterPage from "./RegisterPage";
-import NotifyPage from "./NotifyPage";
-import PasswordResetPage from "./PasswordResetPage";
-import PasswordSetPage from "./PasswordSetPage";
-import ConfirmationResendPage from "./ConfirmationResendPage";
-import SuccessPage from "./components/SuccessPage";
-import errorSagas from "./errorSagas";
+import React from 'react'
+import { Admin, Resource } from 'react-admin'
+import { BrowserRouter, Route } from 'react-router-dom'
+import AppLayout from './AppLayout'
+import { AppCreate, AppList, AppShow } from './apps'
+import authProvider from './authProvider'
+import dataProvider from './dataProvider'
+import MyLoginPage from './MyLoginPage'
+import ProfileShow from './ProfileShow'
+import RegisterPage from './RegisterPage'
+import NotifyPage from './NotifyPage'
+import PasswordResetPage from './PasswordResetPage'
+import PasswordSetPage from './PasswordSetPage'
+import ConfirmationResendPage from './ConfirmationResendPage'
+import SuccessPage from './components/SuccessPage'
+import errorSagas from './errorSagas'
 
 const customRoutes = [
   <Route path="/profile" component={ProfileShow} />,
@@ -21,14 +21,9 @@ const customRoutes = [
   <Route exact path="/notify" component={NotifyPage} noLayout />,
   <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,
   <Route exact path="/password/set" component={PasswordSetPage} noLayout />,
-  <Route
-    exact
-    path="/confirmation/resend"
-    component={ConfirmationResendPage}
-    noLayout
-  />,
+  <Route exact path="/confirmation/resend" component={ConfirmationResendPage} noLayout />,
   <Route exact path="/success" component={SuccessPage} noLayout />
-];
+]
 
 const App = () => (
   <BrowserRouter>
@@ -44,6 +39,6 @@ const App = () => (
       <Resource name="profile" />
     </Admin>
   </BrowserRouter>
-);
+)
 
-export default App;
+export default App
