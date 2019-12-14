@@ -69,7 +69,10 @@ const action = (search: string) => (
           '/',
           '/apps',
           false,
-          resolve,
+          () => {
+            dispatch(showNotification('Password changed'))
+            resolve()
+          },
           ({ payload: { errors } }) => {
             reject(
               new SubmissionError({

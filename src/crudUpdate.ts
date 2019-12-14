@@ -43,7 +43,7 @@ export const crudUpdate = (
   // successNotification: string,
   redirectTo: RedirectionSideEffect = 'show',
   refresh: RefreshSideEffect = true,
-  resolve: Function,
+  successCallback: Function,
   failureCallback: (params: {
     payload: { errors: { [k: string]: string[] } }
   }) => void
@@ -54,9 +54,7 @@ export const crudUpdate = (
     resource,
     fetch: UPDATE,
     onSuccess: {
-      callback: () => {
-        resolve()
-      },
+      callback: successCallback,
       // notification: {
       //     body: successNotification,
       //     level: 'info',
