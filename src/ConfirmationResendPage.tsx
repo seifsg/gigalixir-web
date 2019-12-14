@@ -1,4 +1,5 @@
 import React, { SFC } from 'react'
+import qs from 'query-string'
 import {
   SubmissionError,
   Field,
@@ -18,10 +19,14 @@ import { Notification } from 'react-admin'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import SuccessPage from './components/SuccessPage'
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
-interface Props {}
+interface Props {
+  location: { search: string }
+  email: string | undefined
+}
 
 interface FormData {
   email: string
@@ -88,6 +93,7 @@ const renderInput = ({
 )
 
 const Form: SFC<Props & EnhancedProps> = ({
+  location,
   classes,
   isLoading,
   handleSubmit,
@@ -98,35 +104,41 @@ const Form: SFC<Props & EnhancedProps> = ({
   //   return <div>Confirmation email resent. Please check your email.</div>
   // } else {
   return (
-    <form onSubmit={handleSubmit(action)}>
-      <div className={classes.form}>
-        <div className={classes.input}>
-          <Field
-            autoFocus
-            id="email"
-            name="email"
-            component={renderInput}
-            label="Email"
+    <div>
+      <SuccessPage location={location} />
+      <form onSubmit={handleSubmit(action)}>
+        <div className={classes.form}>
+          <div className={classes.input}>
+            <Field
+              autoFocus
+              id="email"
+              name="email"
+              component={renderInput}
+              label="Email"
+              disabled={isLoading}
+            />
+          </div>
+          <Button
+            variant="raised"
+            type="submit"
+            color="primary"
             disabled={isLoading}
-          />
+            className={classes.button}
+          >
+            Resend Confirmation
+          </Button>
         </div>
-        <Button
-          variant="raised"
-          type="submit"
-          color="primary"
-          disabled={isLoading}
-          className={classes.button}
-        >
-          Resend Confirmation
-        </Button>
-      </div>
-    </form>
+      </form>
+    </div>
   )
 }
 // }
 
-const mapStateToProps = (state: ReduxState) => ({
-  isLoading: state.admin.loading > 0
+const mapStateToProps = (state: ReduxState, props: Props) => ({
+  isLoading: state.admin.loading > 0,
+  initialValues: {
+    email: props.email
+  }
 })
 const EnhancedForm = compose<Props & EnhancedProps, Props>(
   withStyles(styles),
@@ -145,10 +157,16 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   })
 )(Form)
 
-const Page = (props: {}) => {
+const Page = (props: { location: { search: string } }) => {
+  const { location } = props
+  const params = qs.parse(location.search)
+  let email
+  if (typeof params.email === 'string') {
+    email = params.email
+  }
   return (
     <div>
-      <EnhancedForm />
+      <EnhancedForm location={location} email={email} />
       <Notification />
     </div>
   )

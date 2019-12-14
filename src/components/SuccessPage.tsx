@@ -3,7 +3,6 @@ import qs from 'query-string'
 import { connect } from 'react-redux'
 
 export const SuccessPage = (props: {
-  msg: string
   location: { search: string }
 }) => {
   const { location } = props
@@ -11,7 +10,7 @@ export const SuccessPage = (props: {
   if (typeof params.msg === 'string') {
     return <div>{params.msg}</div>
   }
-  return <div>Oops, no message to show. Please contact help@gigalixir.com</div>
+return <span></span>
 }
 
 export default connect(
