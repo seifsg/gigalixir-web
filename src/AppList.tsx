@@ -1,4 +1,7 @@
 import Card from '@material-ui/core/Card'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import Button from '@material-ui/core/Button'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -56,10 +59,26 @@ interface ListProps {
   resource: string
 }
 
-const AppList = (props: ListProps) => (
-  <List title="All apps" pagination={null} bulkActions={false} {...props}>
-    {/* <AppGrid /> */}
-    <Datagrid rowClick="show">
+const MaybeEmptyDatagrid = (props: any) => {
+  const { push, total, ids, isLoading } = props
+  if (!isLoading && (ids.length === 0 || total === 0)) {
+    return (
+      <div>
+        No apps yet.
+        <Button
+          variant="raised"
+          color="primary"
+          onClick={() => {
+            push('/apps/create')
+          }}
+        >
+          Create App
+        </Button>
+      </div>
+    )
+  }
+  return (
+    <Datagrid rowClick="show" {...props}>
       <TextField source="id" />
       <NumberField source="size" />
       <NumberField source="replicas" />
@@ -67,6 +86,22 @@ const AppList = (props: ListProps) => (
       <TextField source="region" />
       <TextField source="stack" />
     </Datagrid>
+  )
+}
+
+// TODO: is it considered bad form to have a connected component inside a connected component?
+// actually, is AppList even a connected component? does react-admin do that?
+const ConnectedMaybeEmptyDatagrid = connect(
+  null,
+  {
+    push
+  }
+)(MaybeEmptyDatagrid)
+
+const AppList = (props: ListProps) => (
+  <List title="All apps" pagination={null} bulkActions={false} {...props}>
+    {/* <AppGrid /> */}
+    <ConnectedMaybeEmptyDatagrid />
   </List>
 )
 
