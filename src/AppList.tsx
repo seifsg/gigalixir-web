@@ -60,7 +60,8 @@ interface ListProps {
 }
 
 const MaybeEmptyDatagrid = (props: any) => {
-  const { push, total, ids, isLoading } = props
+  const { push, ...sanitizedProps } = props
+  const { total, ids, isLoading } = sanitizedProps
   if (!isLoading && (ids.length === 0 || total === 0)) {
     return (
       <div>
@@ -78,7 +79,7 @@ const MaybeEmptyDatagrid = (props: any) => {
     )
   }
   return (
-    <Datagrid rowClick="show" {...props}>
+    <Datagrid rowClick="show" {...sanitizedProps}>
       <TextField source="id" />
       <NumberField source="size" />
       <NumberField source="replicas" />

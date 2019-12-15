@@ -1,4 +1,4 @@
-import { AUTH_CHECK, AUTH_LOGOUT } from 'react-admin'
+import { AUTH_GET_PERMISSIONS, AUTH_CHECK, AUTH_LOGOUT } from 'react-admin'
 import { check, login, logout, Session } from './api/sessions'
 import logger from './logger'
 
@@ -68,6 +68,8 @@ function authProvider<T extends AuthActions>(
   } else if (authType === AUTH_CHECK) {
     // called when the user navigates to a new location
     result = check()
+  } else if (authType === AUTH_GET_PERMISSIONS) {
+    result = Promise.resolve('everyone')
   } else {
     const message = `Unknown method: ${authType}`
     result = Promise.reject(message)
