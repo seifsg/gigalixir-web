@@ -12,7 +12,7 @@ import NotifyPage from './NotifyPage'
 import PasswordResetPage from './PasswordResetPage'
 import PasswordSetPage from './PasswordSetPage'
 import ConfirmationResendPage from './ConfirmationResendPage'
-import SuccessPage from './components/SuccessPage'
+import ConnectedSuccessPage from './components/SuccessPage'
 import errorSagas from './errorSagas'
 
 const customRoutes = [
@@ -27,7 +27,7 @@ const customRoutes = [
     component={ConfirmationResendPage}
     noLayout
   />,
-  <Route exact path="/success" component={SuccessPage} noLayout />
+  <Route exact path="/success" component={ConnectedSuccessPage} noLayout />
 ]
 
 const App = () => (
