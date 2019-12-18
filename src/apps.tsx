@@ -40,6 +40,7 @@ export const AppCreate: React.FunctionComponent<CreateProps> = (
 ): React.ReactElement => {
   const [cloud, setCloud] = React.useState('gcp')
   const regions = regionChoices(cloud)
+  const onChange = (_event: React.FormEvent, key: string): void => setCloud(key)
 
   return (
     <Create {...props}>
@@ -52,8 +53,7 @@ export const AppCreate: React.FunctionComponent<CreateProps> = (
             { id: 'gcp', name: 'Google Cloud Platform' },
             { id: 'aws', name: 'Amazon Web Services' }
           ]}
-          onChange={(_event: React.FormEvent, key: string): void =>
-            setCloud(key)}
+          onChange={onChange}
         />
         {cloud !== '' && <SelectInput source="region" {...regions} />}
       </SimpleForm>

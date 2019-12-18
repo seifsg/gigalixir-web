@@ -58,6 +58,7 @@ const upgrade = (token: string): CrudUpdateAction => ({
         body: 'Account Upgraded',
         level: 'info',
         messageArgs: {
+          // eslint-disable-next-line @typescript-eslint/camelcase
           smart_count: 1
         }
       },
@@ -74,7 +75,7 @@ const upgrade = (token: string): CrudUpdateAction => ({
   }
 })
 
-function mapStateToProps(state: any, props: any) {
+function mapStateToProps(state: any) {
   console.log(JSON.stringify(state))
   const error = _.get('form.upgradeUser.submitErrors.token', state)
   console.log(error)
@@ -86,10 +87,7 @@ function mapStateToProps(state: any, props: any) {
 
 export default compose(
   injectStripe,
-  connect(
-    mapStateToProps,
-    {
-      upgrade
-    }
-  )
+  connect(mapStateToProps, {
+    upgrade
+  })
 )(UpgradeForm)

@@ -62,10 +62,9 @@ const mapStateToProps = (state: {
   }
 }
 
-const MyUserMenu = connect(
-  mapStateToProps,
-  { getOne: crudGetOne }
-)(MyUserMenuView)
+const MyUserMenu = connect(mapStateToProps, { getOne: crudGetOne })(
+  MyUserMenuView
+)
 
 const MyAppBar = (props: {}) => <AppBar {...props} userMenu={<MyUserMenu />} />
 const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} />

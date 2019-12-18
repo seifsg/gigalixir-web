@@ -5,7 +5,10 @@ import UpgradeForm from './UpgradeForm'
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
 export default (props: { record: { tier: string } }) => {
-  if (props.record.tier === 'FREE') {
+  const {
+    record: { tier }
+  } = props
+  if (tier === 'FREE') {
     return (
       <StripeProvider apiKey={stripeKey}>
         <div className="example">

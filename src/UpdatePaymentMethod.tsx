@@ -5,8 +5,10 @@ import UpdatePaymentMethodForm from './UpdatePaymentMethodForm'
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
 export default (props: { record: { tier: string } }) => {
-  console.log(JSON.stringify(props.record))
-  if (props.record.tier === 'STANDARD') {
+  const {
+    record: { tier }
+  } = props
+  if (tier === 'STANDARD') {
     return (
       <StripeProvider apiKey={stripeKey}>
         <div className="example">

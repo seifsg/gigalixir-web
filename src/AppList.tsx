@@ -1,6 +1,6 @@
 import Card from '@material-ui/core/Card'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push as routerPush } from 'react-router-redux'
 import Button from '@material-ui/core/Button'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
@@ -59,6 +59,10 @@ interface ListProps {
   resource: string
 }
 
+// setting props properly here is hard because 1) there are a ton of props that react-admin injects for us
+// and 2) any props defined here need to be specified below, but we would just be putting dummy values in
+// the real values are injected by redux-form, react-admin, etc. need to find a better way to do this.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MaybeEmptyDatagrid = (props: any) => {
   const { push, ...sanitizedProps } = props
   const { total, ids, isLoading } = sanitizedProps
@@ -92,12 +96,9 @@ const MaybeEmptyDatagrid = (props: any) => {
 
 // TODO: is it considered bad form to have a connected component inside a connected component?
 // actually, is AppList even a connected component? does react-admin do that?
-const ConnectedMaybeEmptyDatagrid = connect(
-  null,
-  {
-    push
-  }
-)(MaybeEmptyDatagrid)
+const ConnectedMaybeEmptyDatagrid = connect(null, {
+  push: routerPush
+})(MaybeEmptyDatagrid)
 
 const AppList = (props: ListProps) => (
   <List title="All apps" pagination={null} bulkActions={false} {...props}>

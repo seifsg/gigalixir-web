@@ -9,7 +9,7 @@ export interface Stats {
 }
 
 export type value = number | null
-export type point = (value)[]
+export type point = value[]
 
 const get = (id: string): Promise<{ data: Stats }> => {
   return api

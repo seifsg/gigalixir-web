@@ -3,7 +3,10 @@ import { Query } from 'react-admin'
 import { PaymentMethod } from './api/payment_methods'
 
 export default (props: { record: { tier: string } }) => {
-  if (props.record.tier === 'STANDARD') {
+  const {
+    record: { tier }
+  } = props
+  if (tier === 'STANDARD') {
     return (
       <Query type="GET_ONE" resource="payment_methods">
         {({

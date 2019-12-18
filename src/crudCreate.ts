@@ -4,7 +4,7 @@ import { RefreshSideEffect, RedirectionSideEffect } from 'ra-core'
 import { CRUD_CREATE, CREATE } from 'react-admin'
 
 interface RequestPayload {
-  data: any
+  data: {}
 }
 
 export interface CrudCreateAction {
@@ -28,7 +28,7 @@ export interface CrudCreateAction {
 
 export const crudCreate = (
   resource: string,
-  data: any,
+  data: {},
   basePath: string,
   // successNotification: string,
   redirectTo: RedirectionSideEffect = 'edit',

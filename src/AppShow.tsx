@@ -155,10 +155,9 @@ const AppScaleToolbar_ = (props: AppScaleToolbarProps) => {
     </Toolbar>
   )
 }
-const AppScaleToolbar = connect(
-  undefined,
-  { scaleApp: scaleApp_ }
-)(AppScaleToolbar_)
+const AppScaleToolbar = connect(undefined, { scaleApp: scaleApp_ })(
+  AppScaleToolbar_
+)
 
 const styles = {
   // list: {
@@ -172,13 +171,13 @@ const styles = {
 interface AppShowProps {
   id: string
 }
-class AppShow_ extends React.Component<AppShowProps, { open: boolean }> {
-  constructor(props: AppShowProps) {
+class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
+  public constructor(props: AppShowProps) {
     super(props)
     this.state = { open: false }
   }
 
-  render() {
+  public render() {
     const toggleDrawer = (open: boolean) => (
       event: React.KeyboardEvent | React.MouseEvent
     ) => {
@@ -195,6 +194,7 @@ class AppShow_ extends React.Component<AppShowProps, { open: boolean }> {
     }
 
     const { id } = this.props
+    const { open } = this.state
     return (
       <>
         <BackButton />
@@ -217,7 +217,7 @@ class AppShow_ extends React.Component<AppShowProps, { open: boolean }> {
         </Show>
         <SwipeableDrawer
           anchor="right"
-          open={this.state.open}
+          open={open}
           onClose={toggleDrawer(false)}
           onOpen={toggleDrawer(true)}
         >
@@ -232,67 +232,5 @@ class AppShow_ extends React.Component<AppShowProps, { open: boolean }> {
     )
   }
 }
-// const AppShow_ = (props: ShowProps) => {
-//   const [state, setState] = React.useState({
-//     top: false,
-//     left: false,
-//     bottom: false,
-//     right: false
-//   })
 
-//   type DrawerSide = 'top' | 'left' | 'bottom' | 'right'
-//   const toggleDrawer = (side: DrawerSide, open: boolean) => (
-//     event: React.KeyboardEvent | React.MouseEvent
-//   ) => {
-//     if (
-//       event &&
-//       event.type === 'keydown' &&
-//       ((event as React.KeyboardEvent).key === 'Tab' ||
-//         (event as React.KeyboardEvent).key === 'Shift')
-//     ) {
-//       return
-//     }
-
-//     setState({ ...state, [side]: open })
-//   }
-
-//   // { "classes": { "list": "AppShow_-list-11", "fullList": "AppShow_-fullList-12" }, "basePath": "/apps", "id": "bar", "permissions": null, "match": { "path": "/apps/:id/show", "url": "/apps/bar/show", "isExact": true, "params": { "id": "bar" } }, "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" }, "history": { "length": 29, "action": "POP", "location": { "pathname": "/apps/bar/show", "search": "", "hash": "" } }, "resource": "apps", "options": { }, "hasList": true, "hasEdit": false, "hasShow": true, "hasCreate": true }
-//   const { id } = props
-//   return (
-//     <>
-//       <BackButton />
-
-//       <Button
-//         onClick={toggleDrawer('right', true)}
-//         variant="contained"
-//         color="primary"
-//       >
-//         Scale
-//       </Button>
-
-//       <Show {...props}>
-//         <SimpleShowLayout>
-//           <TextField source="id" />
-//           <TextField source="size" />
-//           <TextField source="replicas" />
-//           <Charts id={id} />
-//         </SimpleShowLayout>
-//       </Show>
-//       <SwipeableDrawer
-//         anchor="right"
-//         open={state.right}
-//         onClose={toggleDrawer('right', false)}
-//         onOpen={toggleDrawer('right', true)}
-//       >
-//         <AppScale
-//           id={id}
-//           basePath="/apps"
-//           resource="apps"
-//           onSave={() => setState({ ...state, right: false })}
-//         />
-//       </SwipeableDrawer>
-//     </>
-//   )
-// }
-
-export const AppShow = withStyles(styles)(AppShow_)
+export const AppShow = withStyles(styles)(AppShowBase)

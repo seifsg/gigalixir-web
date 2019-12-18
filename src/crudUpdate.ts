@@ -10,8 +10,8 @@ import { CRUD_UPDATE, UPDATE } from 'react-admin'
 
 interface RequestPayload {
   id: Identifier
-  data: any
-  previousData?: any
+  data: {}
+  previousData?: {}
 }
 
 export interface CrudUpdateAction {
@@ -37,8 +37,8 @@ export interface CrudUpdateAction {
 export const crudUpdate = (
   resource: string,
   id: Identifier,
-  data: any,
-  previousData: any,
+  data: {},
+  previousData: {},
   basePath: string,
   // successNotification: string,
   redirectTo: RedirectionSideEffect = 'show',

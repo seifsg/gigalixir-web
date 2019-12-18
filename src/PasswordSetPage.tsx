@@ -1,5 +1,4 @@
 // most of this is copied from ConfirmationResendPage. refactor
-import { SubmissionError } from 'redux-form'
 import qs from 'query-string'
 import { showNotification, Notification } from 'react-admin'
 import React, { SFC } from 'react'
@@ -13,7 +12,12 @@ import {
 } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 
-import { Field, reduxForm, InjectedFormProps } from 'redux-form'
+import {
+  Field,
+  reduxForm,
+  InjectedFormProps,
+  SubmissionError
+} from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { extractError } from './errorSagas'
@@ -51,11 +55,7 @@ interface EnhancedProps
   isLoading: boolean
 }
 
-const action = (search: string) => (
-  values: any,
-  dispatch: any,
-  { redirectTo }: any
-) => {
+const action = (search: string) => (values: object, dispatch: Function) => {
   const params = qs.parse(search)
   if (typeof params.token === 'string') {
     const { token } = params
@@ -109,7 +109,6 @@ const Form: SFC<Props & EnhancedProps> = ({
   classes,
   isLoading,
   handleSubmit,
-  translate,
   search
 }) => {
   return (
@@ -171,7 +170,4 @@ const Page = (props: { location: { search: string } }) => {
   )
 }
 
-export default connect(
-  null,
-  {}
-)(Page)
+export default connect(null, {})(Page)

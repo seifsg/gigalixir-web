@@ -19,7 +19,7 @@ import { Notification } from 'react-admin'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import SuccessPage from './components/SuccessPage'
+import ConnectedSuccessPage from './components/SuccessPage'
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
@@ -55,7 +55,7 @@ interface EnhancedProps
   isLoading: boolean
 }
 
-const action = (values: any, dispatch: any, { redirectTo }: any) => {
+const action = (values: {}, dispatch: Function) => {
   const msg = 'Confirmation email resent. Please check your email.'
   return new Promise((resolve, reject) => {
     dispatch(
@@ -96,16 +96,15 @@ const Form: SFC<Props & EnhancedProps> = ({
   location,
   classes,
   isLoading,
-  handleSubmit,
+  handleSubmit
   // submitSucceeded,
-  translate
 }) => {
   // if (submitSucceeded) {
   //   return <div>Confirmation email resent. Please check your email.</div>
   // } else {
   return (
     <div>
-      <SuccessPage location={location} />
+      <ConnectedSuccessPage location={location} />
       <form onSubmit={handleSubmit(action)}>
         <div className={classes.form}>
           <div className={classes.input}>
@@ -172,7 +171,4 @@ const Page = (props: { location: { search: string } }) => {
   )
 }
 
-export default connect(
-  null,
-  {}
-)(Page)
+export default connect(null, {})(Page)

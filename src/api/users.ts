@@ -54,7 +54,7 @@ export const create = (
     })
 }
 
-export const resend_confirmation = (
+export const resendConfirmation = (
   email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
@@ -77,7 +77,7 @@ export const resend_confirmation = (
     )
 }
 
-export const reset_password = (
+export const resetPassword = (
   email: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {
   return api
@@ -99,7 +99,7 @@ export const reset_password = (
     )
 }
 
-export const set_password = (
+export const setPassword = (
   token: string,
   newPassword: string
 ): Promise<{ data: { id: string } } | ErrorResponse> => {

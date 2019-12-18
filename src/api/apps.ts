@@ -99,17 +99,15 @@ export const create = (
   region: string
 ): Promise<{ data: App }> => {
   return api
-    .post<{ data: { data: { unique_name: string; replicas: number; size: number } } }>(
-      '/frontend/api/apps',
-      {
-        unique_name: name,
-        cloud,
-        region
-      }
-    )
+    .post<{
+      data: { data: { unique_name: string; replicas: number; size: number } }
+    }>('/frontend/api/apps', {
+      unique_name: name,
+      cloud,
+      region
+    })
     .then((response): { data: App } => {
       const app = response.data.data
-        console.log(app)
       return {
         data: {
           id: app.unique_name,

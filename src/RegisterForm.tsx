@@ -74,7 +74,7 @@ const renderInput = ({
   />
 )
 
-const login = (auth: any, dispatch: any, { redirectTo }: any) => {
+const login = (auth: any, dispatch: any) => {
   const msg = 'Confirmation email sent. Please check your email.'
   return new Promise((resolve, reject) => {
     dispatch(
@@ -150,7 +150,6 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
   )
 }
 const mapStateToProps = (state: ReduxState) => {
-  console.log(JSON.stringify(state))
   return {
     isLoading: state.admin.loading > 0
   }

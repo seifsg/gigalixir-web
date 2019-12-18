@@ -39,6 +39,11 @@ module.exports = {
             "prop": "ignore"
         },
 
+        // just don't see why this is necessary
+        "import/extensions": "never",
+
+        "react/prop-types": "skipUndeclared",
+
         // would love to turn this back on, but not worth the effort since react-admin uses it so much, everywhere
         "react/jsx-props-no-spreading": "off",
         "no-underscore-dangle": "off",

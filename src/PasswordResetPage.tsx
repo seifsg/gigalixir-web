@@ -22,6 +22,7 @@ import { connect } from 'react-redux'
 import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
 
 interface FormData {
@@ -52,7 +53,7 @@ interface EnhancedProps
   isLoading: boolean
 }
 
-const action = (values: any, dispatch: any, { redirectTo }: any) => {
+const action = (values: object, dispatch: Function) => {
   const msg = 'Reset password email sent. Please check your email.'
   return new Promise((resolve, reject) => {
     dispatch(
@@ -90,8 +91,7 @@ const renderInput = ({
 const Form: SFC<Props & EnhancedProps> = ({
   classes,
   isLoading,
-  handleSubmit,
-  translate
+  handleSubmit
 }) => {
   return (
     <form onSubmit={handleSubmit(action)}>
@@ -121,7 +121,6 @@ const Form: SFC<Props & EnhancedProps> = ({
 }
 
 const mapStateToProps = (state: ReduxState) => {
-  console.log(JSON.stringify(state))
   return {
     isLoading: state.admin.loading > 0
   }
@@ -143,7 +142,7 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   })
 )(Form)
 
-const Page = (props: {}) => {
+const Page = () => {
   return (
     <div>
       <EnhancedForm />
@@ -153,7 +152,4 @@ const Page = (props: {}) => {
 }
 
 // todo: what does this do?
-export default connect(
-  null,
-  {}
-)(Page)
+export default connect(null, {})(Page)

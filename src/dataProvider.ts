@@ -1,7 +1,7 @@
 import * as apps from './api/apps'
 import getStats from './api/stats'
 import * as users from './api/users'
-import * as payment_methods from './api/payment_methods'
+import * as paymentMethods from './api/payment_methods'
 import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -183,11 +183,11 @@ const dataProvider = <T extends DataProviderType>(
       })
     }
     if (resource === 'payment_methods') {
-      return payment_methods.get()
+      return paymentMethods.get()
     }
   }
   if (isUpdatePaymentMethod(params, resource, type)) {
-    return payment_methods.update(params.data.token)
+    return paymentMethods.update(params.data.token)
   }
   if (isUpdateUser(params, resource, type)) {
     return users.upgrade(params.data.token)
@@ -210,16 +210,16 @@ const dataProvider = <T extends DataProviderType>(
   // resend confirmation
   // should I use type == 'RESEND' instead of 'UPDATE'?
   if (isUpdateConfirmation(params, resource, type)) {
-    return users.resend_confirmation(params.data.email)
+    return users.resendConfirmation(params.data.email)
   }
 
   // reset password vs set password
   // should I use type == 'RESET' instead of 'CREATE'?
   if (isCreatePassword(params, resource, type)) {
-    return users.reset_password(params.data.email)
+    return users.resetPassword(params.data.email)
   }
   if (isUpdatePassword(params, resource, type)) {
-    return users.set_password(params.data.token, params.data.newPassword)
+    return users.setPassword(params.data.token, params.data.newPassword)
   }
   throw new Error(`${type} ${resource} not implemented yet`)
 }

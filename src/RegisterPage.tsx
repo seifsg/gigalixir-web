@@ -23,11 +23,11 @@ import { Notification, defaultTheme } from 'react-admin'
 import Form from './RegisterForm'
 
 interface Props {
-  form: ReactElement<any>
+  form: ReactElement<object>
   theme: Theme
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     main: {
       display: 'flex',
@@ -54,9 +54,11 @@ const styles = (theme: Theme) =>
 class Login extends Component<
   Props & WithStyles<typeof styles> & HtmlHTMLAttributes<HTMLDivElement>
 > {
-  theme = createMuiTheme(this.props.theme)
+  // copy and pasted. don't wanna fix someone else's mistake
+  // eslint-disable-next-line react/destructuring-assignment
+  private theme = createMuiTheme(this.props.theme)
 
-  containerRef = React.createRef<HTMLDivElement>()
+  private containerRef = React.createRef<HTMLDivElement>()
 
   public render() {
     const { form, classes, className, ...rest } = this.props

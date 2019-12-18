@@ -13,7 +13,7 @@ import { CrudUpdateAction } from './crudUpdate'
 class UpdatePaymentMethodForm extends Component<{
   error: string | undefined
   isLoading: boolean
-  stripe: any
+  stripe: { createToken: Function }
   updatePaymentMethod: (token: string) => void
 }> {
   public constructor(props: any) {
@@ -22,7 +22,7 @@ class UpdatePaymentMethodForm extends Component<{
     this.submit = this.submit.bind(this)
   }
 
-  public submit = (ev: any) => {
+  public submit = () => {
     // TODO: name is not used
     const { stripe, updatePaymentMethod } = this.props
     // TODO: how does createToken get the card info?
@@ -54,9 +54,8 @@ class UpdatePaymentMethodForm extends Component<{
   }
 }
 
-function mapStateToProps(state: any, props: any) {
+function mapStateToProps(state: { admin: { loading: number } }) {
   const error = _.get('form.updatePaymentMethod.submitErrors.token', state)
-  console.log(error)
   return {
     isLoading: state.admin.loading > 0,
     error
@@ -74,6 +73,8 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
         body: 'Credit Card Updated',
         level: 'info',
         messageArgs: {
+          // not sure if this is needed. copy and pasted from somewhere.
+          // eslint-disable-next-line @typescript-eslint/camelcase
           smart_count: 1
         }
       },
@@ -92,10 +93,7 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
 
 export default compose(
   injectStripe,
-  connect(
-    mapStateToProps,
-    {
-      updatePaymentMethod
-    }
-  )
+  connect(mapStateToProps, {
+    updatePaymentMethod
+  })
 )(UpdatePaymentMethodForm)

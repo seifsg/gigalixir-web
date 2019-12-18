@@ -22,9 +22,6 @@ class BackButton extends Component<Props> {
   }
 }
 
-export default connect(
-  null,
-  {
-    myGoBack: goBack
-  }
-)(BackButton)
+export default connect(null, {
+  myGoBack: goBack
+})(BackButton)

@@ -21,10 +21,7 @@ const NotifyPage = (props: {
   return <div>{params.msg}</div>
 }
 
-export default connect(
-  null,
-  {
-    showNotification,
-    push
-  }
-)(NotifyPage)
+export default connect(null, {
+  showNotification,
+  push
+})(NotifyPage)
