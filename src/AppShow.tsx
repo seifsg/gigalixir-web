@@ -16,6 +16,7 @@ import {
   Toolbar
 } from 'react-admin'
 import { connect } from 'react-redux'
+import _ from 'lodash/fp'
 import { App } from './api/apps'
 import { Stats } from './api/stats'
 import Chart from './Chart'
@@ -159,6 +160,46 @@ const AppScaleToolbar = connect(undefined, { scaleApp: scaleApp_ })(
   AppScaleToolbar_
 )
 
+const Setup = (props: { record: Record }) => {
+  const {
+    record: { id }
+  } = props
+  return <div>Instructions to set up {id}</div>
+}
+
+interface Record {
+  id: string
+  size: number
+  replicas: number
+  version: number
+}
+
+// TODO: I kinda hate that record is optional here, but otherwise, typescript
+// forces us to put dummy parameters where this component is used below.
+// This is because react-admin injects the record for us by cloning the element.
+// I looked at react-admin's TextField component to see how they handle it and they
+// just make it optional like this so we copy it.
+const SetupOrShowLayout = (props: { record?: Record }) => {
+  const { record } = props
+  if (!record) {
+    return <div>Oops, no record found. Please contact help@gigalixir.com</div>
+  }
+  const version = _.get('version', record)
+  const id = _.get('id', record)
+  if (version === 2) {
+    return <Setup record={record} />
+  }
+  return (
+    <SimpleShowLayout {...props}>
+      <TextField source="id" />
+      <TextField source="size" />
+      <TextField source="replicas" />
+      <TextField source="version" />
+      <Charts id={id} />
+    </SimpleShowLayout>
+  )
+}
+
 const styles = {
   // list: {
   //   width: 250
@@ -208,12 +249,7 @@ class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
         </Button>
 
         <Show {...this.props}>
-          <SimpleShowLayout>
-            <TextField source="id" />
-            <TextField source="size" />
-            <TextField source="replicas" />
-            <Charts id={id} />
-          </SimpleShowLayout>
+          <SetupOrShowLayout />
         </Show>
         <SwipeableDrawer
           anchor="right"

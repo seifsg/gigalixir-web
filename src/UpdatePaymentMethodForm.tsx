@@ -10,13 +10,16 @@ import { connect } from 'react-redux'
 import { CardElement, injectStripe } from 'react-stripe-elements'
 import { CrudUpdateAction } from './crudUpdate'
 
-class UpdatePaymentMethodForm extends Component<{
-  error: string | undefined
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {}
+interface EnhancedProps {
+  error?: string
   isLoading: boolean
   stripe: { createToken: Function }
   updatePaymentMethod: (token: string) => void
-}> {
-  public constructor(props: any) {
+}
+class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
+  public constructor(props: Props & EnhancedProps) {
     super(props)
     // console.log(JSON.stringify(props))
     this.submit = this.submit.bind(this)
@@ -91,7 +94,7 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
   }
 })
 
-export default compose(
+export default compose<Props & EnhancedProps, Props>(
   injectStripe,
   connect(mapStateToProps, {
     updatePaymentMethod
