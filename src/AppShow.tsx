@@ -211,6 +211,7 @@ const styles = {
 
 interface AppShowProps {
   id: string
+  version: number
 }
 class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
   public constructor(props: AppShowProps) {

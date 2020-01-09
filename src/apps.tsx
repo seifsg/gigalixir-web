@@ -35,28 +35,61 @@ interface CreateProps {
   aside: React.ReactElement
 }
 
-export const AppCreate: React.FunctionComponent<CreateProps> = (
-  props
-): React.ReactElement => {
-  const [cloud, setCloud] = React.useState('gcp')
-  const regions = regionChoices(cloud)
-  const onChange = (_event: React.FormEvent, key: string): void => setCloud(key)
+export class AppCreate extends React.Component<CreateProps, { cloud: string }> {
+  public constructor(props: CreateProps) {
+    super(props)
+    this.state = { cloud: 'gcp' }
+  }
 
-  return (
-    <Create {...props}>
-      <SimpleForm>
-        <TextInput source="name" label="App Name" />
-        <SelectInput
-          source="cloud"
-          defaultValue="gcp"
-          choices={[
-            { id: 'gcp', name: 'Google Cloud Platform' },
-            { id: 'aws', name: 'Amazon Web Services' }
-          ]}
-          onChange={onChange}
-        />
-        {cloud !== '' && <SelectInput source="region" {...regions} />}
-      </SimpleForm>
-    </Create>
-  )
+  public render() {
+    // const [cloud, setCloud] = React.useState('gcp')
+    const { cloud } = this.state
+    const regions = regionChoices(cloud)
+    const onChange = (_event: React.FormEvent, key: string): void =>
+      this.setState({ cloud: key })
+
+    return (
+      <Create {...this.props}>
+        <SimpleForm>
+          <TextInput source="name" label="App Name" />
+          <SelectInput
+            source="cloud"
+            defaultValue="gcp"
+            choices={[
+              { id: 'gcp', name: 'Google Cloud Platform' },
+              { id: 'aws', name: 'Amazon Web Services' }
+            ]}
+            onChange={onChange}
+          />
+          {cloud !== '' && <SelectInput source="region" {...regions} />}
+        </SimpleForm>
+      </Create>
+    )
+  }
 }
+
+// export const OldAppCreate: React.FunctionComponent<CreateProps> = (
+//   props
+// ): React.ReactElement => {
+//   // const [cloud, setCloud] = React.useState('gcp')
+//   const regions = regionChoices(cloud)
+//   const onChange = (_event: React.FormEvent, key: string): void => setCloud(key)
+
+//   return (
+//     <Create {...props}>
+//       <SimpleForm>
+//         <TextInput source="name" label="App Name" />
+//         <SelectInput
+//           source="cloud"
+//           defaultValue="gcp"
+//           choices={[
+//             { id: 'gcp', name: 'Google Cloud Platform' },
+//             { id: 'aws', name: 'Amazon Web Services' }
+//           ]}
+//           onChange={onChange}
+//         />
+//         {cloud !== '' && <SelectInput source="region" {...regions} />}
+//       </SimpleForm>
+//     </Create>
+//   )
+// }
