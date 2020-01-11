@@ -5,7 +5,7 @@ import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
 import _ from 'lodash/fp'
-import { USER_LOGIN_FAILURE } from 'ra-core'
+import { USER_LOGIN_FAILURE, FETCH_ERROR } from 'ra-core'
 
 export const extractErrorValue = (
   errors: { [k: string]: string[] },
@@ -27,9 +27,15 @@ export const extractError = (
   return _.join('. ', errorListWithKey)
 }
 
-interface CrudFailureAction extends Action {
+export interface CrudFailureAction extends Action {
+  error?: string
   payload?: { errors: { [k: string]: string[] } }
-  meta?: { resource: string; fetchResponse: string }
+  meta?: {
+    resource: string
+    fetchResponse: string
+    fetchStatus?: typeof FETCH_ERROR
+    notification?: object
+  }
 }
 
 interface UserLoginFailureAction extends Action {

@@ -67,29 +67,3 @@ export class AppCreate extends React.Component<CreateProps, { cloud: string }> {
     )
   }
 }
-
-// export const OldAppCreate: React.FunctionComponent<CreateProps> = (
-//   props
-// ): React.ReactElement => {
-//   // const [cloud, setCloud] = React.useState('gcp')
-//   const regions = regionChoices(cloud)
-//   const onChange = (_event: React.FormEvent, key: string): void => setCloud(key)
-
-//   return (
-//     <Create {...props}>
-//       <SimpleForm>
-//         <TextInput source="name" label="App Name" />
-//         <SelectInput
-//           source="cloud"
-//           defaultValue="gcp"
-//           choices={[
-//             { id: 'gcp', name: 'Google Cloud Platform' },
-//             { id: 'aws', name: 'Amazon Web Services' }
-//           ]}
-//           onChange={onChange}
-//         />
-//         {cloud !== '' && <SelectInput source="region" {...regions} />}
-//       </SimpleForm>
-//     </Create>
-//   )
-// }

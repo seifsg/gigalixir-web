@@ -4,11 +4,14 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 
 import _ from 'lodash/fp'
 import compose from 'recompose/compose'
-import { CRUD_UPDATE, UPDATE } from 'react-admin'
+import { CRUD_UPDATE_FAILURE, CRUD_UPDATE, UPDATE } from 'react-admin'
 
 import { connect } from 'react-redux'
 import { CardElement, injectStripe } from 'react-stripe-elements'
+import { FETCH_ERROR } from 'ra-core'
+import { reset } from 'redux-form'
 import { CrudUpdateAction } from './crudUpdate'
+import { CrudFailureAction } from './errorSagas'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -17,6 +20,19 @@ interface EnhancedProps {
   isLoading: boolean
   stripe: { createToken: Function }
   updatePaymentMethod: (token: string) => void
+  showError: (error: StripeErrorResponse) => void
+  myReset: () => void
+}
+
+interface StripeErrorResponse {
+  error: {
+    message: string
+  }
+}
+interface StripeTokenResponse {
+  token: {
+    id: string
+  }
 }
 class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
   public constructor(props: Props & EnhancedProps) {
@@ -27,12 +43,22 @@ class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
 
   public submit = () => {
     // TODO: name is not used
-    const { stripe, updatePaymentMethod } = this.props
+    const { stripe, updatePaymentMethod, showError, myReset } = this.props
     // TODO: how does createToken get the card info?
     stripe
       .createToken({ name: 'Name' })
-      .then((response: { token: { id: string } }) => {
-        updatePaymentMethod(response.token.id)
+      .then((response: StripeErrorResponse | StripeTokenResponse) => {
+        if ('token' in response) {
+          updatePaymentMethod(response.token.id)
+          myReset()
+        } else if ('error' in response) {
+          showError(response)
+        } else {
+          showError({ error: { message: 'Unknown Error' } })
+        }
+      })
+      .catch(() => {
+        showError({ error: { message: 'Unknown Error' } })
       })
   }
 
@@ -94,9 +120,35 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
   }
 })
 
+// could this be CrudUpdateFailureAction instead? The problem is payload which they define as a string
+// but we use sometimes as an object with errors and stuff.
+const showError = (error: StripeErrorResponse): CrudFailureAction => {
+  return {
+    type: CRUD_UPDATE_FAILURE,
+    error: error.error.message,
+    payload: {
+      errors: {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        stripe_token: [error.error.message]
+      }
+    },
+    meta: {
+      resource: 'payment_methods',
+      fetchResponse: UPDATE,
+      fetchStatus: FETCH_ERROR,
+      notification: {
+        body: '',
+        level: 'warning'
+      }
+    }
+  }
+}
+
 export default compose<Props & EnhancedProps, Props>(
   injectStripe,
   connect(mapStateToProps, {
-    updatePaymentMethod
+    updatePaymentMethod,
+    showError,
+    myReset: () => reset('updatePaymentMethod')
   })
 )(UpdatePaymentMethodForm)
