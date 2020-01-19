@@ -17,11 +17,11 @@ import {
 } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
-import { App } from './api/apps'
-import { Stats } from './api/stats'
-import Chart from './Chart'
-import logger from './logger'
-import BackButton from './BackButton'
+import { App } from '../api/apps'
+import { Stats } from '../api/stats'
+import Chart from '../Chart'
+import logger from '../logger'
+import BackButton from '../BackButton'
 
 interface ShowProps {
   id: string

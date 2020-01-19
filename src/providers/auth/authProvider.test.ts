@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { AUTH_LOGIN, AUTH_CHECK, AUTH_LOGOUT, AUTH_ERROR } from 'react-admin'
-import authProvider from './authProvider'
+import authProvider from '.'
 
 it('logs in', done => {
   const csrfMock = jest.spyOn(axios, 'get')

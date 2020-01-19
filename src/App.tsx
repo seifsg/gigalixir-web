@@ -1,33 +1,31 @@
 import React from 'react'
 import { Admin, Resource } from 'react-admin'
 import { BrowserRouter, Route } from 'react-router-dom'
-import AppLayout from './AppLayout'
+
+import AppLayout from './layout'
 import { AppCreate, AppList, AppShow } from './apps'
-import authProvider from './authProvider'
-import dataProvider from './dataProvider'
-import MyLoginPage from './MyLoginPage'
-import ProfileShow from './ProfileShow'
-import RegisterPage from './RegisterPage'
-import NotifyPage from './NotifyPage'
-import PasswordResetPage from './PasswordResetPage'
-import PasswordSetPage from './PasswordSetPage'
-import ConfirmationResendPage from './ConfirmationResendPage'
-import ConnectedSuccessPage from './components/SuccessPage'
+import authProvider from './providers/auth'
+import dataProvider from './providers/data'
+import Profile from './ProfileShow'
+import {
+  Login,
+  Notify,
+  PasswordReset,
+  PasswordSet,
+  ResendPage,
+  Register
+} from './pages'
+import ConnectedSuccess from './components/SuccessPage'
 import errorSagas from './errorSagas'
 
 const customRoutes = [
-  <Route path="/profile" component={ProfileShow} />,
-  <Route exact path="/register" component={RegisterPage} noLayout />,
-  <Route exact path="/notify" component={NotifyPage} noLayout />,
-  <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,
-  <Route exact path="/password/set" component={PasswordSetPage} noLayout />,
-  <Route
-    exact
-    path="/confirmation/resend"
-    component={ConfirmationResendPage}
-    noLayout
-  />,
-  <Route exact path="/success" component={ConnectedSuccessPage} noLayout />
+  <Route path="/profile" component={Profile} />,
+  <Route exact path="/register" component={Register} noLayout />,
+  <Route exact path="/notify" component={Notify} noLayout />,
+  <Route exact path="/password/reset" component={PasswordReset} noLayout />,
+  <Route exact path="/password/set" component={PasswordSet} noLayout />,
+  <Route exact path="/confirmation/resend" component={ResendPage} noLayout />,
+  <Route exact path="/success" component={ConnectedSuccess} noLayout />
 ]
 
 const App = () => (
@@ -36,7 +34,7 @@ const App = () => (
       customSagas={[errorSagas]}
       customRoutes={customRoutes}
       appLayout={AppLayout}
-      loginPage={MyLoginPage}
+      loginPage={Login}
       authProvider={authProvider}
       dataProvider={dataProvider}
     >

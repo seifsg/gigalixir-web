@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar'
 import LockIcon from '@material-ui/icons/Lock'
 
 import { Notification, defaultTheme } from 'react-admin'
-import Form from './RegisterForm'
+import Form from './Form'
 
 interface Props {
   form: ReactElement<object>

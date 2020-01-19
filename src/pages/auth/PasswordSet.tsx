@@ -20,8 +20,8 @@ import {
 } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { extractError } from './errorSagas'
-import { crudUpdate } from './crudUpdate'
+import { extractError } from '../../errorSagas'
+import { crudUpdate } from '../../crudUpdate'
 
 interface Props {
   search: string

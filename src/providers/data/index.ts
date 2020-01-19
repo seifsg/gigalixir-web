@@ -1,8 +1,8 @@
-import * as apps from './api/apps'
-import getStats from './api/stats'
-import * as users from './api/users'
-import * as paymentMethods from './api/payment_methods'
-import logger from './logger'
+import * as apps from '../../api/apps'
+import getStats from '../../api/stats'
+import * as users from '../../api/users'
+import * as paymentMethods from '../../api/payment_methods'
+import logger from '../../logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}

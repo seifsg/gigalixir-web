@@ -19,9 +19,9 @@ import { Notification } from 'react-admin'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import ConnectedSuccessPage from './components/SuccessPage'
-import { extractError } from './errorSagas'
-import { crudUpdate } from './crudUpdate'
+import ConnectedSuccessPage from '../../components/SuccessPage'
+import { extractError } from '../../errorSagas'
+import { crudUpdate } from '../../crudUpdate'
 
 interface Props {
   location: { search: string }
