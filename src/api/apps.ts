@@ -46,19 +46,30 @@ const renameIds = (apps: Response[]): App[] => {
   )
 }
 
-export const list = (): Promise<{ data: App[]; total: number }> => {
-  return api
-    .get<{ data: { data: Response[] } }>('/frontend/api/apps')
-    .then((response): {
-      data: App[]
-      total: number
-    } => {
-      const apps = response.data.data
-      return {
-        data: renameIds(apps),
-        total: apps.length
-      }
-    })
+export const list = () => {
+  return Promise.resolve({
+    total: 2,
+    data: [
+      {
+        id: 1,
+        unique_name: 'fake-app',
+        stack: 'gigalixir-18',
+        size: 1.0,
+        replicas: 1,
+        region: 'v2018-us-central1',
+        cloud: 'gcp'
+      },
+      {
+        id: 2,
+        unique_name: 'fake-app',
+        stack: 'gigalixir-18',
+        size: 1.0,
+        replicas: 1,
+        region: 'v2018-us-central1',
+        cloud: 'gcp'
+       }
+    ]
+  })
 }
 
 export const get = (id: string): Promise<{ data: App }> => {
