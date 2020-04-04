@@ -124,6 +124,7 @@ AppGrid.defaultProps = {
 }
 
 const MainHeader = (props: any) => {
+  const { push } = props;
   return (
     <div>
       <header>
@@ -132,7 +133,12 @@ const MainHeader = (props: any) => {
         </div>
         <div style={tableHeaderBottom}>
           <h2 style={topHeading2}>All Apps</h2>
-          <Button variant="contained" style={createButtonStyle}>+ Create</Button>
+          <Button
+            variant="contained"
+            onClick={() => { push('/apps/create')}}
+            style={createButtonStyle}>
+              + Create
+          </Button>
         </div>
       </header>
     </div>
@@ -186,7 +192,6 @@ const idsArr=[0,1];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MaybeEmptyDatagrid = (props: any) => {
   const {total, data, ids, isLoading, push } = props;
-  console.log('PROPSSS', props)
   if (!isLoading && (ids && ids.length === 0 || total === 0)) {
     return (
       <div>
@@ -205,7 +210,7 @@ const MaybeEmptyDatagrid = (props: any) => {
   }
   return (
     <div>
-      <MainHeader />
+      <MainHeader push={push} />
       <table style={tableStyle}>
         <thead>
           <tr style={tableHeadRowStyle}>
@@ -253,10 +258,8 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 })(MaybeEmptyDatagrid)
 
 const AppList = (props: any) => {
-  console.log('pppp', props)
   return (
     <div {...props}>
-     {/* <AppGrid /> */}
      <ConnectedMaybeEmptyDatagrid />
     </div>
   )
