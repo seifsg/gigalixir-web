@@ -2,8 +2,10 @@ import React from 'react'
 import { Create, SelectInput, SimpleForm, TextInput } from 'react-admin'
 import AppList from './AppList'
 import { AppShow } from './AppShow'
+import AppHeader from './AppHeader'
+import AppSideBar from './AppSideBar'
 
-export { AppList, AppShow }
+export { AppList, AppShow, AppHeader, AppSideBar }
 
 const regionChoices = (
   cloud: string

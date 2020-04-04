@@ -9,6 +9,8 @@ import {
 } from 'react-admin'
 import { connect } from 'react-redux'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import { AppCreate, AppList, AppShow, AppHeader, AppSideBar } from './apps'
+
 
 class MyUserMenuView extends Component<{
   getOne: (
@@ -39,13 +41,9 @@ class MyUserMenuView extends Component<{
 
   public render() {
     return (
-      <UserMenu label="Profile" logout={<Logout />}>
-        <MenuItemLink
-          to="/profile"
-          primaryText="Profile"
-          leftIcon={<AccountCircle />}
-        />
-      </UserMenu>
+      <div>
+        <p>sdds</p>
+       </div>
     )
   }
 }
@@ -67,6 +65,7 @@ const MyUserMenu = connect(mapStateToProps, { getOne: crudGetOne })(
 )
 
 const MyAppBar = (props: {}) => <AppBar {...props} userMenu={<MyUserMenu />} />
-const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} />
+// const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} />
+const MyLayout = (props: {}) => <Layout {...props} title={'test'} appBar={AppHeader} sidebar={AppSideBar} />;
 
 export default MyLayout

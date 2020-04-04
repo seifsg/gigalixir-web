@@ -23,7 +23,7 @@ const tableStyle = {
   borderCollapse: 'collapse',
   width: '100%',
   minWidth: '650px',
-  margin: '40px 0 0'
+  margin: '20px 0 0'
 } as React.CSSProperties;
 
 const tableHeadRowStyle = {
@@ -37,7 +37,14 @@ const tableRowStyle = {
   }
 } as React.CSSProperties;
 
+const tableCellHeadingStyle = {
+  color: '#323232',
+  fontWeight: 600,
+  padding: '20px 15px',
+} as React.CSSProperties;
+
 const tableCellStyle = {
+  color: '#323232',
   padding: '20px 15px',
 } as React.CSSProperties;
 
@@ -48,6 +55,37 @@ const deleteButtonStyle = {
   backgroundColor: '#ddd',
   borderRadius: '10px',
   padding: '2px 8px'
+} as React.CSSProperties;
+
+const tableHeaderTop = {
+  borderBottom: '1px solid #aaa',
+} as React.CSSProperties;
+
+const topHeading = {
+  color: '#333',
+  fontSize: '20px',
+  margin: '20px 0',
+} as React.CSSProperties;
+
+const tableHeaderBottom = {
+  padding: '20px 0',
+  overflow: 'hidden'
+} as React.CSSProperties;
+
+const topHeading2 = {
+  color: '#333',
+  float: 'left',
+  fontSize: '16px',
+  margin: '0',
+} as React.CSSProperties;
+
+const createButtonStyle = {
+  float: 'right',
+  backgroundColor: '#216dff',
+  color: '#fff',
+  '&:hover': {
+    backgroundColor: '#4380f4',
+  }
 } as React.CSSProperties;
 
 interface Data {
@@ -85,6 +123,22 @@ AppGrid.defaultProps = {
   ids: []
 }
 
+const MainHeader = (props: any) => {
+  return (
+    <div>
+      <header>
+        <div style={tableHeaderTop}>
+          <h1 style={topHeading}>Dashboard</h1>
+        </div>
+        <div style={tableHeaderBottom}>
+          <h2 style={topHeading2}>All Apps</h2>
+          <Button variant="contained" style={createButtonStyle}>+ Create</Button>
+        </div>
+      </header>
+    </div>
+  );
+}
+
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
 interface ListProps {
@@ -103,13 +157,37 @@ interface DataNew {
     unique_name: string
   }
 }
+const dataList = [
+  {
+    id: 1,
+    unique_name: 'fake-app',
+    stack: 'gigalixir-18',
+    size: 1.0,
+    replicas: 1,
+    region: 'v2018-us-central1',
+    cloud: 'gcp'
+  },
+  {
+    id: 2,
+    unique_name: 'fake-app',
+    stack: 'gigalixir-18',
+    size: 1.0,
+    replicas: 1,
+    region: 'v2018-us-central1',
+    cloud: 'gcp'
+   }
+];
+
+const idsArr=[0,1];
+
 // setting props properly here is hard because 1) there are a ton of props that react-admin injects for us
 // and 2) any props defined here need to be specified below, but we would just be putting dummy values in
 // the real values are injected by redux-form, react-admin, etc. need to find a better way to do this.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MaybeEmptyDatagrid = (props: any) => {
   const {total, data, ids, isLoading, push } = props;
-  if (!isLoading && (ids.length === 0 || total === 0)) {
+  console.log('PROPSSS', props)
+  if (!isLoading && (ids && ids.length === 0 || total === 0)) {
     return (
       <div>
         No apps yet.
@@ -126,40 +204,43 @@ const MaybeEmptyDatagrid = (props: any) => {
     )
   }
   return (
-    <table style={tableStyle}>
-      <thead>
-        <tr style={tableHeadRowStyle}>
-          <th style={tableCellStyle} align="left">App Name</th>
-          <th style={tableCellStyle}>Cloud</th>
-          <th style={tableCellStyle}>Region</th>
-          <th style={tableCellStyle}>Stack</th>
-          <th style={tableCellStyle}>Size</th>
-          <th style={tableCellStyle}>Replica</th>
-          <th style={tableCellStyle}>&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        {ids.map( (dataObj: DataNew, index: number) => (
-          <tr key={index} style={tableRowStyle}>
-            <td style={tableCellStyle}>{data[index+1].unique_name}</td>
-            <td style={tableCellStyle} align="center">{data[index+1].cloud}</td>
-            <td style={tableCellStyle} align="center">{data[index+1].region}</td>
-            <td style={tableCellStyle} align="center">{data[index+1].stack}</td>
-            <td style={tableCellStyle} align="center">
-              <Badge badgeContent={data[index+1].size} color="primary"> </Badge>
-            </td>
-            <td style={tableCellStyle} align="center">
-              <Badge badgeContent={data[index+1].replicas} color="secondary"> </Badge>
-            </td>
-            <td style={tableCellStyle} align="right">
-              <Button size="small" style={deleteButtonStyle}>
-                <DeleteIcon style={{ fontSize: 18 }} />Delete
-              </Button>
-            </td>
+    <div>
+      <MainHeader />
+      <table style={tableStyle}>
+        <thead>
+          <tr style={tableHeadRowStyle}>
+            <th style={tableCellHeadingStyle} align="left">App Name</th>
+            <th style={tableCellHeadingStyle}>Cloud</th>
+            <th style={tableCellHeadingStyle}>Region</th>
+            <th style={tableCellHeadingStyle}>Stack</th>
+            <th style={tableCellHeadingStyle}>Size</th>
+            <th style={tableCellHeadingStyle}>Replica</th>
+            <th style={tableCellHeadingStyle}>&nbsp;</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {idsArr && idsArr.map( (index: number) => (
+            <tr key={index} style={tableRowStyle}>
+              <td style={tableCellStyle}>{dataList[index].unique_name}</td>
+              <td style={tableCellStyle} align="center">{dataList[index].cloud}</td>
+              <td style={tableCellStyle} align="center">{dataList[index].region}</td>
+              <td style={tableCellStyle} align="center">{dataList[index].stack}</td>
+              <td style={tableCellStyle} align="center">
+                <Badge badgeContent={dataList[index].size} color="primary"> </Badge>
+              </td>
+              <td style={tableCellStyle} align="center">
+                <Badge badgeContent={dataList[index].replicas} color="secondary"> </Badge>
+              </td>
+              <td style={tableCellStyle} align="right">
+                <Button size="small" style={deleteButtonStyle}>
+                  <DeleteIcon style={{ fontSize: 18 }} />Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -171,11 +252,14 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
   ids: [],
 })(MaybeEmptyDatagrid)
 
-const AppList = (props: ListProps) => (
-  <List title="All apps" pagination={null} bulkActions={false} {...props}>
-    {/* <AppGrid /> */}
-    <ConnectedMaybeEmptyDatagrid />
-  </List>
-)
+const AppList = (props: any) => {
+  console.log('pppp', props)
+  return (
+    <div {...props}>
+     {/* <AppGrid /> */}
+     <ConnectedMaybeEmptyDatagrid />
+    </div>
+  )
+}
 
 export default AppList
