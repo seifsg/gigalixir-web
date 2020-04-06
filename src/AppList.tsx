@@ -5,10 +5,12 @@ import Button from '@material-ui/core/Button'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import DeleteIcon from '@material-ui/icons/Delete';
-import Badge from '@material-ui/core/Badge';
+import DeleteIcon from '@material-ui/icons/Delete'
+import Badge from '@material-ui/core/Badge'
 import React from 'react'
-import { ShowButton, TextField } from 'react-admin'
+import { List, ShowButton, TextField } from 'react-admin'
+import _ from 'lodash/fp'
+import { App } from './api/apps'
 // import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -227,22 +229,24 @@ const MaybeEmptyDatagrid = (props: any) => {
           </thead>
 
           <tbody>
-            {idsArr && idsArr.map( (index: number) => (
+            {ids && ids.map( (index: number) => {
+              const app: App = data[index]
+              return (
               <tr
                 key={index}
                 style={tableRowStyle}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#eaeaea')}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
               >
-                <td style={tableCellStyle}>{dataList[index].unique_name}</td>
-                <td style={tableCellStyle} align="center">{dataList[index].cloud}</td>
-                <td style={tableCellStyle} align="center">{dataList[index].region}</td>
-                <td style={tableCellStyle} align="center">{dataList[index].stack}</td>
+                <td style={tableCellStyle}>{data[index].id}</td>
+                <td style={tableCellStyle} align="center">{data[index].cloud}</td>
+                <td style={tableCellStyle} align="center">{data[index].region}</td>
+                <td style={tableCellStyle} align="center">{data[index].stack}</td>
                 <td style={tableCellStyle} align="center">
-                  <Badge badgeContent={dataList[index].size} color="primary"> </Badge>
+                  <Badge badgeContent={data[index].size} color="primary"> </Badge>
                 </td>
                 <td style={tableCellStyle} align="center">
-                  <Badge badgeContent={dataList[index].replicas} color="secondary"> </Badge>
+                  <Badge badgeContent={data[index].replicas} color="secondary"> </Badge>
                 </td>
                 <td style={tableCellStyle} align="right">
                   <Button size="small" style={deleteButtonStyle}>
@@ -250,7 +254,7 @@ const MaybeEmptyDatagrid = (props: any) => {
                   </Button>
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
       </div>
@@ -268,10 +272,9 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 const AppList = (props: any) => {
   console.log('pppp', props)
   return (
-    <div {...props}>
-     {/* <AppGrid /> */}
+    <List title="All apps" pagination={null} bulkActions={false} {...props}>
      <ConnectedMaybeEmptyDatagrid />
-    </div>
+    </List>
   )
 }
 
