@@ -4,7 +4,6 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import Logo from './logo.png';
 
 const header = {
   textDecoration: 'none',
@@ -34,9 +33,6 @@ const customList = {
 const customListItem = {
   float: 'left',
   marginLeft: '30px'
-} as React.CSSProperties;
-const iconStyle = {
-  fontSize: '12px'
 } as React.CSSProperties;
 
 const profileStyleHolder = {
@@ -68,9 +64,6 @@ const profileIconStyle= {
   display: 'inline-block',
   verticalAlign: 'bottom',
 } as React.CSSProperties;
-const blueColor = {
-  backgroundColor: '#216dff'
-} as React.CSSProperties;
 const helpIconHolder= {
   padding: '0',
   margin: '0'
@@ -93,7 +86,7 @@ const AppHeader = () => {
 
   return (
     <header style={header}>
-      {<a style={LogoStyle} href='Home'><img style={LogoImageStyle} src={'https://res.cloudinary.com/dwlstwcc4/image/upload/v1585911372/logo_wfwgq6.png'} alt='Logo' /></a>}
+      {<a style={LogoStyle} href='/#/profile'><img style={LogoImageStyle} src={'http://gigalixir-home.gigalixirapp.com/images/gigalixir_logo.png'} alt='Logo' /></a>}
       <ul style={customList}>
         <li style={customListItem}>
           <a

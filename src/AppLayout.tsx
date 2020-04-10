@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import {
-  Logout,
   Layout,
   AppBar,
   crudGetOne,
-  UserMenu,
-  MenuItemLink
 } from 'react-admin'
 import { connect } from 'react-redux'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import { AppCreate, AppList, AppShow, AppHeader, AppSideBar } from './apps'
+import { AppShow, AppHeader, AppSideBar } from './apps'
 
 
 class MyUserMenuView extends Component<{
@@ -42,7 +39,6 @@ class MyUserMenuView extends Component<{
   public render() {
     return (
       <div>
-        <p>sdds</p>
        </div>
     )
   }

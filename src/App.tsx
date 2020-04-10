@@ -1,8 +1,8 @@
 import React from 'react'
-import { Admin, Resource, Layout } from 'react-admin'
+import { Admin, Resource } from 'react-admin'
 import { BrowserRouter, Route } from 'react-router-dom'
 import AppLayout from './AppLayout'
-import { AppCreate, AppList, AppShow, AppHeader, AppSideBar } from './apps'
+import { AppCreate, AppList, AppShow } from './apps'
 import authProvider from './authProvider'
 import dataProvider from './dataProvider'
 import MyLoginPage from './MyLoginPage'
@@ -48,5 +48,4 @@ const App = () => (
   </BrowserRouter>
 )
 
-// const MyLayout = () => <Layout title={'test'} appBar={AppHeader} sidebar={AppSideBar} />;
 export default App
