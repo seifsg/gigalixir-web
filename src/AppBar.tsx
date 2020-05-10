@@ -1,5 +1,4 @@
 import React, { Children, cloneElement } from 'react'
-// import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import MuiAppBar from '@material-ui/core/AppBar'
