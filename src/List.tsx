@@ -115,7 +115,7 @@ export const ListView = withStyles(styles)(
                 {...sanitizeRestProps(rest)}
             >
                 <Title title={title} defaultTitle={defaultTitle} />
-                <Card className={classes.card}>
+                <Card elevation={0} className={classes.card}>
                     {bulkActions !== false &&
                         bulkActionButtons !== false &&
                         bulkActionButtons &&

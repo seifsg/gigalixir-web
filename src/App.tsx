@@ -14,6 +14,15 @@ import PasswordSetPage from './PasswordSetPage'
 import ConfirmationResendPage from './ConfirmationResendPage'
 import ConnectedSuccessPage from './components/SuccessPage'
 import errorSagas from './errorSagas'
+import { createMuiTheme } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  palette: {
+    background: {
+      default: undefined
+    }
+  }
+})
 
 const customRoutes = [
   <Route path="/profile" component={ProfileShow} />,
@@ -33,6 +42,7 @@ const customRoutes = [
 const App = () => (
   <BrowserRouter>
     <Admin
+      theme={theme}
       customSagas={[errorSagas]}
       customRoutes={customRoutes}
       appLayout={AppLayout}
