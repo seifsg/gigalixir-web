@@ -1,8 +1,9 @@
 import React from 'react'
-import { Show, SimpleShowLayout, TextField, Authenticated } from 'react-admin'
+import { SimpleShowLayout, TextField, Authenticated } from 'react-admin'
 import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
 import Upgrade from './Upgrade'
+import Show from './components/ra/Show'
 
 const ProfileShow = (props: { staticContext: {} }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
