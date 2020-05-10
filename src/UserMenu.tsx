@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
-import {
-  Logout,
-  crudGetOne,
-  UserMenu,
-  MenuItemLink
-} from 'react-admin'
+import { Logout, crudGetOne, UserMenu, MenuItemLink } from 'react-admin'
 import { connect } from 'react-redux'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+
 class MyUserMenuView extends Component<{
   getOne: (
     resource: string,
