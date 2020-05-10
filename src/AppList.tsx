@@ -6,7 +6,8 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
-import { Datagrid, NumberField, List, ShowButton, TextField } from 'react-admin'
+import { Datagrid, NumberField, ShowButton, TextField } from 'react-admin'
+import List from './List'
 // import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -83,7 +84,7 @@ const MaybeEmptyDatagrid = (props: any) => {
     )
   }
   return (
-    <Datagrid rowClick="show" {...sanitizedProps}>
+    <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
       <TextField source="id" />
       <NumberField source="size" />
       <NumberField source="replicas" />
@@ -101,7 +102,7 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 })(MaybeEmptyDatagrid)
 
 const AppList = (props: ListProps) => (
-  <List title="All apps" pagination={null} bulkActions={false} {...props}>
+  <List title="My Apps" pagination={null} bulkActions={false} {...props}>
     {/* <AppGrid /> */}
     <ConnectedMaybeEmptyDatagrid />
   </List>

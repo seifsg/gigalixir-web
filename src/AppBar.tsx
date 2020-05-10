@@ -63,9 +63,9 @@ any) => (
   <Headroom>
     <MuiAppBar
       className={className}
-      color="transparent"
+      color="inherit"
       position="static"
-      elevation="0"
+      elevation={0}
       {...rest}
     >
       <Toolbar
