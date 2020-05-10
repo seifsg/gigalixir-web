@@ -8,7 +8,7 @@ interface Response {
   email: string
   credit_cents: number
 }
-interface User extends Response {
+export interface User extends Response {
   id: 'profile'
 }
 export const get = (): Promise<{ data: User }> => {

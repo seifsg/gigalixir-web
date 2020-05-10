@@ -1,25 +1,25 @@
+import { createMuiTheme } from '@material-ui/core/styles'
 import React from 'react'
 import { Admin, Resource } from 'react-admin'
 import { BrowserRouter, Route } from 'react-router-dom'
 import AppLayout from './AppLayout'
 import { AppCreate, AppList, AppShow } from './apps'
 import authProvider from './authProvider'
+import ConnectedSuccessPage from './components/SuccessPage'
+import ConfirmationResendPage from './ConfirmationResendPage'
 import dataProvider from './dataProvider'
+import errorSagas from './errorSagas'
 import MyLoginPage from './MyLoginPage'
-import ProfileShow from './ProfileShow'
-import RegisterPage from './RegisterPage'
 import NotifyPage from './NotifyPage'
 import PasswordResetPage from './PasswordResetPage'
 import PasswordSetPage from './PasswordSetPage'
-import ConfirmationResendPage from './ConfirmationResendPage'
-import ConnectedSuccessPage from './components/SuccessPage'
-import errorSagas from './errorSagas'
-import { createMuiTheme } from '@material-ui/core/styles';
+import ProfileShow from './ProfileShow'
+import RegisterPage from './RegisterPage'
 
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: undefined
+      default: "#fff"
     }
   }
 })
