@@ -1,21 +1,79 @@
-import { withStyles, WithStyles } from '@material-ui/core/styles'
+import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
 import React from 'react'
 import { Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import { ReduxState } from 'ra-core'
 import { User } from './api/users'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
-const styles = {
-  h3: {
+interface StyledTabsProps {
+  value: number;
+  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
+}
+
+interface StyledTabProps {
+  label: string;
+}
+
+
+const StyledTabs = withStyles({
+  indicator: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    "& > div": {
+      maxWidth: 40,
+      width: "100%",
+      backgroundColor: "#000"
+    }
+  }
+})((props: StyledTabsProps) => (
+  <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />
+));
+
+const StyledTab = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      textTransform: "none",
+      color: "#000",
+      fontWeight: theme.typography.fontWeightRegular,
+      fontSize: theme.typography.pxToRem(15),
+      marginRight: theme.spacing.unit,
+      "&:focus": {
+        opacity: 1
+      }
+    }
+  })
+)((props: StyledTabProps) => <Tab disableRipple {...props} />);
+
+const styles = createStyles({
+  title: {
     borderBottom: '1px solid #ccc',
     paddingBottom: '20px'
+  },
+  label: {
+    fontWeight: "bold"
+  },
+  value: {
+  },
+  field: {
+    flex: 1
+  },
+  fields: {
+    marginTop: "20px",
+    display: "flex",
+    border: "1px solid rgba(0,0,0,0.1)",
+    padding: "20px",
   }
-}
+})
 
 interface Props {
   id: string
   resource: string
+  children: (record: User, classes: Record<keyof typeof styles, string>) => JSX.Element
 }
 
 interface EnhancedProps extends WithStyles<typeof styles> {
@@ -25,18 +83,41 @@ interface EnhancedProps extends WithStyles<typeof styles> {
   version: number
 }
 
-class ProfileShow extends React.Component<Props & EnhancedProps> {
+type State = {
+  tabValue: number
+}
+
+class ProfileShow extends React.Component<Props & EnhancedProps, State> {
+  constructor(props: Props & EnhancedProps) {
+    super(props)
+    this.handleTabChange = this.handleTabChange.bind(this)
+    this.state = {tabValue: 0}
+  }
+
+  componentDidMount() {
+    this.updateData();
+  }
+
   componentWillReceiveProps(nextProps: Props & EnhancedProps) {
       if (
           this.props.id !== nextProps.id ||
           nextProps.version !== this.props.version
       ) {
-          this.props.crudGetOne(nextProps.id, nextProps.resource, '/login', false)
+        this.updateData(nextProps.resource, nextProps.id);
       }
   }
 
+  updateData(resource = this.props.resource, id = this.props.id) {
+    this.props.crudGetOne(resource, id, '/login')
+  }
+
+  handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
+    this.setState({tabValue: newValue})
+  }
+
   render() {
-    const { id, isLoading, resource, crudGetOne, record } = this.props
+    const { id, isLoading, resource, crudGetOne, record, children, classes } = this.props
+    const { tabValue } = this.state
 
     if (!record && !isLoading) {
       // first time there is no record and isLoading is false
@@ -53,7 +134,18 @@ class ProfileShow extends React.Component<Props & EnhancedProps> {
 
     return (
       <Authenticated>
-        <div>{record.email}</div>
+        <div>
+          <h3 className={classes.title}>Profile</h3>
+          <StyledTabs value={tabValue} onChange={this.handleTabChange}>
+            <StyledTab label="My Account" />
+            <StyledTab label="API Key" />
+            <StyledTab label="SSH Keys" />
+          </StyledTabs>
+
+          {
+            children(record, classes)
+          }
+        </div>
       </Authenticated>
     )
   }
@@ -85,7 +177,23 @@ const EnhancedProfileShow = compose<Props & EnhancedProps, Props>(
 
 EnhancedProfileShow.defaultProps = {
   id: 'profile',
-  resource: 'profile'
+  resource: 'profile',
+  children: (record: User, classes: Record<keyof typeof styles, string>) => {
+    return <Paper className={classes.fields} elevation={0}>
+        <div className={classes.field}>
+          <div className={classes.label}>Email</div>
+          <div className={classes.value}>{record.email}</div>
+        </div>
+        <div className={classes.field}>
+          <div className={classes.label}>Tier</div>
+          <div className={classes.value}>{record.tier}</div>
+        </div>
+        <div className={classes.field}>
+          <div className={classes.label}>Credits</div>
+          <div className={classes.value}>{record.credit_cents}</div>
+        </div>
+      </Paper>
+  }
 }
 
 export default EnhancedProfileShow
