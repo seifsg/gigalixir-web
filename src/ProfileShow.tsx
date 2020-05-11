@@ -25,9 +25,9 @@ const StyledTabs = withStyles({
     justifyContent: "center",
     backgroundColor: "transparent",
     "& > div": {
-      maxWidth: 40,
+      maxWidth: 80,
       width: "100%",
-      backgroundColor: "#000"
+      backgroundColor: "rgba(0,0,0,0.1)"
     }
   }
 })((props: StyledTabsProps) => (
@@ -51,19 +51,20 @@ const StyledTab = withStyles((theme: Theme) =>
 
 const styles = createStyles({
   title: {
-    borderBottom: '1px solid #ccc',
-    paddingBottom: '20px'
+    borderBottom: '2px solid rgba(0,0,0,0.1)',
+    paddingBottom: '20px',
   },
   label: {
-    fontWeight: "bold"
+    color: "rgba(0,0,0,0.5)",
+    paddingBottom: '5px',
   },
   value: {
   },
   field: {
-    flex: 1
+    flex: 1,
   },
   fields: {
-    marginTop: "20px",
+    marginTop: "40px",
     display: "flex",
     border: "1px solid rgba(0,0,0,0.1)",
     padding: "20px",
