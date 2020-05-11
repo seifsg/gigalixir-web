@@ -25,7 +25,7 @@ const theme = createMuiTheme({
 })
 
 const customRoutes = [
-  <Route path="/profile" component={ProfileShow} />,
+  <Route path="/account/:tab?" component={ProfileShow} />,
   <Route exact path="/register" component={RegisterPage} noLayout />,
   <Route exact path="/notify" component={NotifyPage} noLayout />,
   <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import FormHelperText from '@material-ui/core/FormHelperText'
 
@@ -13,9 +14,19 @@ import { reset } from 'redux-form'
 import { CrudUpdateAction } from './crudUpdate'
 import { CrudFailureAction } from './errorSagas'
 
+const styles = createStyles({
+  checkout: {
+    marginTop: '20px',
+    maxWidth: '350px'
+  },
+  button: {
+    marginTop: '20px'
+  }
+})
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
-interface EnhancedProps {
+interface EnhancedProps extends WithStyles<typeof styles> {
   error?: string
   isLoading: boolean
   stripe: { createToken: Function }
@@ -37,7 +48,6 @@ interface StripeTokenResponse {
 class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
   public constructor(props: Props & EnhancedProps) {
     super(props)
-    // console.log(JSON.stringify(props))
     this.submit = this.submit.bind(this)
   }
 
@@ -63,14 +73,15 @@ class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
   }
 
   public render = () => {
-    const { isLoading, error } = this.props
+    const { classes, isLoading, error } = this.props
     return (
-      <div className="checkout">
+      <div className={classes.checkout}>
         <CardElement disabled={isLoading} />
         <FormHelperText error>{error}</FormHelperText>
 
         <Button
           type="submit"
+          className={classes.button}
           variant="raised"
           color="primary"
           onClick={this.submit}
@@ -145,6 +156,7 @@ const showError = (error: StripeErrorResponse): CrudFailureAction => {
 }
 
 export default compose<Props & EnhancedProps, Props>(
+  withStyles(styles),
   injectStripe,
   connect(mapStateToProps, {
     updatePaymentMethod,

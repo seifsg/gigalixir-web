@@ -1,17 +1,26 @@
 import React from 'react'
+import Paper from '@material-ui/core/Paper'
 import { Elements, StripeProvider } from 'react-stripe-elements'
 import UpgradeForm from './UpgradeForm'
 
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
-export default (props: { record: { tier: string } }) => {
+interface Props {
+    className: string
+    record: {
+        tier: string
+    }
+}
+
+export default (props: Props) => {
   const {
+    className,
     record: { tier }
   } = props
   if (tier === 'FREE') {
     return (
       <StripeProvider apiKey={stripeKey}>
-        <div className="example">
+        <Paper elevation={0} className={className}>
           <h1>Upgrade</h1>
           <div className="upgradeMarketing">
             <h3>Upgrade</h3>
@@ -48,7 +57,7 @@ export default (props: { record: { tier: string } }) => {
                 typescript complains about it if I don't put something here */}
             <UpgradeForm />
           </Elements>
-        </div>
+        </Paper>
       </StripeProvider>
     )
   }
