@@ -22,7 +22,7 @@ class MyUserMenuView extends Component<{
       // The resource
       'profile',
       // The id of the resource item to fetch
-      'profile',
+      'ignored',
       // The base path. Mainly used on failure to fetch the data
       '/login',
       // Whether to refresh the current view. I don't need it here
@@ -44,10 +44,10 @@ class MyUserMenuView extends Component<{
 }
 
 const mapStateToProps = (state: {
-  admin: { resources: { profile: { data: { profile: {} } } } }
+  admin: { resources: { profile: { data: { ignored: {} } } } }
 }) => {
   const resource = 'profile'
-  const id = 'profile'
+  const id = 'ignored'
   const profileState = state.admin.resources[resource]
 
   return {

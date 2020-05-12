@@ -1,47 +1,91 @@
 import React from 'react'
-import { Query } from 'react-admin'
+import { ReduxState } from 'ra-core'
+import { CorrectedReduxState } from './CorrectedReduxState'
+import { crudGetOne as crudGetOneAction } from 'react-admin'
+import { connect } from 'react-redux'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
+import Paper from '@material-ui/core/Paper'
 import { PaymentMethod } from './api/payment_methods'
 
-export default (props: { record: { tier: string } }) => {
-  const {
-    record: { tier }
-  } = props
-  if (tier === 'STANDARD') {
+const styles = createStyles({})
+
+interface Props {
+    className: string
+}
+
+interface EnhancedProps extends WithStyles<typeof styles> {
+  id: string,
+  resource: string,
+  crudGetOne: Function
+  record: PaymentMethod
+  isLoading: boolean
+  version: number
+}
+
+type State = {
+}
+
+
+class Show extends React.Component<Props & EnhancedProps, State> {
+  componentDidMount() {
+    // ininite loop here.. keeps mounting the component over and over
+    // this.updateData();
+  }
+
+  componentWillReceiveProps(nextProps: Props & EnhancedProps) {
+      if (
+          nextProps.version !== this.props.version
+      ) {
+        this.updateData();
+      }
+  }
+
+  updateData() {
+    this.props.crudGetOne(this.props.resource, this.props.id, '/login')
+  }
+
+  render() {
+    const { record, isLoading, className } = this.props
+
+    if (!record && !isLoading) {
+      this.updateData()
+    }
+
+
+    if (!record || isLoading) {
+      return <div>Loading</div>
+    }
+
     return (
-      <Query type="GET_ONE" resource="payment_methods">
-        {({
-          data,
-          loading,
-          error
-        }: {
-          data: PaymentMethod
-          loading: boolean
-          error: Error
-        }): React.ReactElement => {
-          // if (loading) {
-          //   return <Loading />
-          // }
-          // if (error) {
-          //   return <div>Error: {error.message}</div>
-          // }
-          if (!loading && !error) {
-            return (
-              <div>
-                <h1>Current Credit Card</h1>
-                <ul>
-                  <li>Brand: {data.brand}</li>
-                  <li>
-                    Expiration: {data.expMonth}/{data.expYear}
-                  </li>
-                  <li>Last 4: {data.last4}</li>
-                </ul>
-              </div>
-            )
-          }
-          return <span />
-        }}
-      </Query>
+        <Paper elevation={0} className={className}>
+          <h3>Current Payment Method</h3>
+          <div>{record.brand.toUpperCase()} •••• {record.last4}</div>
+          <div>Expires: {record.expMonth}/{record.expYear}</div>
+        </Paper>
     )
   }
-  return <span />
 }
+
+function mapStateToProps(state: ReduxState & CorrectedReduxState, props: Props) {
+  const id = "ignored"
+  const resource = "payment_methods"
+  return {
+    id: id,
+    resource: resource,
+    record: state.admin.resources[resource]
+      ? state.admin.resources[resource].data[id]
+      : null,
+    isLoading: state.admin.loading > 0,
+    version: state.admin.ui.viewVersion
+  }
+}
+
+const EnhancedShow = compose<Props & EnhancedProps, Props>(
+  withStyles(styles),
+  connect(mapStateToProps, { 
+    crudGetOne: crudGetOneAction,
+  })
+)(Show)
+
+export default EnhancedShow

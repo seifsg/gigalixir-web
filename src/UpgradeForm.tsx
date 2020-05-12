@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash/fp'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Button from '@material-ui/core/Button'
@@ -10,13 +11,26 @@ import React, { Component } from 'react'
 import { CardElement, injectStripe } from 'react-stripe-elements'
 import { CrudUpdateAction } from './crudUpdate'
 
-class UpgradeForm extends Component<{
+const styles = createStyles({
+  checkout: {
+    marginTop: '20px',
+    maxWidth: '350px'
+  },
+  button: {
+    marginTop: '20px'
+  }
+})
+
+interface Props {}
+interface EnhancedProps extends WithStyles<typeof styles> {
   upgrade: (token: string) => void
   isLoading: boolean
   error: string | undefined
   stripe: any
-}> {
-  public constructor(props: any) {
+}
+
+class UpgradeForm extends Component<Props & EnhancedProps> {
+  public constructor(props: Props & EnhancedProps) {
     super(props)
     this.submit = this.submit.bind(this)
   }
@@ -28,13 +42,14 @@ class UpgradeForm extends Component<{
   }
 
   public render() {
-    const { isLoading, error } = this.props
+    const { classes, isLoading, error } = this.props
     return (
-      <div className="checkout">
+      <div className={classes.checkout}>
         <CardElement disabled={isLoading} />
         <FormHelperText error>{error}</FormHelperText>
         <Button
           type="submit"
+          className={classes.button}
           variant="raised"
           color="primary"
           onClick={this.submit}
@@ -85,7 +100,8 @@ function mapStateToProps(state: any) {
   }
 }
 
-export default compose(
+export default compose<Props & EnhancedProps, Props>(
+  withStyles(styles),
   injectStripe,
   connect(mapStateToProps, {
     upgrade

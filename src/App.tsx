@@ -52,6 +52,16 @@ const App = () => (
     >
       <Resource name="apps" show={AppShow} list={AppList} create={AppCreate} />
       <Resource name="profile" />
+
+      {/*
+        You have to put this here to "register" the resource
+        If you don't, then the resource is not added to the redux store
+        Even though it is not added, it still re-renders!
+        This potentially causes child components to re-mount and re-fetch this resource!
+        That is an infinite loop. 
+        Still don't 100% understand, but this fixes it.
+      */}
+      <Resource name="payment_methods" />
     </Admin>
   </BrowserRouter>
 )

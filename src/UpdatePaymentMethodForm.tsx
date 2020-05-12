@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import FormHelperText from '@material-ui/core/FormHelperText'
 

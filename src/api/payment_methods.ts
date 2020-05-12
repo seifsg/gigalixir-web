@@ -10,7 +10,7 @@ interface Response {
 }
 
 export interface PaymentMethod {
-  id: undefined // any way to not have this?
+  id: 'ignored' // react-admin checks this
   brand: string
   expMonth: number
   expYear: number
@@ -45,9 +45,10 @@ export const get = (): Promise<{ data: PaymentMethod }> => {
   return api
     .get<{ data: { data: Response } }>('/frontend/api/payment_methods')
     .then((response): { data: PaymentMethod } => {
+        console.log(response)
       return {
         data: {
-          id: undefined,
+          id: 'ignored',
           brand: response.data.data.brand,
           expMonth: response.data.data.exp_month,
           expYear: response.data.data.exp_year,

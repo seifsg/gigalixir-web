@@ -9,7 +9,7 @@ interface Response {
   credit_cents: number
 }
 export interface User extends Response {
-  id: 'profile'
+  id: 'ignored'
 }
 export const get = (): Promise<{ data: User }> => {
   return api
@@ -22,7 +22,7 @@ export const get = (): Promise<{ data: User }> => {
 
       return {
         data: {
-          id: 'profile',
+          id: 'ignored',
           ...response.data.data
         }
       }

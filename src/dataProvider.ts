@@ -177,7 +177,7 @@ const dataProvider = <T extends DataProviderType>(
       return users.get().catch(e => {
         if (e.message === 'Request failed with status code 401') {
           logger.error(JSON.stringify(e))
-          return Promise.resolve({ data: { id: 'profile' } })
+          return Promise.resolve({ data: { id: 'ignored' } })
         }
         return Promise.reject(e)
       })

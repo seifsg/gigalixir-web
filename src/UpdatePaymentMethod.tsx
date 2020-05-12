@@ -21,9 +21,9 @@ export default (props: Props) => {
     return (
       <StripeProvider apiKey={stripeKey}>
         <Paper elevation={0} className={className}>
-          <h3>Update Credit Card</h3>
+          <h3>Update Payment Method</h3>
           <div>
-              Enter your new credit card information below
+              Enter your card details below
               <Elements>
                 {/* stripe parameter is injected automatically by StripeProvider, but 
                     typescript complains about it if I don't put something here */}

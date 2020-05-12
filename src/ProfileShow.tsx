@@ -14,6 +14,7 @@ import Tab from '@material-ui/core/Tab'
 import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
 import Upgrade from './Upgrade'
+import { CorrectedReduxState } from './CorrectedReduxState'
 
 interface StyledTabsProps {
   value: number;
@@ -113,7 +114,11 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
   }
 
   componentDidMount() {
-    this.updateData();
+    // not an infinite loop like the child component because this does not
+    // have to re-render on every state change (i think). But just to stay
+    // consistent, we updateData below in the render function based on the
+    // record and isLoading state
+    // this.updateData();
   }
 
   componentWillReceiveProps(nextProps: Props & EnhancedProps) {
@@ -121,12 +126,16 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
           this.props.id !== nextProps.id ||
           nextProps.version !== this.props.version
       ) {
-        this.updateData(nextProps.resource, nextProps.id);
+        this.updateData();
       }
   }
 
-  updateData(resource = this.props.resource, id = this.props.id) {
-    this.props.crudGetOne(resource, id, '/login')
+  updateData() {
+    this.props.crudGetOne(this.props.resource, this.props.id, '/login')
+
+    // should we load everything from the "container" and let everything
+    // else be "presentational" only?
+    // this.props.crudGetOne('payment_methods', 'ignored', '/login')
   }
 
   handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
@@ -153,15 +162,10 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
 
 
   render() {
-    const { tabs, id, isLoading, resource, crudGetOne, record, classes } = this.props
+    const { tabs, isLoading, record, classes } = this.props
 
     if (!record && !isLoading) {
-      // first time there is no record and isLoading is false
-      // second time there is no record and isLoading is true
-      // third time, there is a record, but it has no fields! and isLoading is true
-      // fourth time, there is a record with fields and isLoading is false
-      // this puts it in the store. sets isLoading and waits for new props I think
-      crudGetOne(id, resource, '/login', false)
+      this.updateData()
     }
 
     if (!record || isLoading) {
@@ -184,13 +188,6 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
   }
 }
 
-export interface CorrectedReduxState {
-  admin: {
-    ui: {
-      viewVersion: number
-    }
-  }
-}
 
 function mapStateToProps(state: ReduxState & CorrectedReduxState, props: Props) {
   return {
@@ -212,34 +209,45 @@ const EnhancedProfileShow = compose<Props & EnhancedProps, Props>(
 )(ProfileShow)
 
 EnhancedProfileShow.defaultProps = {
-  id: 'profile',
+  id: 'ignored',
   resource: 'profile',
   tabs: [
     {
       path: "profile",
       label: "Profile",
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Paper className={classNames(classes.fields, classes.section)} elevation={0}>
-              <div className={classes.field}>
-                <div className={classes.label}>Email</div>
-                <div className={classes.value}>{record.email}</div>
-              </div>
-              <div className={classes.field}>
-                <div className={classes.label}>Tier</div>
-                <div className={classes.value}>{record.tier}</div>
-              </div>
-              <div className={classes.field}>
-                <div className={classes.label}>Credits</div>
-                <div className={classes.value}>{record.credit_cents}</div>
-              </div>
-            </Paper>
+        var formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        });
+
+        return <div>
+          <Paper className={classNames(classes.fields, classes.section)} elevation={0}>
+            <div className={classes.field}>
+              <div className={classes.label}>Email</div>
+              <div className={classes.value}>{record.email}</div>
+            </div>
+            <div className={classes.field}>
+              <div className={classes.label}>Tier</div>
+              <div className={classes.value}>{record.tier}</div>
+            </div>
+            <div className={classes.field}>
+              <div className={classes.label}>Credits</div>
+          <div className={classes.value}>{formatter.format(record.credit_cents / 100.0)}</div>
+            </div>
+          </Paper>
+          <Upgrade className={classes.section} record={record}/>
+        </div>
       }
     },
     {
       path: "payment-method",
       label: "Payment Method",
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <UpdatePaymentMethod className={classes.section} record={record} />;
+        return <div>
+          <PaymentMethod className={classes.section} />
+          <UpdatePaymentMethod className={classes.section} record={record} />
+        </div>
       }
     },
     {

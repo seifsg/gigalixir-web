@@ -21,7 +21,6 @@ export default (props: Props) => {
     return (
       <StripeProvider apiKey={stripeKey}>
         <Paper elevation={0} className={className}>
-          <h1>Upgrade</h1>
           <div className="upgradeMarketing">
             <h3>Upgrade</h3>
             <p>You are currently on the free plan.</p>
@@ -47,7 +46,7 @@ export default (props: Props) => {
               </a>
             </p>
             <p>
-              To estimate costs, try our <a href="/pricing">Cost Estimator</a>
+                To estimate costs, try our <a href="https://www.gigalixir.com/pricing">Cost Estimator</a>
             </p>
             <p>Please enter your credit card information below to upgrade.</p>
           </div>
