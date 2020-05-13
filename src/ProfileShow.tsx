@@ -57,6 +57,9 @@ const StyledTab = withStyles((theme: Theme) =>
 )((props: StyledTabProps) => <Tab disableRipple {...props} />);
 
 const styles = createStyles({
+  container: {
+    marginLeft: "15px"
+  },
   title: {
     borderBottom: '2px solid rgba(0,0,0,0.1)',
     paddingBottom: '20px',
@@ -174,7 +177,7 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
 
     return (
       <Authenticated>
-        <div>
+        <div className={classes.container}>
           <h3 className={classes.title}>My Account</h3>
           <StyledTabs value={this.selectedTabIndex()} onChange={this.handleTabChange}>
             {

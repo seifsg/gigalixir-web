@@ -45,7 +45,6 @@ export const get = (): Promise<{ data: PaymentMethod }> => {
   return api
     .get<{ data: { data: Response } }>('/frontend/api/payment_methods')
     .then((response): { data: PaymentMethod } => {
-        console.log(response)
       return {
         data: {
           id: 'ignored',

@@ -1,7 +1,9 @@
 export interface CorrectedReduxState {
+  locale: string,
   admin: {
     ui: {
-      viewVersion: number
+        viewVersion: number,
+        sidebarOpen: boolean
     }
   }
 }
