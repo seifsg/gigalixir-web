@@ -2,6 +2,7 @@ import React from 'react'
 import { Layout } from 'react-admin'
 import AppBar from './AppBar'
 import Sidebar from './Sidebar'
+import Menu from './Menu'
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
@@ -30,6 +31,6 @@ const EnhancedLogo = withStyles(styles)(Logo)
 
 const MyAppBar = (props: {}) => <AppBar {...props}><EnhancedLogo/></AppBar>
 const MySidebar = (props: {}) => <Sidebar {...props}/>
-const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} sidebar={MySidebar} />
+const MyLayout = (props: {}) => <Layout {...props} appBar={MyAppBar} sidebar={MySidebar} menu={Menu}/>
 
 export default MyLayout
