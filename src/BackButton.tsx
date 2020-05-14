@@ -16,7 +16,7 @@ class BackButton extends Component<Props> {
   public render() {
     return (
       <Button variant="contained" color="primary" onClick={this.handleClick}>
-        Go Back
+        &#129040;
       </Button>
     )
   }

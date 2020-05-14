@@ -9,7 +9,7 @@ import {
   NumberInput,
   Query,
   SaveButton,
-  Show,
+  ShowController,
   SimpleForm,
   SimpleShowLayout,
   TextField,
@@ -18,10 +18,13 @@ import {
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 import { App } from './api/apps'
+import { User } from './api/users'
 import { Stats } from './api/stats'
 import Chart from './Chart'
 import logger from './logger'
-import BackButton from './BackButton'
+import Page from './Page'
+import Section from './Section'
+import Bash from './Bash'
 
 interface ShowProps {
   id: string
@@ -160,18 +163,110 @@ const AppScaleToolbar = connect(undefined, { scaleApp: scaleApp_ })(
   AppScaleToolbar_
 )
 
-const Setup = (props: { record: Record }) => {
+const Setup = (props: { profile: User; app: App }) => {
   const {
-    record: { id }
+    profile: { email, apiKey },
+    app: { id }
   } = props
-  return <div>Instructions to set up {id}</div>
-}
+  return (
+    <Section>
+      <div>
+        <div>
+          <h4>Prepare Your App</h4>
+          <div>
+            Follow the instructions on{' '}
+            <a href="http://gigalixir.readthedocs.io/en/latest/main.html#modifying-an-existing-app-to-run-on-gigalixir">
+              how to modify an existing app to run on Gigalixir
+            </a>
+            .
+          </div>
+          <div>
+            Or if you prefer video, watch{' '}
+            <a href="https://gigalixir.readthedocs.io/en/latest/main.html#screencast">
+              {' '}
+              Deploying with Gigalixir
+            </a>
+            .
+          </div>
+          <div>
+            If you run into issues, feel free to{' '}
+            <a href="mailto:help@gigalixir.com">contact us</a>. Or if you point
+            us to your source code, we're happy to do the onboarding for you.
+          </div>
+        </div>
+        <div>
+          <h4>Deploy</h4>
+          <Bash>
+            <div>
+              git remote add gigalixir https://{email}:{apiKey}
+              @git.gigalixir.com/{id}.git
+            </div>
+            <div>git push gigalixir master</div>
+          </Bash>
 
-interface Record {
-  id: string
-  size: number
-  replicas: number
-  version: number
+          <div>
+            After a minute, visit{' '}
+            <a target="_blank" href={`https://${id}.gigalixirapp.com/`}>
+              https://{id}.gigalixirapp.com/
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4>Install the command-line interface</h4>
+          <Bash>
+            <div>sudo pip install gigalixir --ignore-installed six</div>
+            <div>gigalixir --help</div>
+            <div>gigalixir login</div>
+          </Bash>
+        </div>
+        <div>
+          <h4>What's next?</h4>
+          <ul>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#how-to-provision-a-free-postgresql-database">
+                Create a database
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#logging">
+                Tail logs
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-console">
+                Remote console
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-observer">
+                Remote observer
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#migrations">
+                Run migrations
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#hot-upgrade">
+                Hot upgrade
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#rollback">
+                Rollback
+              </a>
+            </li>
+            <li>
+              <a href="http://gigalixir.readthedocs.io/en/latest/index.html">
+                ...and more
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </Section>
+  )
 }
 
 // TODO: I kinda hate that record is optional here, but otherwise, typescript
@@ -179,47 +274,16 @@ interface Record {
 // This is because react-admin injects the record for us by cloning the element.
 // I looked at react-admin's TextField component to see how they handle it and they
 // just make it optional like this so we copy it.
-const SetupOrShowLayout = (props: { record?: Record }) => {
-  const { record } = props
-  if (!record) {
-    return <div>Oops, no record found. Please contact help@gigalixir.com</div>
-  }
-  const version = _.get('version', record)
-  const id = _.get('id', record)
-  if (version === 2) {
-    return <Setup record={record} />
-  }
-  return (
-    <SimpleShowLayout {...props}>
-      <TextField source="id" />
-      <TextField source="size" />
-      <TextField source="replicas" />
-      <TextField source="version" />
-      <Charts id={id} />
-    </SimpleShowLayout>
-  )
-}
-
-const styles = {
-  // list: {
-  //   width: 250
-  // },
-  // fullList: {
-  //   width: 'auto'
-  // }
-}
-
-interface AppShowProps {
-  id: string
-  version: number
-}
-class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
-  public constructor(props: AppShowProps) {
+class SetupOrShowLayout extends React.Component<
+  { profile: User; app?: App },
+  { open: boolean }
+> {
+  constructor(props: { profile: User; app?: App }) {
     super(props)
     this.state = { open: false }
   }
 
-  public render() {
+  render() {
     const toggleDrawer = (open: boolean) => (
       event: React.KeyboardEvent | React.MouseEvent
     ) => {
@@ -235,12 +299,25 @@ class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
       this.setState({ open })
     }
 
-    const { id } = this.props
+    const { profile, app } = this.props
     const { open } = this.state
+    if (!profile) {
+        // TODO: this doesn't seem like the right way to handle loading states
+        // both profile and app start out as undefined and then later get filled in
+        // maybe in random order
+      return <div>Loading</div>
+    }
+    if (!app) {
+        // it's possible that even after loading, app is not found
+      return <div>Oops, no record found. Please contact help@gigalixir.com</div>
+    }
+    const version = _.get('version', app)
+    const id = _.get('id', app)
+    if (version === 2) {
+      return <Setup profile={profile} app={app} />
+    }
     return (
-      <>
-        <BackButton />
-
+      <SimpleShowLayout {...this.props}>
         <Button
           onClick={toggleDrawer(true)}
           variant="contained"
@@ -248,10 +325,6 @@ class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
         >
           Scale
         </Button>
-
-        <Show {...this.props}>
-          <SetupOrShowLayout />
-        </Show>
         <SwipeableDrawer
           anchor="right"
           open={open}
@@ -265,9 +338,50 @@ class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
             onSave={() => this.setState({ open: false })}
           />
         </SwipeableDrawer>
-      </>
+        <TextField source="id" />
+        <TextField source="size" />
+        <TextField source="replicas" />
+        <TextField source="version" />
+        <Charts id={id} />
+      </SimpleShowLayout>
     )
   }
 }
 
+const styles = {
+}
+
+interface AppShowProps {
+  id: string
+  version: number
+}
+class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
+  public constructor(props: AppShowProps) {
+    super(props)
+    this.state = { open: false }
+  }
+
+  public render() {
+    const { id } = this.props
+    return (
+      <Page title={id}>
+        <div>
+          <ShowController resource="profile" id="ignored" basePath="/login">
+            {(profileControllerProps: any) => {
+              const profile = profileControllerProps.record
+              return (
+                <ShowController {...this.props}>
+                  {(controllerProps: any) => {
+                    const app = controllerProps.record
+                    return <SetupOrShowLayout app={app} profile={profile} />
+                  }}
+                </ShowController>
+              )
+            }}
+          </ShowController>
+        </div>
+      </Page>
+    )
+  }
+}
 export const AppShow = withStyles(styles)(AppShowBase)

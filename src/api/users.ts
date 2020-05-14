@@ -5,11 +5,16 @@ import * as api from './api'
 type tier = 'STANDARD' | 'FREE'
 interface Response {
   tier: tier
+  api_key: string
   email: string
   credit_cents: number
 }
-export interface User extends Response {
+export interface User {
   id: 'ignored'
+  tier: tier
+  apiKey: string
+  email: string
+  creditCents: number
 }
 export const get = (): Promise<{ data: User }> => {
   return api
@@ -23,7 +28,10 @@ export const get = (): Promise<{ data: User }> => {
       return {
         data: {
           id: 'ignored',
-          ...response.data.data
+          tier: response.data.data.tier,
+          apiKey: response.data.data.api_key,
+          email: response.data.data.email,
+          creditCents: response.data.data.credit_cents
         }
       }
     })

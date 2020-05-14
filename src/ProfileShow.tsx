@@ -232,7 +232,7 @@ EnhancedProfileShow.defaultProps = {
             </div>
             <div className={classes.field}>
               <div className={classes.label}>Credits</div>
-          <div className={classes.value}>{formatter.format(record.credit_cents / 100.0)}</div>
+          <div className={classes.value}>{formatter.format(record.creditCents / 100.0)}</div>
             </div>
           </Paper>
           <Upgrade className={classes.section} record={record}/>
