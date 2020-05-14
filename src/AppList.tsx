@@ -1,4 +1,6 @@
 import Card from '@material-ui/core/Card'
+import compose from 'recompose/compose'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { push as routerPush } from 'react-router-redux'
 import Button from '@material-ui/core/Button'
@@ -52,12 +54,26 @@ AppGrid.defaultProps = {
   ids: []
 }
 
+
+const styles = createStyles({
+  container: {
+    marginLeft: "15px"
+  },
+  title: {
+    borderBottom: '1px solid rgba(0,0,0,0.1)',
+    paddingBottom: '20px',
+  }
+})
+
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
-interface ListProps {
+interface Props {
   id: string
   basePath: string
   resource: string
+}
+
+interface EnhancedProps extends WithStyles<typeof styles> {
 }
 
 // setting props properly here is hard because 1) there are a ton of props that react-admin injects for us
@@ -85,12 +101,12 @@ const MaybeEmptyDatagrid = (props: any) => {
   }
   return (
     <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
-      <TextField source="id" />
-      <NumberField source="size" />
-      <NumberField source="replicas" />
-      <TextField source="cloud" />
-      <TextField source="region" />
-      <TextField source="stack" />
+      <TextField source="id" sortable={false}/>
+      <NumberField source="size" sortable={false}/>
+      <NumberField source="replicas" sortable={false}/>
+      <TextField source="cloud" sortable={false}/>
+      <TextField source="region" sortable={false}/>
+      <TextField source="stack" sortable={false}/>
     </Datagrid>
   )
 }
@@ -101,11 +117,21 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
   push: routerPush
 })(MaybeEmptyDatagrid)
 
-const AppList = (props: ListProps) => (
-  <List exporter={false} title="My Apps" pagination={null} bulkActions={false} {...props}>
-    {/* <AppGrid /> */}
-    <ConnectedMaybeEmptyDatagrid />
-  </List>
-)
+const AppList = (props: Props & EnhancedProps) => {
+    const { classes } = props
+    return (
+      <div className={classes.container}>
+        <h3 className={classes.title}>My Apps</h3>
+        <List exporter={false} title="My Apps" pagination={null} bulkActions={false} {...props}>
+          {/* <AppGrid /> */}
+          <ConnectedMaybeEmptyDatagrid />
+        </List>
+      </div>
+    )
+}
 
-export default AppList
+const EnhancedAppList = compose<Props & EnhancedProps, Props>(
+  withStyles(styles),
+)(AppList)
+
+export default EnhancedAppList
