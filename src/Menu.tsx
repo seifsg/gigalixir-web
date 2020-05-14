@@ -5,13 +5,16 @@ import inflection from 'inflection';
 import compose from 'recompose/compose';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
-import { getResources, translate } from 'ra-core';
+import { getResources, translate, userLogout as userLogoutAction } from 'ra-core';
 import DefaultIcon from '@material-ui/icons/ViewList';
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import ExitIcon from '@material-ui/icons/PowerSettingsNew';
 
-import { Responsive, MenuItemLink }  from 'react-admin';
+import { MenuItemLink }  from 'react-admin';
 
 const styles = createStyles({
     main: {
+        marginTop: '14px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -42,6 +45,7 @@ const Menu = ({
     resources,
     translate,
     logout,
+    userLogout,
     ...rest
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 any) => (
@@ -62,7 +66,22 @@ any) => (
                     dense={dense}
                 />
             ))}
-        <Responsive xsmall={logout} medium={null} />
+        <MenuItemLink
+                    key="account"
+                    to="/account"
+                    primaryText="My Account"
+                    leftIcon={ <AccountCircle /> }
+                    onClick={onMenuClick}
+                    dense={dense}
+                />
+        <MenuItemLink
+                    key="logout"
+                    to="#"
+                    primaryText="Logout"
+                    leftIcon={ <ExitIcon /> }
+                    onClick={userLogout}
+                    dense={dense}
+                />
     </div>
 );
 
@@ -90,11 +109,17 @@ const mapStateToProps = ( state: any ) => ({
     pathname: state.router.location.pathname, // used to force redraw on navigation
 });
 
+const mapDispatchToProps = (dispatch: any, { redirectTo }: any) => ({
+    userLogout: () => dispatch(userLogoutAction(redirectTo)),
+});
+
+
 const enhance = compose(
     translate,
     connect(
         mapStateToProps,
-        {}, // Avoid connect passing dispatch in props,
+        mapDispatchToProps,
+        // {}, // Avoid connect passing dispatch in props,
         null,
         {
             areStatePropsEqual: (prev, next) =>

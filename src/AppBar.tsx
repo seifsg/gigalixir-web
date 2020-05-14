@@ -1,4 +1,4 @@
-import React, { Children, cloneElement } from 'react'
+import React, { Children } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import MuiAppBar from '@material-ui/core/AppBar'
@@ -98,7 +98,6 @@ any) => (
           children
         )}
         <LoadingIndicator />
-        {cloneElement(userMenu, { logout })}
       </Toolbar>
     </MuiAppBar>
   </Headroom>
