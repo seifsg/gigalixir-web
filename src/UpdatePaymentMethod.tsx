@@ -1,5 +1,4 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
 import { Elements, StripeProvider } from 'react-stripe-elements'
 import UpdatePaymentMethodForm from './UpdatePaymentMethodForm'
 import Section from './Section'
@@ -7,7 +6,6 @@ import Section from './Section'
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
 interface Props {
-    className: string
     record: {
         tier: string
     }
@@ -15,7 +13,6 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    className,
     record: { tier }
   } = props
   if (tier === 'STANDARD') {

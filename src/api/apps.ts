@@ -7,6 +7,7 @@ export interface App {
   replicas: number
   region: string
   cloud: string
+  version: number
 }
 interface Response {
   unique_name: string
@@ -15,6 +16,7 @@ interface Response {
   replicas: number
   region: string
   cloud: string
+  version: number
 }
 
 type Cloud = 'gcp' | 'aws'
@@ -114,7 +116,8 @@ export const create = (
           cloud,
           region,
           replicas: app.replicas,
-          size: app.size
+          size: app.size,
+          version: 2 // first version is always 2?
         }
       }
     })

@@ -203,8 +203,8 @@ EnhancedProfileShow.defaultProps = {
       label: "Payment Method",
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
         return <div>
-          <PaymentMethod className={classes.section} />
-          <UpdatePaymentMethod className={classes.section} record={record} />
+          <PaymentMethod />
+          <UpdatePaymentMethod record={record} />
         </div>
       }
     },
