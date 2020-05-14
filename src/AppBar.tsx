@@ -17,6 +17,11 @@ import Headroom from './Headroom'
 
 const styles = (theme: Theme) =>
   createStyles({
+    border: {
+      display: "block",
+      margin: "0 25px",
+      borderBottom: "2px solid rgba(0,0,0,0.1)"
+    },
     toolbar: {
       paddingRight: 24
     },
@@ -100,6 +105,7 @@ any) => (
         <LoadingIndicator />
       </Toolbar>
     </MuiAppBar>
+    <div className={classes.border}></div>
   </Headroom>
 )
 

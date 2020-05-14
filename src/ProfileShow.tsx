@@ -34,6 +34,7 @@ const StyledTabs = withStyles({
     "& > div": {
       maxWidth: 80,
       width: "100%",
+      height: "1px",
       backgroundColor: "rgba(0,0,0,0.1)"
     }
   }
@@ -61,7 +62,7 @@ const styles = createStyles({
     marginLeft: "15px"
   },
   title: {
-    borderBottom: '2px solid rgba(0,0,0,0.1)',
+    borderBottom: '1px solid rgba(0,0,0,0.1)',
     paddingBottom: '20px',
   },
   label: {

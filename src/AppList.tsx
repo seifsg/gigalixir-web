@@ -102,7 +102,7 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 })(MaybeEmptyDatagrid)
 
 const AppList = (props: ListProps) => (
-  <List title="My Apps" pagination={null} bulkActions={false} {...props}>
+  <List exporter={false} title="My Apps" pagination={null} bulkActions={false} {...props}>
     {/* <AppGrid /> */}
     <ConnectedMaybeEmptyDatagrid />
   </List>
