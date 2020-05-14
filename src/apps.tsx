@@ -1,7 +1,7 @@
 import React from 'react'
 import { Create, SelectInput, SimpleForm, TextInput } from 'react-admin'
 import AppList from './AppList'
-import { AppShow } from './AppShow'
+import AppShow from './AppShow'
 
 export { AppList, AppShow }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import { Elements, StripeProvider } from 'react-stripe-elements'
 import UpdatePaymentMethodForm from './UpdatePaymentMethodForm'
+import Section from './Section'
 
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
@@ -20,8 +21,8 @@ export default (props: Props) => {
   if (tier === 'STANDARD') {
     return (
       <StripeProvider apiKey={stripeKey}>
-        <Paper elevation={0} className={className}>
-          <h3>Update Payment Method</h3>
+        <Section>
+          <h4>Update Payment Method</h4>
           <div>
               Enter your card details below
               <Elements>
@@ -30,7 +31,7 @@ export default (props: Props) => {
                 <UpdatePaymentMethodForm />
               </Elements>
           </div>
-        </Paper>
+        </Section>
       </StripeProvider>
     )
   }

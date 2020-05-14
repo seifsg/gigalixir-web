@@ -1,62 +1,21 @@
-import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import Section from './Section'
 import _ from 'lodash/fp'
 import { push as routerPush } from 'react-router-redux'
 import classNames from 'classnames'
 import Paper from '@material-ui/core/Paper'
 import React from 'react'
-import { Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
+import { Loading, Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import { ReduxState } from 'ra-core'
 import { User } from './api/users'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
 import Upgrade from './Upgrade'
 import { CorrectedReduxState } from './CorrectedReduxState'
 import Page from './Page'
-
-interface StyledTabsProps {
-  value: number;
-  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
-}
-
-interface StyledTabProps {
-  label: string;
-}
-
-
-const StyledTabs = withStyles({
-  indicator: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    "& > div": {
-      maxWidth: 80,
-      width: "100%",
-      height: "1px",
-      backgroundColor: "rgba(0,0,0,0.1)"
-    }
-  }
-})((props: StyledTabsProps) => (
-  <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />
-));
-
-const StyledTab = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textTransform: "none",
-      color: "#000",
-      fontWeight: theme.typography.fontWeightRegular,
-      fontSize: theme.typography.pxToRem(15),
-      marginRight: theme.spacing.unit,
-      "&:focus": {
-        opacity: 1
-      }
-    }
-  })
-)((props: StyledTabProps) => <Tab disableRipple {...props} />);
+import { StyledTab, StyledTabs } from './Tabs'
 
 const styles = createStyles({
   label: {
@@ -167,7 +126,7 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
     }
 
     if (!record || isLoading) {
-      return <div>Loading</div>
+      return <Loading/>
     }
 
     return (
@@ -253,14 +212,14 @@ EnhancedProfileShow.defaultProps = {
       path: "api-key",
       label: "API Key",
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Paper className={classes.section} elevation={0}>Coming Soon</Paper>
+        return <Section>Coming Soon</Section>
       }
     },
     {
       path: "ssh-keys",
       label: "SSH Keys",
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Paper className={classes.section} elevation={0}>Coming Soon</Paper>
+        return <Section>Coming Soon</Section>
       }
     }
   ]

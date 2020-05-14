@@ -25,6 +25,7 @@ const theme = createMuiTheme({
 })
 
 const customRoutes = [
+  <Route path="/apps/:id/:tab?" component={AppShow} />,
   <Route path="/account/:tab?" component={ProfileShow} />,
   <Route exact path="/register" component={RegisterPage} noLayout />,
   <Route exact path="/notify" component={NotifyPage} noLayout />,
@@ -50,7 +51,7 @@ const App = () => (
       authProvider={authProvider}
       dataProvider={dataProvider}
     >
-      <Resource name="apps" show={AppShow} list={AppList} create={AppCreate} />
+      <Resource name="apps" list={AppList} create={AppCreate} />
       <Resource name="profile" />
 
       {/*

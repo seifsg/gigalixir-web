@@ -1,4 +1,7 @@
 import Button from '@material-ui/core/Button'
+import { withRouter } from 'react-router'
+import { push as routerPush } from 'react-router-redux'
+import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import React from 'react'
@@ -17,6 +20,7 @@ import {
 } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
+import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
 import { User } from './api/users'
 import { Stats } from './api/stats'
@@ -170,8 +174,6 @@ const Setup = (props: { profile: User; app: App }) => {
   } = props
   return (
     <Section>
-      <div>
-        <div>
           <h4>Prepare Your App</h4>
           <div>
             Follow the instructions on{' '}
@@ -193,8 +195,6 @@ const Setup = (props: { profile: User; app: App }) => {
             <a href="mailto:help@gigalixir.com">contact us</a>. Or if you point
             us to your source code, we're happy to do the onboarding for you.
           </div>
-        </div>
-        <div>
           <h4>Deploy</h4>
           <Bash>
             <div>
@@ -210,16 +210,12 @@ const Setup = (props: { profile: User; app: App }) => {
               https://{id}.gigalixirapp.com/
             </a>
           </div>
-        </div>
-        <div>
           <h4>Install the command-line interface</h4>
           <Bash>
             <div>sudo pip install gigalixir --ignore-installed six</div>
             <div>gigalixir --help</div>
             <div>gigalixir login</div>
           </Bash>
-        </div>
-        <div>
           <h4>What's next?</h4>
           <ul>
             <li>
@@ -263,10 +259,31 @@ const Setup = (props: { profile: User; app: App }) => {
               </a>
             </li>
           </ul>
-        </div>
-      </div>
     </Section>
   )
+}
+
+interface Props {
+  profile: User
+  app?: App
+  tabs: {
+    path: string
+    label: string
+    element: (
+      profile: User,
+      app: App,
+      classes: Record<keyof typeof styles, string>
+    ) => JSX.Element
+  }[]
+}
+
+interface EnhancedProps {
+  match: {
+    params: {
+      tab: string
+    }
+  }
+  push: (url: string) => void
 }
 
 // TODO: I kinda hate that record is optional here, but otherwise, typescript
@@ -275,12 +292,40 @@ const Setup = (props: { profile: User; app: App }) => {
 // I looked at react-admin's TextField component to see how they handle it and they
 // just make it optional like this so we copy it.
 class SetupOrShowLayout extends React.Component<
-  { profile: User; app?: App },
+  Props & EnhancedProps,
   { open: boolean }
 > {
-  constructor(props: { profile: User; app?: App }) {
+  constructor(props: Props & EnhancedProps) {
     super(props)
     this.state = { open: false }
+    this.handleTabChange = this.handleTabChange.bind(this)
+  }
+
+  handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
+    const tabName = this.props.tabs[newValue].path
+    const { app } = this.props
+    if (!app) {
+        // can this happen?
+    } else {
+        this.props.push(`/apps/${app.id}/${tabName}`)
+    }
+  }
+
+  selectedTab() {
+    const index = this.selectedTabIndex()
+    return this.props.tabs[index]
+  }
+
+  selectedTabIndex() {
+    const index = _.findIndex(tab => {
+      return tab.path === this.props.match.params.tab
+    }, this.props.tabs)
+
+    if (index === -1) {
+      return 0
+    }
+
+    return index
   }
 
   render() {
@@ -299,22 +344,34 @@ class SetupOrShowLayout extends React.Component<
       this.setState({ open })
     }
 
-    const { profile, app } = this.props
+    const { profile, app, tabs } = this.props
     const { open } = this.state
     if (!profile) {
-        // TODO: this doesn't seem like the right way to handle loading states
-        // both profile and app start out as undefined and then later get filled in
-        // maybe in random order
-      return <div>Loading</div>
+      // TODO: this doesn't seem like the right way to handle loading states
+      // both profile and app start out as undefined and then later get filled in
+      // maybe in random order
+      return <Loading />
     }
     if (!app) {
-        // it's possible that even after loading, app is not found
+      // it's possible that even after loading, app is not found
       return <div>Oops, no record found. Please contact help@gigalixir.com</div>
     }
     const version = _.get('version', app)
     const id = _.get('id', app)
     if (version === 2) {
-      return <Setup profile={profile} app={app} />
+      return (
+        <div>
+          <StyledTabs
+            value={this.selectedTabIndex()}
+            onChange={this.handleTabChange}
+          >
+            {tabs.map(x => (
+              <StyledTab key={x.label} label={x.label} />
+            ))}
+          </StyledTabs>
+          { this.selectedTab().element(profile, app, {}) }
+        </div>
+      )
     }
     return (
       <SimpleShowLayout {...this.props}>
@@ -348,32 +405,105 @@ class SetupOrShowLayout extends React.Component<
   }
 }
 
-const styles = {
-}
+const styles = {}
 
 interface AppShowProps {
   id: string
   version: number
-}
-class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
-  public constructor(props: AppShowProps) {
-    super(props)
-    this.state = { open: false }
+  match: {
+    params: {
+      id: string
+    }
   }
-
+}
+class AppShow extends React.Component<AppShowProps> {
   public render() {
-    const { id } = this.props
+    const { match: { params: { id } } } = this.props
+    const tabs = [
+      {
+        path: 'setup',
+        label: 'Setup',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Setup profile={profile} app={app} />
+        }
+      },
+      {
+        path: 'dashboard',
+        label: 'Dashboard',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      },
+      {
+        path: 'access',
+        label: 'Access Permissions',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      },
+      {
+        path: 'configuration',
+        label: 'Configuration',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      },
+      {
+        path: 'domains',
+        label: 'Domains',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      },
+      {
+        path: 'drains',
+        label: 'Log Drains',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      }
+    ]
     return (
       <Page title={id}>
         <div>
           <ShowController resource="profile" id="ignored" basePath="/login">
-            {(profileControllerProps: any) => {
+            {(profileControllerProps: { record: User }) => {
               const profile = profileControllerProps.record
               return (
-                <ShowController {...this.props}>
-                  {(controllerProps: any) => {
+                <ShowController resource="apps" id={id} basePath="/login">
+                  {(controllerProps: { record: App }) => {
                     const app = controllerProps.record
-                    return <SetupOrShowLayout app={app} profile={profile} />
+                    return (
+                      <EnhancedSetupOrShowLayout
+                        app={app}
+                        profile={profile}
+                        tabs={tabs}
+                      />
+                    )
                   }}
                 </ShowController>
               )
@@ -384,4 +514,12 @@ class AppShowBase extends React.Component<AppShowProps, { open: boolean }> {
     )
   }
 }
-export const AppShow = withStyles(styles)(AppShowBase)
+
+const EnhancedSetupOrShowLayout = compose<Props & EnhancedProps, Props>(
+  withRouter,
+  connect(null, {
+    push: routerPush
+  })
+)(SetupOrShowLayout)
+
+export default withStyles(styles)(AppShow)

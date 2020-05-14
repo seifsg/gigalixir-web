@@ -7,6 +7,7 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import Paper from '@material-ui/core/Paper'
 import { PaymentMethod } from './api/payment_methods'
+import Section from './Section'
 
 const styles = createStyles({})
 
@@ -58,11 +59,11 @@ class Show extends React.Component<Props & EnhancedProps, State> {
     }
 
     return (
-        <Paper elevation={0} className={className}>
-          <h3>Current Payment Method</h3>
+        <Section>
+          <h4>Current Payment Method</h4>
           <div>{record.brand.toUpperCase()} •••• {record.last4}</div>
           <div>Expires: {record.expMonth}/{record.expYear}</div>
-        </Paper>
+        </Section>
     )
   }
 }

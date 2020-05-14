@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactNode } from 'react'
 import Paper from '@material-ui/core/Paper'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
@@ -8,11 +8,14 @@ const styles = createStyles({
     marginTop: "40px",
     border: "1px solid rgba(0,0,0,0.1)",
     padding: "20px",
-  }
+    "& > h4:first-child": {
+      marginTop: 0,
+    }
+  },
 })
 
 interface Props {
-    children: ReactElement
+    children: ReactNode
 }
 
 interface EnhancedProps extends WithStyles<typeof styles> {
