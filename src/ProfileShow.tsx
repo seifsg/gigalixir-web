@@ -15,6 +15,7 @@ import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
 import Upgrade from './Upgrade'
 import { CorrectedReduxState } from './CorrectedReduxState'
+import Page from './Page'
 
 interface StyledTabsProps {
   value: number;
@@ -58,13 +59,6 @@ const StyledTab = withStyles((theme: Theme) =>
 )((props: StyledTabProps) => <Tab disableRipple {...props} />);
 
 const styles = createStyles({
-  container: {
-    marginLeft: "15px"
-  },
-  title: {
-    borderBottom: '1px solid rgba(0,0,0,0.1)',
-    paddingBottom: '20px',
-  },
   label: {
     color: "rgba(0,0,0,0.5)",
     paddingBottom: '5px',
@@ -178,15 +172,16 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
 
     return (
       <Authenticated>
-        <div className={classes.container}>
-          <h3 className={classes.title}>My Account</h3>
-          <StyledTabs value={this.selectedTabIndex()} onChange={this.handleTabChange}>
-            {
-              tabs.map(x => <StyledTab key={x.label} label={x.label} />)
-            }
-          </StyledTabs>
-          { this.selectedTab().element(record, classes) }
-        </div>
+        <Page title="My Account">
+          <div>
+            <StyledTabs value={this.selectedTabIndex()} onChange={this.handleTabChange}>
+              {
+                tabs.map(x => <StyledTab key={x.label} label={x.label} />)
+              }
+            </StyledTabs>
+            { this.selectedTab().element(record, classes) }
+          </div>
+        </Page>
       </Authenticated>
     )
   }

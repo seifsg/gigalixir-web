@@ -10,6 +10,7 @@ import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
 import { Datagrid, NumberField, ShowButton, TextField } from 'react-admin'
 import List from './List'
+import Page from './Page'
 // import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -56,13 +57,6 @@ AppGrid.defaultProps = {
 
 
 const styles = createStyles({
-  container: {
-    marginLeft: "15px"
-  },
-  title: {
-    borderBottom: '1px solid rgba(0,0,0,0.1)',
-    paddingBottom: '20px',
-  }
 })
 
 // not gonna go thru and do a whole list of stuff from here
@@ -118,15 +112,13 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 })(MaybeEmptyDatagrid)
 
 const AppList = (props: Props & EnhancedProps) => {
-    const { classes } = props
     return (
-      <div className={classes.container}>
-        <h3 className={classes.title}>My Apps</h3>
+      <Page title="My Apps">
         <List exporter={false} title="My Apps" pagination={null} bulkActions={false} {...props}>
           {/* <AppGrid /> */}
           <ConnectedMaybeEmptyDatagrid />
         </List>
-      </div>
+      </Page>
     )
 }
 
