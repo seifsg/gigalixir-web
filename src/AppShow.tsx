@@ -1,9 +1,7 @@
-import Button from '@material-ui/core/Button'
 import { withRouter } from 'react-router'
 import { push as routerPush } from 'react-router-redux'
 import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles'
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import React from 'react'
 import {
   crudUpdate,
@@ -14,8 +12,6 @@ import {
   SaveButton,
   ShowController,
   SimpleForm,
-  SimpleShowLayout,
-  TextField,
   Toolbar
 } from 'react-admin'
 import { connect } from 'react-redux'
@@ -28,7 +24,10 @@ import Chart from './Chart'
 import logger from './logger'
 import Page from './Page'
 import Section from './Section'
+import Fields from './Fields'
+import Field from './Field'
 import Bash from './Bash'
+import DialogButton from './DialogButton'
 
 interface ShowProps {
   id: string
@@ -174,91 +173,91 @@ const Setup = (props: { profile: User; app: App }) => {
   } = props
   return (
     <Section>
-          <h4>Prepare Your App</h4>
-          <div>
-            Follow the instructions on{' '}
-            <a href="http://gigalixir.readthedocs.io/en/latest/main.html#modifying-an-existing-app-to-run-on-gigalixir">
-              how to modify an existing app to run on Gigalixir
-            </a>
-            .
-          </div>
-          <div>
-            Or if you prefer video, watch{' '}
-            <a href="https://gigalixir.readthedocs.io/en/latest/main.html#screencast">
-              {' '}
-              Deploying with Gigalixir
-            </a>
-            .
-          </div>
-          <div>
-            If you run into issues, feel free to{' '}
-            <a href="mailto:help@gigalixir.com">contact us</a>. Or if you point
-            us to your source code, we're happy to do the onboarding for you.
-          </div>
-          <h4>Deploy</h4>
-          <Bash>
-            <div>
-              git remote add gigalixir https://{email}:{apiKey}
-              @git.gigalixir.com/{id}.git
-            </div>
-            <div>git push gigalixir master</div>
-          </Bash>
+      <h4>Prepare Your App</h4>
+      <div>
+        Follow the instructions on{' '}
+        <a href="http://gigalixir.readthedocs.io/en/latest/main.html#modifying-an-existing-app-to-run-on-gigalixir">
+          how to modify an existing app to run on Gigalixir
+        </a>
+        .
+      </div>
+      <div>
+        Or if you prefer video, watch{' '}
+        <a href="https://gigalixir.readthedocs.io/en/latest/main.html#screencast">
+          {' '}
+          Deploying with Gigalixir
+        </a>
+        .
+      </div>
+      <div>
+        If you run into issues, feel free to{' '}
+        <a href="mailto:help@gigalixir.com">contact us</a>. Or if you point us
+        to your source code, we're happy to do the onboarding for you.
+      </div>
+      <h4>Deploy</h4>
+      <Bash>
+        <div>
+          git remote add gigalixir https://{email}:{apiKey}
+          @git.gigalixir.com/{id}.git
+        </div>
+        <div>git push gigalixir master</div>
+      </Bash>
 
-          <div>
-            After a minute, visit{' '}
-            <a target="_blank" href={`https://${id}.gigalixirapp.com/`}>
-              https://{id}.gigalixirapp.com/
-            </a>
-          </div>
-          <h4>Install the command-line interface</h4>
-          <Bash>
-            <div>sudo pip install gigalixir --ignore-installed six</div>
-            <div>gigalixir --help</div>
-            <div>gigalixir login</div>
-          </Bash>
-          <h4>What's next?</h4>
-          <ul>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#how-to-provision-a-free-postgresql-database">
-                Create a database
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#logging">
-                Tail logs
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-console">
-                Remote console
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-observer">
-                Remote observer
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#migrations">
-                Run migrations
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#hot-upgrade">
-                Hot upgrade
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/main.html#rollback">
-                Rollback
-              </a>
-            </li>
-            <li>
-              <a href="http://gigalixir.readthedocs.io/en/latest/index.html">
-                ...and more
-              </a>
-            </li>
-          </ul>
+      <div>
+        After a minute, visit{' '}
+        <a target="_blank" href={`https://${id}.gigalixirapp.com/`}>
+          https://{id}.gigalixirapp.com/
+        </a>
+      </div>
+      <h4>Install the command-line interface</h4>
+      <Bash>
+        <div>sudo pip install gigalixir --ignore-installed six</div>
+        <div>gigalixir --help</div>
+        <div>gigalixir login</div>
+      </Bash>
+      <h4>What's next?</h4>
+      <ul>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#how-to-provision-a-free-postgresql-database">
+            Create a database
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#logging">
+            Tail logs
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-console">
+            Remote console
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-observer">
+            Remote observer
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#migrations">
+            Run migrations
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#hot-upgrade">
+            Hot upgrade
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#rollback">
+            Rollback
+          </a>
+        </li>
+        <li>
+          <a href="http://gigalixir.readthedocs.io/en/latest/index.html">
+            ...and more
+          </a>
+        </li>
+      </ul>
     </Section>
   )
 }
@@ -297,7 +296,6 @@ class SetupOrShowLayout extends React.Component<
 > {
   constructor(props: Props & EnhancedProps) {
     super(props)
-    this.state = { open: false }
     this.handleTabChange = this.handleTabChange.bind(this)
   }
 
@@ -305,9 +303,9 @@ class SetupOrShowLayout extends React.Component<
     const tabName = this.props.tabs[newValue].path
     const { app } = this.props
     if (!app) {
-        // can this happen?
+      // can this happen?
     } else {
-        this.props.push(`/apps/${app.id}/${tabName}`)
+      this.props.push(`/apps/${app.id}/${tabName}`)
     }
   }
 
@@ -329,23 +327,7 @@ class SetupOrShowLayout extends React.Component<
   }
 
   render() {
-    const toggleDrawer = (open: boolean) => (
-      event: React.KeyboardEvent | React.MouseEvent
-    ) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return
-      }
-
-      this.setState({ open })
-    }
-
     const { profile, app, tabs } = this.props
-    const { open } = this.state
     if (!profile) {
       // TODO: this doesn't seem like the right way to handle loading states
       // both profile and app start out as undefined and then later get filled in
@@ -356,51 +338,18 @@ class SetupOrShowLayout extends React.Component<
       // it's possible that even after loading, app is not found
       return <div>Oops, no record found. Please contact help@gigalixir.com</div>
     }
-    const version = _.get('version', app)
-    const id = _.get('id', app)
-    if (version === 2) {
-      return (
-        <div>
-          <StyledTabs
-            value={this.selectedTabIndex()}
-            onChange={this.handleTabChange}
-          >
-            {tabs.map(x => (
-              <StyledTab key={x.label} label={x.label} />
-            ))}
-          </StyledTabs>
-          { this.selectedTab().element(profile, app, {}) }
-        </div>
-      )
-    }
     return (
-      <SimpleShowLayout {...this.props}>
-        <Button
-          onClick={toggleDrawer(true)}
-          variant="contained"
-          color="primary"
+      <div>
+        <StyledTabs
+          value={this.selectedTabIndex()}
+          onChange={this.handleTabChange}
         >
-          Scale
-        </Button>
-        <SwipeableDrawer
-          anchor="right"
-          open={open}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-        >
-          <AppScale
-            id={id}
-            basePath="/apps"
-            resource="apps"
-            onSave={() => this.setState({ open: false })}
-          />
-        </SwipeableDrawer>
-        <TextField source="id" />
-        <TextField source="size" />
-        <TextField source="replicas" />
-        <TextField source="version" />
-        <Charts id={id} />
-      </SimpleShowLayout>
+          {tabs.map(x => (
+            <StyledTab key={x.label} label={x.label} />
+          ))}
+        </StyledTabs>
+        {this.selectedTab().element(profile, app, {})}
+      </div>
     )
   }
 }
@@ -418,7 +367,11 @@ interface AppShowProps {
 }
 class AppShow extends React.Component<AppShowProps> {
   public render() {
-    const { match: { params: { id } } } = this.props
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props
     const tabs = [
       {
         path: 'setup',
@@ -439,7 +392,29 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return (
+            <div>
+              <Section>
+                <Fields>
+                  <Field label="Name">{app.id}</Field>
+                  <Field label="Size">{app.size}</Field>
+                  <Field label="Replicas">{app.replicas}</Field>
+                  <Field label="Cloud">{app.cloud}</Field>
+                  <Field label="Region">{app.region}</Field>
+                  <Field label="Stack">{app.stack}</Field>
+                  <DialogButton>
+                    <AppScale
+                      id={id}
+                      basePath="/apps"
+                      resource="apps"
+                      onSave={() => this.setState({ open: false })}
+                    />
+                  </DialogButton>
+                </Fields>
+              </Section>
+              <Charts id={id} />
+            </div>
+          )
         }
       },
       {

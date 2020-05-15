@@ -1,14 +1,18 @@
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
-import Section from './Section'
 import _ from 'lodash/fp'
 import { push as routerPush } from 'react-router-redux'
-import classNames from 'classnames'
-import Paper from '@material-ui/core/Paper'
 import React from 'react'
-import { Loading, Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
+import {
+  Loading,
+  Authenticated,
+  crudGetOne as crudGetOneAction
+} from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import { ReduxState } from 'ra-core'
+import Field from './Field'
+import Fields from './Fields'
+import Section from './Section'
 import { User } from './api/users'
 import PaymentMethod from './PaymentMethod'
 import UpdatePaymentMethod from './UpdatePaymentMethod'
@@ -17,25 +21,7 @@ import { CorrectedReduxState } from './CorrectedReduxState'
 import Page from './Page'
 import { StyledTab, StyledTabs } from './Tabs'
 
-const styles = createStyles({
-  label: {
-    color: "rgba(0,0,0,0.5)",
-    paddingBottom: '5px',
-  },
-  value: {
-  },
-  field: {
-    flex: 1,
-  },
-  fields: {
-    display: "flex",
-  },
-  section: {
-    marginTop: "40px",
-    border: "1px solid rgba(0,0,0,0.1)",
-    padding: "20px",
-  }
-})
+const styles = createStyles({})
 
 interface Props {
   match: {
@@ -48,8 +34,10 @@ interface Props {
   tabs: {
     path: string
     label: string
-    element: (record: User, classes: Record<keyof typeof styles, string>) => JSX.Element
-
+    element: (
+      record: User,
+      classes: Record<keyof typeof styles, string>
+    ) => JSX.Element
   }[]
 }
 
@@ -61,8 +49,7 @@ interface EnhancedProps extends WithStyles<typeof styles> {
   version: number
 }
 
-type State = {
-}
+interface State {}
 
 class ProfileShow extends React.Component<Props & EnhancedProps, State> {
   constructor(props: Props & EnhancedProps) {
@@ -79,12 +66,12 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
   }
 
   componentWillReceiveProps(nextProps: Props & EnhancedProps) {
-      if (
-          this.props.id !== nextProps.id ||
-          nextProps.version !== this.props.version
-      ) {
-        this.updateData();
-      }
+    if (
+      this.props.id !== nextProps.id ||
+      nextProps.version !== this.props.version
+    ) {
+      this.updateData()
+    }
   }
 
   updateData() {
@@ -97,16 +84,16 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
 
   handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
     const tabName = this.props.tabs[newValue].path
-    this.props.push('/account/' + tabName)
+    this.props.push(`/account/${tabName}`)
   }
 
   selectedTab() {
-    let index = this.selectedTabIndex()
+    const index = this.selectedTabIndex()
     return this.props.tabs[index]
   }
 
   selectedTabIndex() {
-    const index = _.findIndex((tab) => {
+    const index = _.findIndex(tab => {
       return tab.path === this.props.match.params.tab
     }, this.props.tabs)
 
@@ -117,7 +104,6 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
     return index
   }
 
-
   render() {
     const { tabs, isLoading, record, classes } = this.props
 
@@ -126,19 +112,22 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
     }
 
     if (!record || isLoading) {
-      return <Loading/>
+      return <Loading />
     }
 
     return (
       <Authenticated>
         <Page title="My Account">
           <div>
-            <StyledTabs value={this.selectedTabIndex()} onChange={this.handleTabChange}>
-              {
-                tabs.map(x => <StyledTab key={x.label} label={x.label} />)
-              }
+            <StyledTabs
+              value={this.selectedTabIndex()}
+              onChange={this.handleTabChange}
+            >
+              {tabs.map(x => (
+                <StyledTab key={x.label} label={x.label} />
+              ))}
             </StyledTabs>
-            { this.selectedTab().element(record, classes) }
+            {this.selectedTab().element(record, classes)}
           </div>
         </Page>
       </Authenticated>
@@ -146,8 +135,10 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
   }
 }
 
-
-function mapStateToProps(state: ReduxState & CorrectedReduxState, props: Props) {
+function mapStateToProps(
+  state: ReduxState & CorrectedReduxState,
+  props: Props
+) {
   return {
     id: props.id,
     record: state.admin.resources[props.resource]
@@ -160,7 +151,7 @@ function mapStateToProps(state: ReduxState & CorrectedReduxState, props: Props) 
 
 const EnhancedProfileShow = compose<Props & EnhancedProps, Props>(
   withStyles(styles),
-  connect(mapStateToProps, { 
+  connect(mapStateToProps, {
     crudGetOne: crudGetOneAction,
     push: routerPush
   })
@@ -171,53 +162,52 @@ EnhancedProfileShow.defaultProps = {
   resource: 'profile',
   tabs: [
     {
-      path: "profile",
-      label: "Profile",
+      path: 'profile',
+      label: 'Profile',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        var formatter = new Intl.NumberFormat('en-US', {
+        const formatter = new Intl.NumberFormat('en-US', {
           style: 'currency',
-          currency: 'USD',
-        });
+          currency: 'USD'
+        })
 
-        return <div>
-          <Paper className={classNames(classes.fields, classes.section)} elevation={0}>
-            <div className={classes.field}>
-              <div className={classes.label}>Email</div>
-              <div className={classes.value}>{record.email}</div>
-            </div>
-            <div className={classes.field}>
-              <div className={classes.label}>Tier</div>
-              <div className={classes.value}>{record.tier}</div>
-            </div>
-            <div className={classes.field}>
-              <div className={classes.label}>Credits</div>
-          <div className={classes.value}>{formatter.format(record.creditCents / 100.0)}</div>
-            </div>
-          </Paper>
-          <Upgrade className={classes.section} record={record}/>
-        </div>
+        return (
+          <div>
+            <Section>
+              <Fields>
+                <Field label="Email"> {record.email} </Field>
+                <Field label="Tier"> {record.tier} </Field>
+                <Field label="Credits">
+                  {formatter.format(record.creditCents / 100.0)}
+                </Field>
+              </Fields>
+            </Section>
+            <Upgrade record={record} />
+          </div>
+        )
       }
     },
     {
-      path: "payment-method",
-      label: "Payment Method",
+      path: 'payment-method',
+      label: 'Payment Method',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <div>
-          <PaymentMethod />
-          <UpdatePaymentMethod record={record} />
-        </div>
+        return (
+          <div>
+            <PaymentMethod />
+            <UpdatePaymentMethod record={record} />
+          </div>
+        )
       }
     },
     {
-      path: "api-key",
-      label: "API Key",
+      path: 'api-key',
+      label: 'API Key',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
         return <Section>Coming Soon</Section>
       }
     },
     {
-      path: "ssh-keys",
-      label: "SSH Keys",
+      path: 'ssh-keys',
+      label: 'SSH Keys',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
         return <Section>Coming Soon</Section>
       }

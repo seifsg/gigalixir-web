@@ -8,7 +8,7 @@ const styles = createStyles({
     marginTop: "40px",
     border: "1px solid rgba(0,0,0,0.1)",
     padding: "20px",
-    "& > h4:first-child": {
+    "& h4:first-child": {
       marginTop: 0,
     }
   },
