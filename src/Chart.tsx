@@ -1,32 +1,15 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
-import { value, point } from './api/stats'
+import { value } from './api/stats'
 
-interface ChartProps {
-  title: string
-  data: point[]
-}
-
-interface ChartPoint {
+export interface ChartPoint {
   x: number
   y: value
 }
-const formatStatsPointForChart = (p: point): ChartPoint => {
-  const [x] = p
-  let [, y] = p
-  if (x === null) {
-    throw new Error('data point x can not be null')
-  }
-  if (y !== null) {
-    y /= 1000000 // convert to megabytes
-  }
-  return {
-    x,
-    y
-  }
+interface ChartProps {
+  title: string
+  data: ChartPoint[]
 }
-const formatStatsForChart = (data: point[]): ChartPoint[] =>
-  data.map(formatStatsPointForChart)
 
 const Chart = (props: ChartProps) => {
   const { data, title } = props
@@ -34,7 +17,7 @@ const Chart = (props: ChartProps) => {
     datasets: [
       {
         pointRadius: 1,
-        data: formatStatsForChart(data)
+        data: data
       }
     ]
   }

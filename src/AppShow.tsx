@@ -1,4 +1,5 @@
 import { withRouter } from 'react-router'
+import { point } from './api/stats'
 import { push as routerPush } from 'react-router-redux'
 import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles'
@@ -20,7 +21,7 @@ import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
 import { User } from './api/users'
 import { Stats } from './api/stats'
-import Chart from './Chart'
+import Chart, { ChartPoint}  from './Chart'
 import logger from './logger'
 import Page from './Page'
 import Section from './Section'
@@ -28,6 +29,8 @@ import Fields from './Fields'
 import Field from './Field'
 import Bash from './Bash'
 import DialogButton from './DialogButton'
+
+const styles = {}
 
 interface ShowProps {
   id: string
@@ -40,6 +43,22 @@ interface ChartsProps {
 interface Error {
   message: string
 }
+const formatStatsPointForChart = (p: point): ChartPoint => {
+  const [x] = p
+  let [, y] = p
+  if (x === null) {
+    throw new Error('data point x can not be null')
+  }
+  // if (y !== null) {
+  //   y /= 1000000 // convert to megabytes
+  // }
+  return {
+    x,
+    y
+  }
+}
+const formatStatsForChart = (data: point[]): ChartPoint[] =>
+  data.map(formatStatsPointForChart)
 export const Charts: React.FunctionComponent<ChartsProps> = (
   props
 ): React.ReactElement => {
@@ -63,8 +82,8 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
         }
         return (
           <div>
-            <Chart data={data.data.mem} title="Memory (MB)" />
-            <Chart data={data.data.cpu} title="CPU (Millicores)" />
+            <Chart data={formatStatsForChart(data.data.cpu)} title="CPU (Millicores)" />
+            <Chart data={formatStatsForChart(data.data.mem)} title="Memory (MB)" />
           </div>
         )
       }}
@@ -205,7 +224,7 @@ const Setup = (props: { profile: User; app: App }) => {
 
       <div>
         After a minute, visit{' '}
-        <a target="_blank" href={`https://${id}.gigalixirapp.com/`}>
+        <a href={`https://${id}.gigalixirapp.com/`}>
           https://{id}.gigalixirapp.com/
         </a>
       </div>
@@ -353,8 +372,6 @@ class SetupOrShowLayout extends React.Component<
     )
   }
 }
-
-const styles = {}
 
 interface AppShowProps {
   id: string
