@@ -1,9 +1,13 @@
 import React from 'react'
+import * as zoom from 'chartjs-plugin-zoom'
+// import Hammer from 'hammerjs'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
 import { Line } from 'react-chartjs-2'
 import { value } from './api/stats'
 
 import Section from './Section'
+const Chartjs = require('react-chartjs-2').Chart
+Chartjs.plugins.register(zoom)
 
 const styles = createStyles({
   container: {
@@ -11,7 +15,7 @@ const styles = createStyles({
     // this is paired with the parent's negative margin
     // to produce space between elements
     paddingLeft: 20,
-    paddingRight: 20,
+    paddingRight: 20
   }
 })
 
@@ -35,6 +39,14 @@ const Chart = (props: ChartProps) => {
     ]
   }
   const options = {
+    pan: {
+      enabled: true,
+      mode: 'x'
+    },
+    zoom: {
+      enabled: true,
+      mode: 'x'
+    },
     title: {
       display: true,
       text: title

@@ -12,6 +12,7 @@
         "axios": "^0.19.2",
         "caniuse-lite": "^1.0.30001054",
         "chart.js": "^2.9.3",
+        "chartjs-plugin-zoom": "0.7.0",
         "classnames": "~2.2.5",
         "funfix-core": "^7.0.1",
         "inflection": "^1.12.0",
@@ -33,7 +34,6 @@
         "redux": "~3.7.2",
         "redux-form": "^7.4.3",
         "redux-saga": "~0.16.0",
-        "typescript": "~3.4.5",
         "winston": "^3.2.1"
     },
     "scripts": {
@@ -59,7 +59,9 @@
         ]
     },
     "devDependencies": {
+        "typescript": "~3.4.5",
         "@types/classnames": "^2.2.10",
+        "@types/hammerjs": "^2.0.36",
         "@types/inflection": "^1.5.28",
         "@types/jest": "^24.9.1",
         "@types/lodash": "^4.14.150",
