@@ -18,9 +18,7 @@ import {
   crudUpdate,
   Loading,
   Query,
-  SaveButton,
   ShowController,
-  Toolbar
 } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
@@ -190,6 +188,19 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   console.log(props)
   const { close, app, scale, handleSubmit } = props
   const onSubmit = ({ size, replicas }: FormData) => {
+    // Do we need to do something like this instead?
+          // handleBlur = event => {
+          /**
+           * Necessary because of a React bug on <input type="number">
+           * @see https://github.com/facebook/react/issues/1425
+           */
+          // const numericValue = isNaN(parseFloat(event.target.value))
+          //     ? null
+          //     : parseFloat(event.target.value);
+          // this.props.onBlur(numericValue);
+          // this.props.input.onBlur(numericValue);
+      // };
+
     scale({
       ...app,
       size: size ? parseFloat(size) : app.size,
@@ -202,13 +213,17 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
       <DialogContent>
         <div>
           <FormField
+            validate={validateSize}
             component={renderSizeField}
             name="size"
             label="Size"
           />
         </div>
+      </DialogContent>
+      <DialogContent>
         <div>
           <FormField
+            validate={validateReplicas}
             component={renderReplicasField}
             name="replicas"
             label="Replicas"
@@ -253,38 +268,6 @@ const EnhancedAppScale = compose<ScaleProps & EnhancedScaleProps, ScaleProps>(
     form: 'scaleApp'
   })
 )(AppScale)
-
-interface AppScaleToolbarProps {
-  handleSubmit: (f: (values: App) => void) => void
-  basePath: string
-  redirect: string
-  scaleApp: (values: App, basePath: string, redirect: string) => void
-  onSave: () => void
-}
-const AppScaleToolbar_ = (props: AppScaleToolbarProps) => {
-  const handleClick = () => {
-    const { handleSubmit, basePath, redirect, scaleApp, onSave } = props
-
-    return handleSubmit((values: App) => {
-      logger.debug(JSON.stringify(values))
-      logger.debug('handleSubmit')
-      onSave()
-      scaleApp(values, basePath, redirect)
-    })
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { scaleApp, onSave, ...sanitizedProps } = props
-
-  return (
-    <Toolbar {...sanitizedProps}>
-      <SaveButton handleSubmitWithRedirect={handleClick} />
-    </Toolbar>
-  )
-}
-const AppScaleToolbar = connect(undefined, { scaleApp: scaleApp_ })(
-  AppScaleToolbar_
-)
 
 const Setup = (props: { profile: User; app: App }) => {
   const {
