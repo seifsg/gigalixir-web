@@ -45,18 +45,30 @@ const Chart = (props: ChartProps) => {
     scales: {
       xAxes: [
         {
-          type: 'time'
+          type: 'time',
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 6,
+            maxRotation: 0
+          }
         }
       ],
       yAxes: [
         {
           ticks: {
-            beginAtZero: true
+            beginAtZero: false
+          },
+          gridLines: {
+            display: false
           }
         }
       ]
     }
   }
+
   return (
     <div className={classes.container}>
       <Section>
