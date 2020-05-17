@@ -1,34 +1,42 @@
 import { withRouter } from 'react-router'
-import { point } from './api/stats'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import { push as routerPush } from 'react-router-redux'
+import {
+  WrappedFieldProps,
+  reduxForm,
+  Field as FormField,
+  InjectedFormProps
+} from 'redux-form'
 import compose from 'recompose/compose'
-import { withStyles } from '@material-ui/core/styles'
-import React from 'react'
+import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
+import React, { FunctionComponent } from 'react'
 import {
   crudUpdate,
-  Edit,
   Loading,
-  NumberInput,
   Query,
   SaveButton,
   ShowController,
-  SimpleForm,
   Toolbar
 } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
+import { point, Stats } from './api/stats'
 import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
 import { User } from './api/users'
-import { Stats } from './api/stats'
-import Chart, { ChartPoint}  from './Chart'
+
+import Chart, { ChartPoint } from './Chart'
 import logger from './logger'
 import Page from './Page'
 import Section from './Section'
 import Fields from './Fields'
 import Field from './Field'
 import Bash from './Bash'
-import DialogButton from './DialogButton'
+import DialogButton, { CloseFunction } from './DialogButton'
 
 const styles = {}
 
@@ -37,7 +45,18 @@ interface ShowProps {
   basePath: string
   resource: string
 }
-interface ChartsProps {
+
+const chartStyles = createStyles({
+  chartSection: {
+    display: 'flex',
+    // this is paired with the child's padding
+    // to produce space between elements
+    marginLeft: -20,
+    marginRight: -20
+  }
+})
+
+interface ChartsProps extends WithStyles<typeof chartStyles> {
   id: string
 }
 interface Error {
@@ -45,13 +64,10 @@ interface Error {
 }
 const formatStatsPointForChart = (p: point): ChartPoint => {
   const [x] = p
-  let [, y] = p
+  const [, y] = p
   if (x === null) {
     throw new Error('data point x can not be null')
   }
-  // if (y !== null) {
-  //   y /= 1000000 // convert to megabytes
-  // }
   return {
     x,
     y
@@ -59,10 +75,22 @@ const formatStatsPointForChart = (p: point): ChartPoint => {
 }
 const formatStatsForChart = (data: point[]): ChartPoint[] =>
   data.map(formatStatsPointForChart)
+
+const toMegabytes = (data: ChartPoint[]): ChartPoint[] =>
+  data.map(
+    (p: ChartPoint): ChartPoint => {
+      let { x: time, y: value } = p
+      if (value !== null) {
+        value /= 1000000 // convert to megabytes
+      }
+      return { x: time, y: value }
+    }
+  )
+
 export const Charts: React.FunctionComponent<ChartsProps> = (
   props
 ): React.ReactElement => {
-  const { id } = props
+  const { classes, id } = props
   return (
     <Query type="GET_ONE" resource="stats" payload={{ id }}>
       {({
@@ -81,15 +109,23 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
           return <div>Error: {error.message}</div>
         }
         return (
-          <div>
-            <Chart data={formatStatsForChart(data.data.cpu)} title="CPU (Millicores)" />
-            <Chart data={formatStatsForChart(data.data.mem)} title="Memory (MB)" />
+          <div className={classes.chartSection}>
+            <Chart
+              data={formatStatsForChart(data.data.cpu)}
+              title="CPU (Millicores)"
+            />
+            <Chart
+              data={toMegabytes(formatStatsForChart(data.data.mem))}
+              title="Memory (MB)"
+            />
           </div>
         )
       }}
     </Query>
   )
 }
+
+const EnhancedCharts = withStyles(chartStyles)(Charts)
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const required = (message = 'Required') => (value: any) =>
@@ -115,42 +151,108 @@ const validateReplicas = [
   maxValue(16, 'Please contact enterprise@gigalixir.com to scale above 16.')
 ]
 
-interface ScaleProps {
-  id: string
-  basePath: string
-  resource: string
-  onSave: () => void
+const renderTextField = ({ type }: { type: 'number' | "input" }) => ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}: {
+  label: string
+} & WrappedFieldProps) => {
+  console.log(input)
+  return <TextField
+    type={type}
+    label={label}
+    placeholder={label}
+    error={touched && invalid}
+    helperText={touched && error}
+    {...input}
+    {...custom}
+  />
 }
-const AppScale = (props: ScaleProps) => {
-  const { onSave, ...sanitizedProps } = props
+
+const renderSizeField = renderTextField({type: "input"})
+const renderReplicasField = renderTextField({type: "number"})
+
+interface ScaleProps {
+  close: CloseFunction
+  app: App
+}
+interface FormData {
+  size: string
+  replicas: string
+}
+interface EnhancedScaleProps extends InjectedFormProps<FormData> {
+  scale: (values: App) => void
+}
+const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
+    console.log("rendiring AppSCale")
+  console.log(props)
+  const { close, app, scale, handleSubmit } = props
+  const onSubmit = ({ size, replicas }: FormData) => {
+    scale({
+      ...app,
+      size: size ? parseFloat(size) : app.size,
+      replicas: replicas ? parseInt(replicas) : app.replicas
+    })
+  }
   return (
-    <Edit title=" " {...sanitizedProps}>
-      <SimpleForm
-        redirect={false}
-        // AppScaleToolbar gets cloned so all the props here except onSave are really just to make the compiler happy..
-        // sucks.
-        toolbar={
-          <AppScaleToolbar
-            onSave={onSave}
-            basePath=""
-            redirect=""
-            handleSubmit={() => {}}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <DialogTitle id="form-dialog-title">Scale</DialogTitle>
+      <DialogContent>
+        <div>
+          <FormField
+            component={renderSizeField}
+            name="size"
+            label="Size"
           />
-        }
-      >
-        <NumberInput source="size" validate={validateSize} />
-        <NumberInput source="replicas" validate={validateReplicas} />
-      </SimpleForm>
-    </Edit>
+        </div>
+        <div>
+          <FormField
+            component={renderReplicasField}
+            name="replicas"
+            label="Replicas"
+          />
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={close} color="primary">
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          onClick={e => {
+            close(e)
+          }}
+          color="primary"
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </form>
   )
 }
 
-const scaleApp_ = (values: App, basePath: string, redirectTo: string) => {
+const scaleApp_ = (values: App) => {
   logger.debug('scaleApp')
-  logger.debug(redirectTo)
-  logger.debug(basePath)
+  const basePath = ''
+  const redirectTo = ''
   return crudUpdate('apps', values.id, values, undefined, basePath, redirectTo)
 }
+
+const EnhancedAppScale = compose<ScaleProps & EnhancedScaleProps, ScaleProps>(
+  connect((state, ownProps: ScaleProps) => ({
+    initialValues: {
+      size: `${ownProps.app.size}`,
+      replicas: `${ownProps.app.replicas}`
+    }
+  }), {
+    scale: scaleApp_
+  }),
+  reduxForm({
+    form: 'scaleApp'
+  })
+)(AppScale)
 
 interface AppScaleToolbarProps {
   handleSubmit: (f: (values: App) => void) => void
@@ -161,7 +263,6 @@ interface AppScaleToolbarProps {
 }
 const AppScaleToolbar_ = (props: AppScaleToolbarProps) => {
   const handleClick = () => {
-    logger.debug('handleClick')
     const { handleSubmit, basePath, redirect, scaleApp, onSave } = props
 
     return handleSubmit((values: App) => {
@@ -420,16 +521,11 @@ class AppShow extends React.Component<AppShowProps> {
                   <Field label="Region">{app.region}</Field>
                   <Field label="Stack">{app.stack}</Field>
                   <DialogButton>
-                    <AppScale
-                      id={id}
-                      basePath="/apps"
-                      resource="apps"
-                      onSave={() => this.setState({ open: false })}
-                    />
+                    {close => <EnhancedAppScale app={app} close={close} />}
                   </DialogButton>
                 </Fields>
               </Section>
-              <Charts id={id} />
+              <EnhancedCharts id={id} />
             </div>
           )
         }

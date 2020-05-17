@@ -1,13 +1,14 @@
 import React, { ReactNode } from 'react'
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 
 const styles = createStyles({})
 
+export type CloseFunction = (e: React.KeyboardEvent | React.MouseEvent) => void
 interface Props {
-  children: ReactNode
+  children: (close: CloseFunction) => ReactNode
 }
 
 interface EnhancedProps extends WithStyles<typeof styles> {}
@@ -49,14 +50,13 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
         >
           Scale
         </Button>
-        <SwipeableDrawer
-          anchor="right"
+        <Dialog
           open={open}
           onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
+          aria-labelledby="form-dialog-title"
         >
-            {children}
-        </SwipeableDrawer>
+          {children(toggleDrawer(false))}
+        </Dialog>
       </div>
     )
   }
