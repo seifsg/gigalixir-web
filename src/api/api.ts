@@ -2,6 +2,10 @@ import axios from 'axios'
 
 const host = process.env.REACT_APP_API_HOST
 
+export interface ErrorResponse {
+  errors: { [x: string]: string[] }
+}
+
 const getCsrf = async (): Promise<string> => {
   const response = await axios.get(`${host}/frontend/api/csrf`, {
     withCredentials: true

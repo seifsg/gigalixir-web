@@ -6,7 +6,7 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 
 const styles = createStyles({})
 
-export type CloseFunction = (e: React.KeyboardEvent | React.MouseEvent) => void
+export type CloseFunction = Function
 interface Props {
   children: (close: CloseFunction) => ReactNode
 }

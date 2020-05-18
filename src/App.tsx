@@ -15,6 +15,7 @@ import PasswordResetPage from './PasswordResetPage'
 import PasswordSetPage from './PasswordSetPage'
 import ProfileShow from './ProfileShow'
 import RegisterPage from './RegisterPage'
+import TestPage from './TestPage'
 
 const theme = createMuiTheme({
   palette: {
@@ -27,6 +28,7 @@ const theme = createMuiTheme({
 const customRoutes = [
   <Route path="/apps/:id/:tab?" component={AppShow} />,
   <Route path="/account/:tab?" component={ProfileShow} />,
+  <Route exact path="/test" component={TestPage} noLayout />,
   <Route exact path="/register" component={RegisterPage} noLayout />,
   <Route exact path="/notify" component={NotifyPage} noLayout />,
   <Route exact path="/password/reset" component={PasswordResetPage} noLayout />,

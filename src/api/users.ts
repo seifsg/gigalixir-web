@@ -37,9 +37,6 @@ export const get = (): Promise<{ data: User }> => {
     })
 }
 
-interface ErrorResponse {
-  errors: { [x: string]: string[] }
-}
 
 export const create = (
   email: string,
@@ -53,7 +50,7 @@ export const create = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+    .catch((reason: { response: { data: api.ErrorResponse; status: number } }) => {
       // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
       const { errors } = reason.response.data
       throw new HttpError('', reason.response.status, {
@@ -64,7 +61,7 @@ export const create = (
 
 export const resendConfirmation = (
   email: string
-): Promise<{ data: { id: string } } | ErrorResponse> => {
+): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reconfirm_email`, {
       email
@@ -74,8 +71,8 @@ export const resendConfirmation = (
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
-      }): ErrorResponse => {
+        response: { data: api.ErrorResponse; status: number }
+      }): api.ErrorResponse => {
         // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
         const { errors } = reason.response.data
         throw new HttpError('', reason.response.status, {
@@ -87,7 +84,7 @@ export const resendConfirmation = (
 
 export const resetPassword = (
   email: string
-): Promise<{ data: { id: string } } | ErrorResponse> => {
+): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/reset_password`, {
       email
@@ -97,8 +94,8 @@ export const resetPassword = (
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
-      }): ErrorResponse => {
+        response: { data: api.ErrorResponse; status: number }
+      }): api.ErrorResponse => {
         const { errors } = reason.response.data
         throw new HttpError('', reason.response.status, {
           errors
@@ -110,7 +107,7 @@ export const resetPassword = (
 export const setPassword = (
   token: string,
   newPassword: string
-): Promise<{ data: { id: string } } | ErrorResponse> => {
+): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
     .post<{ data: {} }>(`/frontend/api/users/set_password`, {
       token,
@@ -121,8 +118,8 @@ export const setPassword = (
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
-      }): ErrorResponse => {
+        response: { data: api.ErrorResponse; status: number }
+      }): api.ErrorResponse => {
         const { errors } = reason.response.data
         throw new HttpError('', reason.response.status, {
           errors
@@ -142,8 +139,8 @@ export const upgrade = (token: string): Promise<{}> => {
     })
     .catch(
       (reason: {
-        response: { data: ErrorResponse; status: number }
-      }): ErrorResponse => {
+        response: { data: api.ErrorResponse; status: number }
+      }): api.ErrorResponse => {
         const { errors } = reason.response.data
         // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
         throw new HttpError(_.join('. ', errors['']), reason.response.status, {

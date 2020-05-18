@@ -34,6 +34,10 @@ export interface CrudUpdateAction {
   }
 }
 
+export type SuccessCallback = Function
+export type FailureCallback = (params: {
+ payload: { errors: { [k: string]: string[] } }
+}) => void
 export const crudUpdate = (
   resource: string,
   id: Identifier,
@@ -43,10 +47,8 @@ export const crudUpdate = (
   // successNotification: string,
   redirectTo: RedirectionSideEffect = 'show',
   refresh: RefreshSideEffect = true,
-  successCallback: Function,
-  failureCallback: (params: {
-    payload: { errors: { [k: string]: string[] } }
-  }) => void
+  successCallback: SuccessCallback,
+  failureCallback: FailureCallback
 ): CrudUpdateAction => ({
   type: CRUD_UPDATE,
   payload: { id, data, previousData },

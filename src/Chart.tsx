@@ -34,6 +34,8 @@ const Chart = (props: ChartProps) => {
     datasets: [
       {
         pointRadius: 1,
+        // fill: true,
+        // backgroundColor: '#2196f3',
         data
       }
     ]

@@ -1,4 +1,6 @@
 import { withRouter } from 'react-router'
+import { extractError } from './errorSagas'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -9,24 +11,20 @@ import {
   WrappedFieldProps,
   reduxForm,
   Field as FormField,
-  InjectedFormProps
+  InjectedFormProps,
+  SubmissionError
 } from 'redux-form'
 import compose from 'recompose/compose'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
 import React, { FunctionComponent } from 'react'
-import {
-  crudUpdate,
-  Loading,
-  Query,
-  ShowController,
-} from 'react-admin'
+import { Query, ShowController } from 'react-admin'
+import { FailureCallback, SuccessCallback, crudUpdate } from './crudUpdate'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 import { point, Stats } from './api/stats'
 import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
 import { User } from './api/users'
-
 import Chart, { ChartPoint } from './Chart'
 import logger from './logger'
 import Page from './Page'
@@ -35,6 +33,7 @@ import Fields from './Fields'
 import Field from './Field'
 import Bash from './Bash'
 import DialogButton, { CloseFunction } from './DialogButton'
+import Loading from './Loading'
 
 const styles = {}
 
@@ -149,7 +148,7 @@ const validateReplicas = [
   maxValue(16, 'Please contact enterprise@gigalixir.com to scale above 16.')
 ]
 
-const renderTextField = ({ type }: { type: 'number' | "input" }) => ({
+const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   label,
   input,
   meta: { touched, invalid, error },
@@ -157,20 +156,39 @@ const renderTextField = ({ type }: { type: 'number' | "input" }) => ({
 }: {
   label: string
 } & WrappedFieldProps) => {
-  console.log(input)
-  return <TextField
-    type={type}
-    label={label}
-    placeholder={label}
-    error={touched && invalid}
-    helperText={touched && error}
-    {...input}
-    {...custom}
-  />
+  return (
+    <TextField
+      type={type}
+      label={label}
+      placeholder={label}
+      error={touched && invalid}
+      helperText={touched && error}
+      {...input}
+      {...custom}
+    />
+  )
 }
 
-const renderSizeField = renderTextField({type: "input"})
-const renderReplicasField = renderTextField({type: "number"})
+const renderError = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}: {
+  label: string
+} & WrappedFieldProps) => {
+  if (error) {
+    return (
+      <DialogContent>
+        <FormHelperText error>{error}</FormHelperText>
+      </DialogContent>
+    )
+  }
+  return <span />
+}
+
+const renderSizeField = renderTextField({ type: 'input' })
+const renderReplicasField = renderTextField({ type: 'number' })
 
 interface ScaleProps {
   close: CloseFunction
@@ -181,63 +199,74 @@ interface FormData {
   replicas: string
 }
 interface EnhancedScaleProps extends InjectedFormProps<FormData> {
-  scale: (values: App) => void
+  scale: (values: App, previous: App, onSuccess: SuccessCallback, onFailure: FailureCallback) => void
 }
 const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
-    console.log("rendiring AppSCale")
-  console.log(props)
   const { close, app, scale, handleSubmit } = props
+  const onCancel = () => {
+    close()
+  }
   const onSubmit = ({ size, replicas }: FormData) => {
     // Do we need to do something like this instead?
-          // handleBlur = event => {
-          /**
-           * Necessary because of a React bug on <input type="number">
-           * @see https://github.com/facebook/react/issues/1425
-           */
-          // const numericValue = isNaN(parseFloat(event.target.value))
-          //     ? null
-          //     : parseFloat(event.target.value);
-          // this.props.onBlur(numericValue);
-          // this.props.input.onBlur(numericValue);
-      // };
+    // handleBlur = event => {
+    /**
+     * Necessary because of a React bug on <input type="number">
+     * @see https://github.com/facebook/react/issues/1425
+     */
+    // const numericValue = isNaN(parseFloat(event.target.value))
+    //     ? null
+    //     : parseFloat(event.target.value);
+    // this.props.onBlur(numericValue);
+    // this.props.input.onBlur(numericValue);
+    // };
 
-    scale({
-      ...app,
-      size: size ? parseFloat(size) : app.size,
-      replicas: replicas ? parseInt(replicas) : app.replicas
+    const newApp = {
+        ...app,
+        size: size ? parseFloat(size) : app.size,
+        replicas: replicas ? parseInt(replicas) : app.replicas
+      }
+    return new Promise((resolve, reject) => {
+      const failureCallback: FailureCallback = ({ payload: { errors } }) => {
+        reject(new SubmissionError({
+          form: extractError(errors, ''),
+          size: extractError(errors, 'size'),
+          replicas: extractError(errors, 'replicas'),
+        }))
+      }
+      scale(newApp, app, () => {
+        close()
+        resolve(newApp)
+      }, failureCallback)
     })
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle id="form-dialog-title">Scale</DialogTitle>
+      <FormField name="form" component={renderError} />
       <DialogContent>
-        <div>
-          <FormField
-            validate={validateSize}
-            component={renderSizeField}
-            name="size"
-            label="Size"
-          />
-        </div>
+        <FormField
+          validate={validateSize}
+          component={renderSizeField}
+          name="size"
+          label="Size"
+        />
       </DialogContent>
       <DialogContent>
-        <div>
-          <FormField
-            validate={validateReplicas}
-            component={renderReplicasField}
-            name="replicas"
-            label="Replicas"
-          />
-        </div>
+        <FormField
+          validate={validateReplicas}
+          component={renderReplicasField}
+          name="replicas"
+          label="Replicas"
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={close} color="primary">
+        <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
         <Button
           type="submit"
           onClick={e => {
-            close(e)
+            // close(e)
           }}
           color="primary"
         >
@@ -248,22 +277,35 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   )
 }
 
-const scaleApp_ = (values: App) => {
+const scaleApp_ = (values: App, previousValues: App, successCallback: SuccessCallback, failureCallback:  FailureCallback) => {
   logger.debug('scaleApp')
   const basePath = ''
   const redirectTo = ''
-  return crudUpdate('apps', values.id, values, undefined, basePath, redirectTo)
+  // this needs to be refresh=true in this case because otherwise, the app data in the redux store gets wiped out. 
+  // here is what happens
+  // 1. fetch.ts calls the dataProvider
+  // 2. fetch.ts uses the result of the dataProvider and sends a CRUD_UPDATE_SUCCESS action with the response
+  // 3. the problem is the response isn't a full App, it's just the new size and replicas
+  // 4. reducers/data.ts processes this and replaces what is in the store rather than merging the updated fields
+  //
+  // refresh here tells somenoe to refetch the App to get the new values so everything is right again. 
+  // TODO: change scale endpoint to return a full app 
+  const refresh = true
+  return crudUpdate('apps', values.id, values, previousValues, basePath, redirectTo, refresh, successCallback, failureCallback)
 }
 
 const EnhancedAppScale = compose<ScaleProps & EnhancedScaleProps, ScaleProps>(
-  connect((state, ownProps: ScaleProps) => ({
-    initialValues: {
-      size: `${ownProps.app.size}`,
-      replicas: `${ownProps.app.replicas}`
+  connect(
+    (state, ownProps: ScaleProps) => ({
+      initialValues: {
+        size: `${ownProps.app.size}`,
+        replicas: `${ownProps.app.replicas}`
+      }
+    }),
+    {
+      scale: scaleApp_
     }
-  }), {
-    scale: scaleApp_
-  }),
+  ),
   reduxForm({
     form: 'scaleApp'
   })
@@ -511,6 +553,28 @@ class AppShow extends React.Component<AppShowProps> {
               <EnhancedCharts id={id} />
             </div>
           )
+        }
+      },
+      {
+        path: 'databases',
+        label: 'Databases',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
+        }
+      },
+      {
+        path: 'activity',
+        label: 'Activity',
+        element: (
+          profile: User,
+          app: App,
+          classes: Record<keyof typeof styles, string>
+        ) => {
+          return <Section>Coming Soon</Section>
         }
       },
       {

@@ -1,4 +1,6 @@
 import * as api from './api'
+import _ from 'lodash/fp'
+import { HttpError } from 'ra-core'
 
 export interface App {
   id: string
@@ -141,7 +143,7 @@ export const scale = (
   replicas: number
 ): Promise<{ data: { size: number; replicas: number } }> => {
   return api
-    .post<{ data: { replicas: number; size: number } }>(
+    .post<{ data: { data: { replicas: number; size: number } } }>(
       `/frontend/api/apps/${name}/scale`,
       {
         size,
@@ -151,7 +153,19 @@ export const scale = (
     .then((response): {
       data: { size: number; replicas: number }
     } => {
-      const newApp = response.data
+        console.log(response)
+      const newApp = response.data.data
       return { data: { replicas: newApp.replicas, size: newApp.size } }
     })
+    .catch(
+      (reason: {
+        response: { data: api.ErrorResponse; status: number }
+      }) => {
+        const { errors } = reason.response.data
+        // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
+        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
+          errors
+        })
+      }
+    )
 }

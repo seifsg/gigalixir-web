@@ -7,6 +7,8 @@ import { Action } from 'redux'
 import _ from 'lodash/fp'
 import { USER_LOGIN_FAILURE, FETCH_ERROR } from 'ra-core'
 
+// TODO: can we replace everything in this file with failureCallbacks instead?
+
 export const extractErrorValue = (
   errors: { [k: string]: string[] },
   key: string
@@ -249,7 +251,8 @@ export default function* errorSagas() {
       'UPDATE',
       updatePaymentMethodFailure
     ),
-    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
+    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure),
+    // crudFailureSaga(CRUD_UPDATE_FAILURE, 'apps', 'UPDATE', updateAppFailure)
   ])
   // , resendConfirmationFailureSaga()])
 }
