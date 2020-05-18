@@ -202,7 +202,7 @@ interface EnhancedScaleProps extends InjectedFormProps<FormData> {
   scale: (values: App, previous: App, onSuccess: SuccessCallback, onFailure: FailureCallback) => void
 }
 const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
-  const { close, app, scale, handleSubmit } = props
+  const { pristine, invalid, close, app, scale, handleSubmit } = props
   const onCancel = () => {
     close()
   }
@@ -265,9 +265,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
         </Button>
         <Button
           type="submit"
-          onClick={e => {
-            // close(e)
-          }}
+          disabled={invalid || pristine}
           color="primary"
         >
           Save

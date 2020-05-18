@@ -32,6 +32,7 @@ export const StyledTabs = withStyles({
 export const StyledTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
+      minWidth: 80,
       textTransform: "none",
       color: "#000",
       fontWeight: theme.typography.fontWeightRegular,
