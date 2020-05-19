@@ -8,6 +8,7 @@ const styles = createStyles({})
 
 export type CloseFunction = Function
 interface Props {
+  label: string
   children: (close: CloseFunction) => ReactNode
 }
 
@@ -39,7 +40,7 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
       this.setState({ open })
     }
 
-    const { children } = this.props
+    const { label, children } = this.props
     const { open } = this.state
     return (
       <div>
@@ -48,7 +49,7 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
           variant="contained"
           color="primary"
         >
-          Scale
+          {label}
         </Button>
         <Dialog
           open={open}

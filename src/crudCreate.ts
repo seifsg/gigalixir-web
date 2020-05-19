@@ -1,5 +1,6 @@
 // pretty much copied from https://github.com/marmelab/react-admin/blob/master/packages/ra-core/src/actions/dataActions/crudCreate.ts
 // except, notification onFailure is optional
+import { SuccessCallback, FailureCallback } from './callbacks'
 import { RefreshSideEffect, RedirectionSideEffect } from 'ra-core'
 import { CRUD_CREATE, CREATE } from 'react-admin'
 
@@ -33,10 +34,8 @@ export const crudCreate = (
   // successNotification: string,
   redirectTo: RedirectionSideEffect = 'edit',
   refresh: RefreshSideEffect = true,
-  resolve: Function,
-  failureCallback: (params: {
-    payload: { errors: { [k: string]: string[] } }
-  }) => void
+  successCallback: SuccessCallback,
+  failureCallback: FailureCallback
 ): CrudCreateAction => ({
   type: CRUD_CREATE,
   payload: { data },
@@ -44,9 +43,7 @@ export const crudCreate = (
     resource,
     fetch: CREATE,
     onSuccess: {
-      callback: () => {
-        resolve()
-      },
+      callback: successCallback,
       redirectTo,
       refresh,
       basePath

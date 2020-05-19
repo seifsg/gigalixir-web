@@ -9,8 +9,11 @@ import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
 import { Datagrid, NumberField, ShowButton, TextField } from 'react-admin'
+import AppCreateDialog from './AppCreateDialog'
+import DialogButton, { CloseFunction } from './DialogButton'
 import List from './List'
 import Page from './Page'
+import Section from './Section'
 // import { Link } from 'react-router-dom'
 
 const cardStyle = {
@@ -55,9 +58,7 @@ AppGrid.defaultProps = {
   ids: []
 }
 
-
-const styles = createStyles({
-})
+const styles = createStyles({})
 
 // not gonna go thru and do a whole list of stuff from here
 // https://marmelab.com/react-admin/List.html#the-list-component
@@ -67,42 +68,53 @@ interface Props {
   resource: string
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {
-}
+interface EnhancedProps extends WithStyles<typeof styles> {}
 
 // setting props properly here is hard because 1) there are a ton of props that react-admin injects for us
 // and 2) any props defined here need to be specified below, but we would just be putting dummy values in
 // the real values are injected by redux-form, react-admin, etc. need to find a better way to do this.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MaybeEmptyDatagrid = (props: any) => {
-  const { push, ...sanitizedProps } = props
-  const { total, ids, isLoading } = sanitizedProps
-  if (!isLoading && (ids.length === 0 || total === 0)) {
+class MaybeEmptyDatagrid extends React.Component<any> {
+  constructor(props: any) {
+    super(props)
+    this.state = { open: false }
+  }
+
+  openCreate() {
+    this.setState({ open: true })
+  }
+
+  render() {
+    const { push, ...sanitizedProps } = this.props
+    const { ids, isLoading } = sanitizedProps
+    const total = 0
+    if (!isLoading && (ids.length === 0 || total === 0)) {
+      // just inline the styles here since they aren't really going
+      // to be reused much i think and it's a small section so it
+      // doesn't clutter things up much. and extracting them is
+      // such a hassle right now
+      return (
+        <Section>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ marginBottom: 20 }}>No apps yet.</div>
+            <DialogButton label="Create">
+              {close => <AppCreateDialog close={close} />}
+            </DialogButton>
+          </div>
+        </Section>
+      )
+    }
     return (
-      <div>
-        No apps yet.
-        <Button
-          variant="raised"
-          color="primary"
-          onClick={() => {
-            push('/apps/create')
-          }}
-        >
-          Create App
-        </Button>
-      </div>
+      <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
+        <TextField source="id" sortable={false} />
+        <NumberField source="size" sortable={false} />
+        <NumberField source="replicas" sortable={false} />
+        <TextField source="cloud" sortable={false} />
+        <TextField source="region" sortable={false} />
+        <TextField source="stack" sortable={false} />
+      </Datagrid>
     )
   }
-  return (
-    <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
-      <TextField source="id" sortable={false}/>
-      <NumberField source="size" sortable={false}/>
-      <NumberField source="replicas" sortable={false}/>
-      <TextField source="cloud" sortable={false}/>
-      <TextField source="region" sortable={false}/>
-      <TextField source="stack" sortable={false}/>
-    </Datagrid>
-  )
 }
 
 // TODO: is it considered bad form to have a connected component inside a connected component?
@@ -112,18 +124,26 @@ const ConnectedMaybeEmptyDatagrid = connect(null, {
 })(MaybeEmptyDatagrid)
 
 const AppList = (props: Props & EnhancedProps) => {
-    return (
-      <Page title="My Apps">
-        <List exporter={false} title="My Apps" pagination={null} bulkActions={false} {...props}>
-          {/* <AppGrid /> */}
-          <ConnectedMaybeEmptyDatagrid />
-        </List>
-      </Page>
-    )
+  return (
+    <Page title="My Apps">
+      <List
+        filters={false}
+        actions={false}
+        exporter={false}
+        title="My Apps"
+        pagination={null}
+        bulkActions={false}
+        {...props}
+      >
+        {/* <AppGrid /> */}
+        <ConnectedMaybeEmptyDatagrid />
+      </List>
+    </Page>
+  )
 }
 
 const EnhancedAppList = compose<Props & EnhancedProps, Props>(
-  withStyles(styles),
+  withStyles(styles)
 )(AppList)
 
 export default EnhancedAppList

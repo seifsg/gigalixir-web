@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { push as routerPush } from 'react-router-redux'
+import { required, isNumber, minValue, maxValue } from './validators'
 import {
   WrappedFieldProps,
   reduxForm,
@@ -19,7 +20,8 @@ import React, { FunctionComponent } from 'react'
 import { Query, ShowController } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
-import { FailureCallback, SuccessCallback, crudUpdate } from './crudUpdate'
+import { SuccessCallback, FailureCallback } from './callbacks'
+import { crudUpdate } from './crudUpdate'
 import { extractError } from './errorSagas'
 import { point, Stats } from './api/stats'
 import { StyledTab, StyledTabs } from './Tabs'
@@ -35,7 +37,7 @@ import Bash from './Bash'
 import DialogButton, { CloseFunction } from './DialogButton'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
-
+import { renderTextField, renderError } from './fieldComponents'
 const styles = {}
 
 interface ShowProps {
@@ -134,68 +136,18 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
 
 const EnhancedCharts = withStyles(chartStyles)(Charts)
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const required = (message = 'Required') => (value: any) =>
-  value ? undefined : message
-const number = (message = 'Must be a number') => (value: any) =>
-  // eslint-disable-next-line no-restricted-globals
-  value && isNaN(Number(value)) ? message : undefined
-const minValue = (min: number, message = 'Too small') => (value: any) =>
-  value && value < min ? message : undefined
-const maxValue = (max: number, message = 'Too big') => (value: any) =>
-  value && value > max ? message : undefined
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 const validateSize = [
   required(),
-  number(),
+  isNumber(),
   minValue(0.2, 'Must be at least 0.2'),
   maxValue(16, 'Please contact enterprise@gigalixir.com to scale above 16.')
 ]
 const validateReplicas = [
-  number(),
+  isNumber(),
   minValue(0, 'Must be non-negative'),
   maxValue(16, 'Please contact enterprise@gigalixir.com to scale above 16.')
 ]
-
-const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}: {
-  label: string
-} & WrappedFieldProps) => {
-  return (
-    <TextField
-      type={type}
-      label={label}
-      placeholder={label}
-      error={touched && invalid}
-      helperText={touched && error}
-      {...input}
-      {...custom}
-    />
-  )
-}
-
-const renderError = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}: {
-  label: string
-} & WrappedFieldProps) => {
-  if (error) {
-    return (
-      <DialogContent>
-        <FormHelperText error>{error}</FormHelperText>
-      </DialogContent>
-    )
-  }
-  return <span />
-}
 
 const renderSizeField = renderTextField({ type: 'input' })
 const renderReplicasField = renderTextField({ type: 'number' })
@@ -255,7 +207,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
         app,
         () => {
           close()
-          resolve(newApp)
+          resolve()
         },
         failureCallback
       )
@@ -286,7 +238,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
           Cancel
         </Button>
         <Button type="submit" disabled={invalid || pristine} color="primary">
-          Save
+          Scale
         </Button>
       </DialogActions>
     </form>
@@ -576,7 +528,7 @@ class AppShow extends React.Component<AppShowProps> {
                   <Field label="Cloud">{app.cloud}</Field>
                   <Field label="Region">{app.region}</Field>
                   <Field label="Stack">{app.stack}</Field>
-                  <DialogButton>
+                  <DialogButton label="Scale">
                     {close => <EnhancedAppScale app={app} close={close} />}
                   </DialogButton>
                 </Fields>

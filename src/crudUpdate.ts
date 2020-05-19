@@ -1,5 +1,6 @@
 // pretty much copied from https://github.com/marmelab/react-admin/blob/master/packages/ra-core/src/actions/dataActions/crudCreate.ts
 // except, notification onFailure is optional
+import { SuccessCallback, FailureCallback } from './callbacks'
 import {
   Identifier,
   RefreshSideEffect,
@@ -34,10 +35,6 @@ export interface CrudUpdateAction {
   }
 }
 
-export type SuccessCallback = Function
-export type FailureCallback = (params: {
- payload: { errors: { [k: string]: string[] } }
-}) => void
 export const crudUpdate = (
   resource: string,
   id: Identifier,

@@ -21,9 +21,10 @@ interface Response {
   version: number
 }
 
-type Cloud = 'gcp' | 'aws'
-type GcpRegion = 'v2018-us-central1' | 'europe-west1'
-type AwsRegion = 'us-east-1' | 'us-west-2'
+export type Cloud = 'gcp' | 'aws'
+export type GcpRegion = 'v2018-us-central1' | 'europe-west1'
+export type AwsRegion = 'us-east-1' | 'us-west-2'
+export type Region = GcpRegion | AwsRegion
 
 interface CloudRegion {
   cloud: Cloud
@@ -38,6 +39,8 @@ interface Gcp extends CloudRegion {
   cloud: 'gcp'
   region: GcpRegion
 }
+
+export type AwsOrGcp = Aws | Gcp
 
 /* eslint-disable @typescript-eslint/camelcase */
 // using object spread operator to copy over all fields except unique_name field

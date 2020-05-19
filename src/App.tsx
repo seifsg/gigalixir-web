@@ -53,7 +53,7 @@ const App = () => (
       authProvider={authProvider}
       dataProvider={dataProvider}
     >
-      <Resource name="apps" list={AppList} create={AppCreate} />
+      <Resource name="apps" list={AppList} />
       <Resource name="profile" />
 
       {/*
