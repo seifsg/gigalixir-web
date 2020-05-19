@@ -41,7 +41,7 @@ class Show extends React.Component<Props & EnhancedProps, State> {
   }
 
   updateData() {
-    this.props.crudGetOne(this.props.resource, this.props.id, '/login')
+    this.props.crudGetOne(this.props.resource, this.props.id, '/account')
   }
 
   render() {

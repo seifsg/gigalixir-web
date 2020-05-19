@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 
-import { Line } from "react-chartjs-2";
-import * as zoom from "chartjs-plugin-zoom";
-import Hammer from "hammerjs";
 import Chart from './Chart'
 
 const sampleData = [
@@ -35,24 +32,6 @@ const initialDataOptions = {
   datasets: [{
     data: sampleData
   }]
-};
-
-const initialOptions = {
-  scales: {
-    xAxes: [
-      {
-        type: "time"
-      }
-    ],
-  },
-  pan: {
-    enabled: true,
-    mode: "x"
-  },
-  zoom: {
-    enabled: true,
-    mode: "x"
-  }
 };
 
 class App extends Component {

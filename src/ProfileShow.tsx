@@ -3,7 +3,6 @@ import _ from 'lodash/fp'
 import { push as routerPush } from 'react-router-redux'
 import React from 'react'
 import {
-  Loading,
   Authenticated,
   crudGetOne as crudGetOneAction
 } from 'react-admin'
@@ -20,6 +19,8 @@ import Upgrade from './Upgrade'
 import { CorrectedReduxState } from './CorrectedReduxState'
 import Page from './Page'
 import { StyledTab, StyledTabs } from './Tabs'
+import Loading from './Loading'
+import ComingSoon from './ComingSoon'
 
 const styles = createStyles({})
 
@@ -202,14 +203,14 @@ EnhancedProfileShow.defaultProps = {
       path: 'api-key',
       label: 'API Key',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Section>Coming Soon</Section>
+        return <Section><ComingSoon/></Section>
       }
     },
     {
       path: 'ssh-keys',
       label: 'SSH Keys',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Section>Coming Soon</Section>
+        return <Section><ComingSoon/></Section>
       }
     }
   ]

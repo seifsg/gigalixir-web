@@ -36,9 +36,14 @@ class UpgradeForm extends Component<Props & EnhancedProps> {
   }
 
   public async submit() {
+      console.log(this.props)
     const { stripe, upgrade } = this.props
     const { token } = await stripe.createToken({ name: 'Name' })
-    upgrade(token.id)
+    if (!token) {
+      // do nothing
+    } else {
+      upgrade(token.id)
+    }
   }
 
   public render() {
@@ -91,7 +96,7 @@ const upgrade = (token: string): CrudUpdateAction => ({
 })
 
 function mapStateToProps(state: any) {
-  console.log(JSON.stringify(state))
+  // TODO: let redux-form do this stuff for us?
   const error = _.get('form.upgradeUser.submitErrors.token', state)
   console.log(error)
   return {

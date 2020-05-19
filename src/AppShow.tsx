@@ -1,5 +1,4 @@
 import { withRouter } from 'react-router'
-import { extractError } from './errorSagas'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -18,9 +17,10 @@ import compose from 'recompose/compose'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
 import React, { FunctionComponent } from 'react'
 import { Query, ShowController } from 'react-admin'
-import { FailureCallback, SuccessCallback, crudUpdate } from './crudUpdate'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
+import { FailureCallback, SuccessCallback, crudUpdate } from './crudUpdate'
+import { extractError } from './errorSagas'
 import { point, Stats } from './api/stats'
 import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
@@ -34,6 +34,7 @@ import Field from './Field'
 import Bash from './Bash'
 import DialogButton, { CloseFunction } from './DialogButton'
 import Loading from './Loading'
+import ComingSoon from './ComingSoon'
 
 const styles = {}
 
@@ -44,6 +45,9 @@ interface ShowProps {
 }
 
 const chartStyles = createStyles({
+  loading: {
+    marginTop: 40
+  },
   chartSection: {
     display: 'flex',
     // this is paired with the child's padding
@@ -100,10 +104,16 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
         error: Error
       }): React.ReactElement => {
         if (loading) {
-          return <Loading />
+          return (
+            <div className={classes.loading}>
+              <Loading />
+            </div>
+          )
         }
         if (error) {
-          return <div>Error: {error.message}</div>
+          return (
+              <div>Error: {error.message}</div>
+          )
         }
         return (
           <div className={classes.chartSection}>
@@ -199,7 +209,12 @@ interface FormData {
   replicas: string
 }
 interface EnhancedScaleProps extends InjectedFormProps<FormData> {
-  scale: (values: App, previous: App, onSuccess: SuccessCallback, onFailure: FailureCallback) => void
+  scale: (
+    values: App,
+    previous: App,
+    onSuccess: SuccessCallback,
+    onFailure: FailureCallback
+  ) => void
 }
 const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   const { pristine, invalid, close, app, scale, handleSubmit } = props
@@ -221,22 +236,29 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
     // };
 
     const newApp = {
-        ...app,
-        size: size ? parseFloat(size) : app.size,
-        replicas: replicas ? parseInt(replicas) : app.replicas
-      }
+      ...app,
+      size: size ? parseFloat(size) : app.size,
+      replicas: replicas ? parseInt(replicas) : app.replicas
+    }
     return new Promise((resolve, reject) => {
       const failureCallback: FailureCallback = ({ payload: { errors } }) => {
-        reject(new SubmissionError({
-          form: extractError(errors, ''),
-          size: extractError(errors, 'size'),
-          replicas: extractError(errors, 'replicas'),
-        }))
+        reject(
+          new SubmissionError({
+            form: extractError(errors, ''),
+            size: extractError(errors, 'size'),
+            replicas: extractError(errors, 'replicas')
+          })
+        )
       }
-      scale(newApp, app, () => {
-        close()
-        resolve(newApp)
-      }, failureCallback)
+      scale(
+        newApp,
+        app,
+        () => {
+          close()
+          resolve(newApp)
+        },
+        failureCallback
+      )
     })
   }
   return (
@@ -263,11 +285,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
         <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button
-          type="submit"
-          disabled={invalid || pristine}
-          color="primary"
-        >
+        <Button type="submit" disabled={invalid || pristine} color="primary">
           Save
         </Button>
       </DialogActions>
@@ -275,21 +293,36 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   )
 }
 
-const scaleApp_ = (values: App, previousValues: App, successCallback: SuccessCallback, failureCallback:  FailureCallback) => {
+const scaleApp_ = (
+  values: App,
+  previousValues: App,
+  successCallback: SuccessCallback,
+  failureCallback: FailureCallback
+) => {
   logger.debug('scaleApp')
   const basePath = ''
   const redirectTo = ''
-  // this needs to be refresh=true in this case because otherwise, the app data in the redux store gets wiped out. 
+  // this needs to be refresh=true in this case because otherwise, the app data in the redux store gets wiped out.
   // here is what happens
   // 1. fetch.ts calls the dataProvider
   // 2. fetch.ts uses the result of the dataProvider and sends a CRUD_UPDATE_SUCCESS action with the response
   // 3. the problem is the response isn't a full App, it's just the new size and replicas
   // 4. reducers/data.ts processes this and replaces what is in the store rather than merging the updated fields
   //
-  // refresh here tells somenoe to refetch the App to get the new values so everything is right again. 
-  // TODO: change scale endpoint to return a full app 
+  // refresh here tells somenoe to refetch the App to get the new values so everything is right again.
+  // TODO: change scale endpoint to return a full app
   const refresh = true
-  return crudUpdate('apps', values.id, values, previousValues, basePath, redirectTo, refresh, successCallback, failureCallback)
+  return crudUpdate(
+    'apps',
+    values.id,
+    values,
+    previousValues,
+    basePath,
+    redirectTo,
+    refresh,
+    successCallback,
+    failureCallback
+  )
 }
 
 const EnhancedAppScale = compose<ScaleProps & EnhancedScaleProps, ScaleProps>(
@@ -561,7 +594,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       },
       {
@@ -572,7 +605,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       },
       {
@@ -583,7 +616,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       },
       {
@@ -594,7 +627,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       },
       {
@@ -605,7 +638,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       },
       {
@@ -616,7 +649,7 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section>Coming Soon</Section>
+          return <Section><ComingSoon/></Section>
         }
       }
     ]
