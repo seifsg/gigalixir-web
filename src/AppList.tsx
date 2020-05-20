@@ -65,8 +65,7 @@ class MaybeEmptyDatagrid extends React.Component<any> {
     // gets it's data from ListController which is harder to hook into. We will
     // probably need to eject ListController to do this and dispatch out own
     // actions to set loading states for each scenario.
-    const shouldShowEmptyView =
-      loadedOnce && (ids.length === 0 || total === 0)
+    const shouldShowEmptyView = loadedOnce && (ids.length === 0 || total === 0)
 
     // just inline the styles here since they aren't really going
     // to be reused much i think and it's a small section so it
@@ -95,14 +94,17 @@ class MaybeEmptyDatagrid extends React.Component<any> {
       )
     }
     return (
-      <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
-        <TextField source="id" sortable={false} />
-        <NumberField source="size" sortable={false} />
-        <NumberField source="replicas" sortable={false} />
-        <TextField source="cloud" sortable={false} />
-        <TextField source="region" sortable={false} />
-        <TextField source="stack" sortable={false} />
-      </Datagrid>
+      <div>
+        <DialogButton label="Create">{this.createDialog}</DialogButton>
+        <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
+          <TextField source="id" sortable={false} />
+          <NumberField source="size" sortable={false} />
+          <NumberField source="replicas" sortable={false} />
+          <TextField source="cloud" sortable={false} />
+          <TextField source="region" sortable={false} />
+          <TextField source="stack" sortable={false} />
+        </Datagrid>
+      </div>
     )
   }
 }

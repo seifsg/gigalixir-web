@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { ReactNode, FunctionComponent } from 'react'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import FormLabel from '@material-ui/core/FormLabel'
@@ -28,6 +28,12 @@ import {
   renderTextField,
   renderError
 } from './fieldComponents'
+
+// dumb, but this basically just to make sure the <div> doesn't get an inputRef attribute
+// passed in. The RadioGroup passes it down to the children somehow through redux-form Field I think.
+const Label: FunctionComponent<{children: ReactNode}> = ({ children }) => {
+  return <div style={{flexBasis: '100%', fontSize: '0.875em'}}>{children}</div>
+}
 
 const renderNameField = renderTextField({ type: 'input' })
 const renderCloudRegionField = renderRadioGroup
@@ -115,12 +121,14 @@ const AppCreate: FunctionComponent<CreateProps &
         />
       </DialogContent>
       <DialogContent>
+        <div style={{fontWeight: 'bold', marginBottom: 10}}>Region</div>
         <FormField
           validate={validateCloudRegion}
           component={renderCloudRegionField}
           name="cloudRegion"
+        props={{row: true}}
         >
-
+          <Label>Google Cloud</Label>
           <FormControlLabel
             control={<Radio />}
             value="v2018-us-central1"
@@ -131,6 +139,7 @@ const AppCreate: FunctionComponent<CreateProps &
             value="europe-west1"
             label="europe-west1"
           />
+          <Label>Amazon Web Services</Label>
           <FormControlLabel
             control={<Radio />}
             value="us-west-2"
@@ -162,7 +171,9 @@ const createApp_ = (
 ) => {
   const basePath = ''
   const redirectTo = ''
-  const refresh = false
+  
+  // needed because the create endpoint doesn't return a full app e.g. stack
+  const refresh = true
   return crudCreate(
     'apps',
     values,
