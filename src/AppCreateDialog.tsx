@@ -148,7 +148,7 @@ const AppCreate: FunctionComponent<CreateProps &
         />
       </DialogContent>
       <DialogContent>
-        <Section>
+        <Section marginTop={0}>
         <div style={{ fontWeight: 'bold', marginBottom: 10 }}>Region</div>
         <FormField
           validate={validateCloudRegion}

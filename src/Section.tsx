@@ -5,33 +5,36 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 
 const styles = createStyles({
   section: {
-    // marginTop: "40px",
-    border: "1px solid rgba(0,0,0,0.1)",
-    padding: "20px",
-    "& h4:first-child": {
-      marginTop: 0,
+    border: '1px solid rgba(0,0,0,0.1)',
+    padding: '20px',
+    '& h4:first-child': {
+      marginTop: 0
     }
-  },
+  }
 })
 
 interface Props {
-    children: ReactNode
+  children: ReactNode
+  marginTop?: number
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {
-}
+interface EnhancedProps extends WithStyles<typeof styles> {}
 
 const Section = (props: Props & EnhancedProps) => {
-    const { classes, children } = props
-    return (
-        <Paper className={classes.section} elevation={0}>
-          {children}
-        </Paper>
-    )
+  const { marginTop, classes, children } = props
+  return (
+    <Paper style={{ marginTop }} className={classes.section} elevation={0}>
+      {children}
+    </Paper>
+  )
 }
 
 const EnhancedSection = compose<Props & EnhancedProps, Props>(
-  withStyles(styles),
+  withStyles(styles)
 )(Section)
+
+EnhancedSection.defaultProps = {
+  marginTop: 40
+}
 
 export default EnhancedSection
