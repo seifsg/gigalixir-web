@@ -90,7 +90,7 @@ class MaybeEmptyDatagrid extends React.Component<any> {
       <div>
         <DialogButton label="Create">{this.createDialog}</DialogButton>
         <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
-          <TextField source="id" sortable={false} />
+          <TextField label="Name" source="id" sortable={false} />
           <NumberField source="size" sortable={false} />
           <NumberField source="replicas" sortable={false} />
           <TextField source="cloud" sortable={false} />
