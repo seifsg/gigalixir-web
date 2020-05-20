@@ -44,8 +44,8 @@ export const crudCreate = (
     fetch: CREATE,
     onSuccess: {
       callback: successCallback,
-      redirectTo,
       refresh,
+      redirectTo,
       basePath
     },
     // onSuccess: {

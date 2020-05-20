@@ -1,4 +1,5 @@
 import { withRouter } from 'react-router'
+import { ReduxState } from 'ra-core'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -6,7 +7,6 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { push as routerPush } from 'react-router-redux'
-import { required, isNumber, minValue, maxValue } from './validators'
 import {
   WrappedFieldProps,
   reduxForm,
@@ -20,6 +20,8 @@ import React, { FunctionComponent } from 'react'
 import { Query, ShowController } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
+import { required, isNumber, minValue, maxValue } from './validators'
+import { CorrectedReduxState } from './CorrectedReduxState'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { crudUpdate } from './crudUpdate'
 import { extractError } from './errorSagas'
@@ -38,6 +40,7 @@ import DialogButton, { CloseFunction } from './DialogButton'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
 import { renderTextField, renderError } from './fieldComponents'
+
 const styles = {}
 
 interface ShowProps {
@@ -105,6 +108,10 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
         loading: boolean
         error: Error
       }): React.ReactElement => {
+        // Note: loading here is not from the redux store so it is
+        // safe to use! The problem is Query behind the scenes uses
+        // dataProvider which will set the redux loading state even
+        // though we do not use it here.
         if (loading) {
           return (
             <div className={classes.loading}>
@@ -113,9 +120,7 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
           )
         }
         if (error) {
-          return (
-              <div>Error: {error.message}</div>
-          )
+          return <div>Error: {error.message}</div>
         }
         return (
           <div className={classes.chartSection}>
@@ -135,7 +140,6 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
 }
 
 const EnhancedCharts = withStyles(chartStyles)(Charts)
-
 
 const validateSize = [
   required(),
@@ -391,6 +395,7 @@ const Setup = (props: { profile: User; app: App }) => {
 }
 
 interface Props {
+  isLoading: boolean
   profile: User
   app?: App
   tabs: {
@@ -460,6 +465,12 @@ class SetupOrShowLayout extends React.Component<
       // TODO: this doesn't seem like the right way to handle loading states
       // both profile and app start out as undefined and then later get filled in
       // maybe in random order
+      //
+      // do not use isLoading here. it causes an infinite loop.
+      // 1. loading component is displayed
+      // 2. once everything is loaded, tabs are displayed
+      // 3. one tab fetches stats which sets loading=true again
+      // 4. Chart is destroyed and we go back to step 1
       return <Loading />
     }
     if (!app) {
@@ -494,6 +505,7 @@ interface AppShowProps {
 class AppShow extends React.Component<AppShowProps> {
   public render() {
     const {
+      version,
       match: {
         params: { id }
       }
@@ -546,7 +558,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       },
       {
@@ -557,7 +573,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       },
       {
@@ -568,7 +588,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       },
       {
@@ -579,7 +603,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       },
       {
@@ -590,7 +618,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       },
       {
@@ -601,7 +633,11 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
-          return <Section><ComingSoon/></Section>
+          return (
+            <Section>
+              <ComingSoon />
+            </Section>
+          )
         }
       }
     ]
@@ -613,13 +649,14 @@ class AppShow extends React.Component<AppShowProps> {
               const profile = profileControllerProps.record
               return (
                 <ShowController resource="apps" id={id} basePath="/login">
-                  {(controllerProps: { record: App }) => {
+                  {(controllerProps: { record: App; isLoading: boolean }) => {
                     const app = controllerProps.record
                     return (
                       <EnhancedSetupOrShowLayout
                         app={app}
                         profile={profile}
                         tabs={tabs}
+                        isLoading={controllerProps.isLoading}
                       />
                     )
                   }}
@@ -633,9 +670,19 @@ class AppShow extends React.Component<AppShowProps> {
   }
 }
 
+function mapStateToProps(
+  state: ReduxState & CorrectedReduxState,
+  props: Props
+) {
+  return {
+    isLoading: state.admin.loading > 0,
+    version: state.admin.ui.viewVersion
+  }
+}
+
 const EnhancedSetupOrShowLayout = compose<Props & EnhancedProps, Props>(
   withRouter,
-  connect(null, {
+  connect(mapStateToProps, {
     push: routerPush
   })
 )(SetupOrShowLayout)

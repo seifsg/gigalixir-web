@@ -127,12 +127,14 @@ export const create = (
       }
     })
     .catch(
-      (error: {
-        response: { data: { errors: { [k: string]: string[] } } }
+      (reason: {
+          response: { data: api.ErrorResponse; status: number }
       }): never => {
-        const { errors } = error.response.data
-        const result = readableError(errors)
-        throw new Error(result)
+        // duplicated, refactor?
+        const { errors } = reason.response.data
+        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
+          errors
+        })
       }
     )
 }
@@ -156,7 +158,6 @@ export const scale = (
     .then((response): {
       data: { size: number; replicas: number }
     } => {
-        console.log(response)
       const newApp = response.data.data
       return { data: { replicas: newApp.replicas, size: newApp.size } }
     })
@@ -165,7 +166,6 @@ export const scale = (
         response: { data: api.ErrorResponse; status: number }
       }) => {
         const { errors } = reason.response.data
-        // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
         throw new HttpError(_.join('. ', errors['']), reason.response.status, {
           errors
         })

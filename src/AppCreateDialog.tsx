@@ -1,6 +1,10 @@
 import React, { FunctionComponent } from 'react'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+
+import FormLabel from '@material-ui/core/FormLabel'
+
+import Radio from '@material-ui/core/Radio'
 import { connect } from 'react-redux'
-import { CloseFunction } from './DialogButton'
 import compose from 'recompose/compose'
 import Button from '@material-ui/core/Button'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -13,24 +17,28 @@ import {
   InjectedFormProps,
   SubmissionError
 } from 'redux-form'
+import { CloseFunction } from './DialogButton'
 import { required, choices } from './validators'
 import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { Cloud, Region } from './api/apps'
-import { renderTextField, renderError } from './fieldComponents'
+import {
+  renderRadioGroup,
+  renderTextField,
+  renderError
+} from './fieldComponents'
 
 const renderNameField = renderTextField({ type: 'input' })
-// change these to segmented buttons?
-const renderCloudField = renderTextField({ type: 'input' })
-const renderRegionField = renderTextField({ type: 'input' })
+const renderCloudRegionField = renderRadioGroup
 
 const validateName = [required()]
-const validateCloud = [required(), choices(['aws', 'gcp'], 'Must be aws or gcp')]
-
-const validateRegion = [
+const validateCloudRegion = [
   required(),
-  choices(['v2018-us-central1', 'europe-west1', 'us-east-1', 'us-west-2'], 'Must be v2018-us-central1 or europe-west1 or us-east-1 or us-west-2')
+  choices(
+    ['v2018-us-central1', 'europe-west1', 'us-east-1', 'us-west-2'],
+    'Must be v2018-us-central1 or europe-west1 or us-east-1 or us-west-2'
+  )
 ]
 
 interface CreateProps {
@@ -38,12 +46,11 @@ interface CreateProps {
 }
 interface FormData {
   name: string
-  cloud: string
-  region: string
+  cloudRegion: string
 }
 interface EnhancedCreateProps extends InjectedFormProps<FormData> {
   create: (
-    values: FormData,
+    values: { name: string, cloud: Cloud, region: Region },
     onSuccess: SuccessCallback,
     onFailure: FailureCallback
   ) => void
@@ -54,7 +61,18 @@ const AppCreate: FunctionComponent<CreateProps &
   const onCancel = () => {
     close()
   }
-  const onSubmit = ({ name, cloud, region }: FormData) => {
+  const onSubmit = ({ name, cloudRegion }: FormData) => {
+    let cloud: Cloud = 'gcp'
+    let region: Region = 'v2018-us-central1'
+    if (cloudRegion === 'us-east-1' || cloudRegion === 'us-west-2') {
+      cloud = 'aws'
+      region = cloudRegion
+    } else if (cloudRegion === 'europe-west1' || cloudRegion === 'v2018-us-central1') {
+      cloud = 'gcp'
+      region = cloudRegion
+    } else {
+      // this should never happen
+    }
     const newApp = {
       name,
       cloud,
@@ -62,12 +80,15 @@ const AppCreate: FunctionComponent<CreateProps &
     }
     return new Promise((resolve, reject) => {
       const failureCallback: FailureCallback = ({ payload: { errors } }) => {
+        const formErrors = {
+          ...errors,
+          name: errors['unique_name'],
+        }
         reject(
           new SubmissionError({
-            form: extractError(errors, ''),
-            name: extractError(errors, 'name'),
-            cloud: extractError(errors, 'cloud'),
-            region: extractError(errors, 'region')
+            form: extractError(formErrors, ''),
+            name: extractError(formErrors, 'name'),
+            cloudRegion: extractError(formErrors, 'cloud') || extractError(formErrors, 'region'),
           })
         )
       }
@@ -95,19 +116,32 @@ const AppCreate: FunctionComponent<CreateProps &
       </DialogContent>
       <DialogContent>
         <FormField
-          validate={validateCloud}
-          component={renderCloudField}
-          name="cloud"
-          label="Cloud"
-        />
-      </DialogContent>
-      <DialogContent>
-        <FormField
-          validate={validateRegion}
-          component={renderRegionField}
-          name="region"
-          label="Region"
-        />
+          validate={validateCloudRegion}
+          component={renderCloudRegionField}
+          name="cloudRegion"
+        >
+
+          <FormControlLabel
+            control={<Radio />}
+            value="v2018-us-central1"
+            label="v2018-us-central1"
+          />
+          <FormControlLabel
+            control={<Radio />}
+            value="europe-west1"
+            label="europe-west1"
+          />
+          <FormControlLabel
+            control={<Radio />}
+            value="us-west-2"
+            label="us-west-2"
+          />
+          <FormControlLabel
+            control={<Radio />}
+            value="us-east-1"
+            label="us-east-1"
+          />
+        </FormField>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} color="primary">
@@ -122,7 +156,7 @@ const AppCreate: FunctionComponent<CreateProps &
 }
 
 const createApp_ = (
-  values: FormData,
+  values: { name: string, cloud: Cloud, region: Region },
   successCallback: SuccessCallback,
   failureCallback: FailureCallback
 ) => {
@@ -147,8 +181,7 @@ const EnhancedAppCreate = compose<
   connect(
     (state, ownProps: CreateProps) => ({
       initialValues: {
-        // cloud: 'gcp',
-        // region: 'v2018-us-central1'
+        cloudRegion: 'v2018-us-central1'
       }
     }),
     {

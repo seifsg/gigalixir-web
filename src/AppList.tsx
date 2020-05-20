@@ -15,48 +15,7 @@ import List from './List'
 import Page from './Page'
 import Section from './Section'
 // import { Link } from 'react-router-dom'
-
-const cardStyle = {
-  width: 300,
-  minHeight: 300,
-  margin: '0.5em',
-  display: 'inline-block',
-  verticalAlign: 'top'
-}
-interface Data {
-  [id: string]: {
-    replicas: number
-    size: number
-    cloud: string
-    region: string
-    stack: string
-  }
-}
-const AppGrid = ({ ids, data }: { ids: string[]; data: Data }) => (
-  <div style={{ margin: '1em' }}>
-    {ids.map(id => (
-      // <Link key={id} to={`/apps/${id}/show`}>
-      <Card key={id} style={cardStyle}>
-        <CardHeader title={<TextField record={data[id]} source="id" />} />
-        <CardContent>
-          <TextField record={data[id]} source="replicas" />
-          <TextField record={data[id]} source="size" />
-          <TextField record={data[id]} source="cloud" />
-          <TextField record={data[id]} source="region" />
-          <TextField record={data[id]} source="stack" />
-        </CardContent>
-        <CardActions style={{ textAlign: 'right' }}>
-          <ShowButton resource="apps" basePath="/apps" record={data[id]} />
-        </CardActions>
-      </Card>
-      // </Link>
-    ))}
-  </div>
-)
-AppGrid.defaultProps = {
-  data: {},
-  ids: []
-}
+import Loading from './Loading'
 
 const styles = createStyles({})
 
@@ -84,22 +43,53 @@ class MaybeEmptyDatagrid extends React.Component<any> {
     this.setState({ open: true })
   }
 
+  createDialog(close: CloseFunction) {
+    return <AppCreateDialog close={close} />
+  }
+
   render() {
     const { push, ...sanitizedProps } = this.props
-    const { ids, isLoading } = sanitizedProps
-    const total = 0
-    if (!isLoading && (ids.length === 0 || total === 0)) {
-      // just inline the styles here since they aren't really going
-      // to be reused much i think and it's a small section so it
-      // doesn't clutter things up much. and extracting them is
-      // such a hassle right now
+    const { loadedOnce, total, ids } = sanitizedProps
+
+    // if we use isLoading here instead of loadedOnce, then it basically shows
+    // the datagrid after hitting the create dialog save button for a split second.
+    // that's because isLoading is a global counter that is used anytime
+    // there is a request in flight so when an app create action is being dispatched
+    // isLoading becomes true and the background behind the modal flips over
+    // and shows the list view which is weird. our plan is to basically stop
+    // using isLoading i.e. state.admin.loading entirely if possible
+    // and start using a specific loading variable for each action or ui
+    // element. we didn't dig into exactly how to do that here because
+    // loadedOnce seems to take care of our use cases, but we will eventually
+    // want to do that. Query and Mutation looked promising, but this section here
+    // gets it's data from ListController which is harder to hook into. We will
+    // probably need to eject ListController to do this and dispatch out own
+    // actions to set loading states for each scenario.
+    const shouldShowEmptyView =
+      loadedOnce && (ids.length === 0 || total === 0)
+
+    // just inline the styles here since they aren't really going
+    // to be reused much i think and it's a small section so it
+    // doesn't clutter things up much. and extracting them is
+    // such a hassle right now
+    //
+    // Obsolete now that we use loadedOnce instead of isLoading, but leaving it
+    // here because it's an important lesson to remember.
+    // We use display block/none instead of rendering the sections conditionally
+    // because we have state that we don't want cleared out. For example, DialogButton
+    // holds state about whether the dialog is open. If shouldShowEmptyView toggles
+    // for some reason, then the dialog loses it's state and closes. This happens
+    // for example, if there is some weird shift in loading state which can happen
+    // if we make shouldShowEmptyVIew dependent on isLoading which is a global
+    // loading counter that is incremented when the app create save button is clicked.
+    // this results in the dialog closing and no errors shown when there is a
+    // failure.
+    if (shouldShowEmptyView) {
       return (
         <Section>
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: 20 }}>No apps yet.</div>
-            <DialogButton label="Create">
-              {close => <AppCreateDialog close={close} />}
-            </DialogButton>
+            <DialogButton label="Create">{this.createDialog}</DialogButton>
           </div>
         </Section>
       )
@@ -127,15 +117,14 @@ const AppList = (props: Props & EnhancedProps) => {
   return (
     <Page title="My Apps">
       <List
-        filters={false}
-        actions={false}
+        filters={null}
+        actions={null}
         exporter={false}
         title="My Apps"
         pagination={null}
         bulkActions={false}
         {...props}
       >
-        {/* <AppGrid /> */}
         <ConnectedMaybeEmptyDatagrid />
       </List>
     </Page>
