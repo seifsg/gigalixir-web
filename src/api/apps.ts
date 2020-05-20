@@ -82,24 +82,6 @@ export const get = (id: string): Promise<{ data: App }> => {
     })
 }
 
-function capitalizeFirstLetter(string: string): string {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
-const readableError = (errors: { [k: string]: string[] }): string => {
-  return Object.keys(errors)
-    .map((key): string => {
-      // hack to map unique_name to name
-      let name = key
-      if (name === 'unique_name') {
-        name = 'name'
-      }
-      name = capitalizeFirstLetter(name)
-      return `${name} ${errors[key][0]}`
-    })
-    .join('. ')
-}
-
 export const create = (
   name: string,
   cloud: string,

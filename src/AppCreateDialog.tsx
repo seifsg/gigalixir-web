@@ -1,7 +1,9 @@
 import React, { ReactNode, FunctionComponent } from 'react'
+import Section from './Section'
+import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
+
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 
-import FormLabel from '@material-ui/core/FormLabel'
 
 import Radio from '@material-ui/core/Radio'
 import { connect } from 'react-redux'
@@ -11,7 +13,6 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {
-  WrappedFieldProps,
   reduxForm,
   Field as FormField,
   InjectedFormProps,
@@ -28,11 +29,14 @@ import {
   renderTextField,
   renderError
 } from './fieldComponents'
+import SubmitButton from './SubmitButton'
 
 // dumb, but this basically just to make sure the <div> doesn't get an inputRef attribute
 // passed in. The RadioGroup passes it down to the children somehow through redux-form Field I think.
-const Label: FunctionComponent<{children: ReactNode}> = ({ children }) => {
-  return <div style={{flexBasis: '100%', fontSize: '0.875em'}}>{children}</div>
+const Label: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
+  return (
+    <div style={{ flexBasis: '100%', fontSize: '0.875em' }}>{children}</div>
+  )
 }
 
 const renderNameField = renderTextField({ type: 'input' })
@@ -54,16 +58,34 @@ interface FormData {
   name: string
   cloudRegion: string
 }
-interface EnhancedCreateProps extends InjectedFormProps<FormData> {
+const styles = createStyles({
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12
+  }
+})
+interface EnhancedCreateProps
+  extends InjectedFormProps<FormData>,
+    WithStyles<typeof styles> {
   create: (
-    values: { name: string, cloud: Cloud, region: Region },
+    values: { name: string; cloud: Cloud; region: Region },
     onSuccess: SuccessCallback,
     onFailure: FailureCallback
   ) => void
 }
 const AppCreate: FunctionComponent<CreateProps &
   EnhancedCreateProps> = props => {
-  const { pristine, invalid, close, create, handleSubmit } = props
+  const {
+    submitting,
+    pristine,
+    invalid,
+    close,
+    create,
+    handleSubmit
+  } = props
   const onCancel = () => {
     close()
   }
@@ -73,7 +95,10 @@ const AppCreate: FunctionComponent<CreateProps &
     if (cloudRegion === 'us-east-1' || cloudRegion === 'us-west-2') {
       cloud = 'aws'
       region = cloudRegion
-    } else if (cloudRegion === 'europe-west1' || cloudRegion === 'v2018-us-central1') {
+    } else if (
+      cloudRegion === 'europe-west1' ||
+      cloudRegion === 'v2018-us-central1'
+    ) {
       cloud = 'gcp'
       region = cloudRegion
     } else {
@@ -88,13 +113,15 @@ const AppCreate: FunctionComponent<CreateProps &
       const failureCallback: FailureCallback = ({ payload: { errors } }) => {
         const formErrors = {
           ...errors,
-          name: errors['unique_name'],
+          name: errors.unique_name
         }
         reject(
           new SubmissionError({
             form: extractError(formErrors, ''),
             name: extractError(formErrors, 'name'),
-            cloudRegion: extractError(formErrors, 'cloud') || extractError(formErrors, 'region'),
+            cloudRegion:
+              extractError(formErrors, 'cloud') ||
+              extractError(formErrors, 'region')
           })
         )
       }
@@ -117,16 +144,17 @@ const AppCreate: FunctionComponent<CreateProps &
           validate={validateName}
           component={renderNameField}
           name="name"
-          label="Name"
+          label="App Name"
         />
       </DialogContent>
       <DialogContent>
-        <div style={{fontWeight: 'bold', marginBottom: 10}}>Region</div>
+        <Section>
+        <div style={{ fontWeight: 'bold', marginBottom: 10 }}>Region</div>
         <FormField
           validate={validateCloudRegion}
           component={renderCloudRegionField}
           name="cloudRegion"
-        props={{row: true}}
+          props={{ row: true }}
         >
           <Label>Google Cloud</Label>
           <FormControlLabel
@@ -151,27 +179,26 @@ const AppCreate: FunctionComponent<CreateProps &
             label="us-east-1"
           />
         </FormField>
+      </Section>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button type="submit" disabled={invalid || pristine} color="primary">
-          Create
-        </Button>
+        <SubmitButton {...{ invalid, pristine, submitting }} label="Create" />
       </DialogActions>
     </form>
   )
 }
 
 const createApp_ = (
-  values: { name: string, cloud: Cloud, region: Region },
+  values: { name: string; cloud: Cloud; region: Region },
   successCallback: SuccessCallback,
   failureCallback: FailureCallback
 ) => {
   const basePath = ''
   const redirectTo = ''
-  
+
   // needed because the create endpoint doesn't return a full app e.g. stack
   const refresh = true
   return crudCreate(
@@ -189,6 +216,7 @@ const EnhancedAppCreate = compose<
   CreateProps & EnhancedCreateProps,
   CreateProps
 >(
+  withStyles(styles),
   connect(
     (state, ownProps: CreateProps) => ({
       initialValues: {

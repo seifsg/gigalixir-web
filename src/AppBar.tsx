@@ -11,7 +11,6 @@ import withWidth from '@material-ui/core/withWidth'
 import compose from 'recompose/compose'
 import { toggleSidebar as toggleSidebarAction } from 'ra-core'
 
-import { LoadingIndicator } from 'react-admin'
 import UserMenu from './UserMenu'
 import Headroom from './Headroom'
 
@@ -102,7 +101,6 @@ any) => (
         ) : (
           children
         )}
-        <LoadingIndicator />
       </Toolbar>
     </MuiAppBar>
     <div className={classes.border}></div>
