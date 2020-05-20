@@ -5,7 +5,7 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 
 const styles = createStyles({
   section: {
-    marginTop: "40px",
+    // marginTop: "40px",
     border: "1px solid rgba(0,0,0,0.1)",
     padding: "20px",
     "& h4:first-child": {

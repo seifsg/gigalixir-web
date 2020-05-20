@@ -1,21 +1,14 @@
-import Card from '@material-ui/core/Card'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { push as routerPush } from 'react-router-redux'
-import Button from '@material-ui/core/Button'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardHeader from '@material-ui/core/CardHeader'
 import React from 'react'
-import { Datagrid, NumberField, ShowButton, TextField } from 'react-admin'
+import { Datagrid, NumberField, TextField } from 'react-admin'
 import AppCreateDialog from './AppCreateDialog'
 import DialogButton, { CloseFunction } from './DialogButton'
 import List from './List'
 import Page from './Page'
 import Section from './Section'
-// import { Link } from 'react-router-dom'
-import Loading from './Loading'
 
 const styles = createStyles({})
 

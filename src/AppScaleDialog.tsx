@@ -1,14 +1,5 @@
-import React, { ReactNode, FunctionComponent } from 'react'
-import { crudUpdate } from './crudUpdate'
-import { App } from './api/apps'
-import Section from './Section'
-import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
+import React, { FunctionComponent } from 'react'
 
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-
-import FormLabel from '@material-ui/core/FormLabel'
-
-import Radio from '@material-ui/core/Radio'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import Button from '@material-ui/core/Button'
@@ -16,22 +7,18 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {
-  WrappedFieldProps,
   reduxForm,
   Field as FormField,
   InjectedFormProps,
   SubmissionError
 } from 'redux-form'
+import { App } from './api/apps'
+import { crudUpdate } from './crudUpdate'
 import { CloseFunction } from './DialogButton'
-import { isNumber, minValue, maxValue, required, choices } from './validators'
+import { isNumber, minValue, maxValue, required } from './validators'
 import { extractError } from './errorSagas'
 import { SuccessCallback, FailureCallback } from './callbacks'
-import { Cloud, Region } from './api/apps'
-import {
-  renderRadioGroup,
-  renderTextField,
-  renderError
-} from './fieldComponents'
+import { renderTextField, renderError } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const validateSize = [
@@ -66,7 +53,15 @@ interface EnhancedScaleProps extends InjectedFormProps<FormData> {
   ) => void
 }
 const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
-  const { pristine, invalid, close, app, scale, handleSubmit } = props
+  const {
+    submitting,
+    pristine,
+    invalid,
+    close,
+    app,
+    scale,
+    handleSubmit
+  } = props
   const onCancel = () => {
     close()
   }
@@ -134,9 +129,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
         <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button type="submit" disabled={invalid || pristine} color="primary">
-          Scale
-        </Button>
+        <SubmitButton {...{ invalid, pristine, submitting }} label="Scale" />
       </DialogActions>
     </form>
   )

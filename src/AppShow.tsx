@@ -1,46 +1,27 @@
 import { withRouter } from 'react-router'
 import { ReduxState } from 'ra-core'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
 import { push as routerPush } from 'react-router-redux'
-import {
-  WrappedFieldProps,
-  reduxForm,
-  Field as FormField,
-  InjectedFormProps,
-  SubmissionError
-} from 'redux-form'
 import compose from 'recompose/compose'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
 import React, { FunctionComponent } from 'react'
 import { Query, ShowController } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
-import { required, isNumber, minValue, maxValue } from './validators'
 import { CorrectedReduxState } from './CorrectedReduxState'
-import { SuccessCallback, FailureCallback } from './callbacks'
-import { crudUpdate } from './crudUpdate'
 import AppScaleDialog from './AppScaleDialog'
-import { extractError } from './errorSagas'
 import { point, Stats } from './api/stats'
 import { StyledTab, StyledTabs } from './Tabs'
 import { App } from './api/apps'
 import { User } from './api/users'
 import Chart, { ChartPoint } from './Chart'
-import logger from './logger'
 import Page from './Page'
 import Section from './Section'
 import Fields from './Fields'
 import Field from './Field'
 import Bash from './Bash'
-import DialogButton, { CloseFunction } from './DialogButton'
+import DialogButton from './DialogButton'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
-import { renderTextField, renderError } from './fieldComponents'
 
 const styles = {}
 
@@ -350,7 +331,6 @@ interface AppShowProps {
 class AppShow extends React.Component<AppShowProps> {
   public render() {
     const {
-      version,
       match: {
         params: { id }
       }
