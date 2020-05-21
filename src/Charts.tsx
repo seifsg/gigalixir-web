@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
-import { Query} from 'react-admin'
+import { Query } from 'react-admin'
 import Loading from './Loading'
 import Chart, { ChartPoint } from './Chart'
 import { point, Stats } from './api/stats'

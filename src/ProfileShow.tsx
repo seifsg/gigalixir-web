@@ -2,10 +2,7 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import _ from 'lodash/fp'
 import { push as routerPush } from 'react-router-redux'
 import React from 'react'
-import {
-  Authenticated,
-  crudGetOne as crudGetOneAction
-} from 'react-admin'
+import { Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import { ReduxState } from 'ra-core'
@@ -177,9 +174,11 @@ EnhancedProfileShow.defaultProps = {
               <Fields>
                 <Field label="Email"> {record.email} </Field>
                 <Field label="Tier"> {record.tier} </Field>
-                <Field label="Credits">
-                  {formatter.format(record.creditCents / 100.0)}
-                </Field>
+                {record.creditCents !== 0 && (
+                  <Field label="Credits">
+                    {formatter.format(record.creditCents / 100.0)}
+                  </Field>
+                )}
               </Fields>
             </Section>
             <Upgrade record={record} />
@@ -203,14 +202,22 @@ EnhancedProfileShow.defaultProps = {
       path: 'api-key',
       label: 'API Key',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Section><ComingSoon/></Section>
+        return (
+          <Section>
+            <ComingSoon />
+          </Section>
+        )
       }
     },
     {
       path: 'ssh-keys',
       label: 'SSH Keys',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        return <Section><ComingSoon/></Section>
+        return (
+          <Section>
+            <ComingSoon />
+          </Section>
+        )
       }
     }
   ]
