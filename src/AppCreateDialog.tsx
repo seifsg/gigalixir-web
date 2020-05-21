@@ -1,11 +1,7 @@
-import React, { ReactNode, FunctionComponent } from 'react'
-import Section from './Section'
+import React, { FunctionComponent } from 'react'
+import MenuItem from '@material-ui/core/MenuItem'
+import ListSubheader from '@material-ui/core/ListSubheader'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
-
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-
-
-import Radio from '@material-ui/core/Radio'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import Button from '@material-ui/core/Button'
@@ -24,23 +20,11 @@ import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { Cloud, Region } from './api/apps'
-import {
-  renderRadioGroup,
-  renderTextField,
-  renderError
-} from './fieldComponents'
+import { renderSelect, renderTextField, renderError } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
-// dumb, but this basically just to make sure the <div> doesn't get an inputRef attribute
-// passed in. The RadioGroup passes it down to the children somehow through redux-form Field I think.
-const Label: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
-  return (
-    <div style={{ flexBasis: '100%', fontSize: '0.875em' }}>{children}</div>
-  )
-}
-
 const renderNameField = renderTextField({ type: 'input' })
-const renderCloudRegionField = renderRadioGroup
+const renderCloudRegionField = renderSelect
 
 const validateName = [required()]
 const validateCloudRegion = [
@@ -78,14 +62,7 @@ interface EnhancedCreateProps
 }
 const AppCreate: FunctionComponent<CreateProps &
   EnhancedCreateProps> = props => {
-  const {
-    submitting,
-    pristine,
-    invalid,
-    close,
-    create,
-    handleSubmit
-  } = props
+  const { submitting, pristine, invalid, close, create, handleSubmit } = props
   const onCancel = () => {
     close()
   }
@@ -148,38 +125,19 @@ const AppCreate: FunctionComponent<CreateProps &
         />
       </DialogContent>
       <DialogContent>
-        <Section marginTop={0}>
-        <div style={{ fontWeight: 'bold', marginBottom: 10 }}>Region</div>
         <FormField
           validate={validateCloudRegion}
           component={renderCloudRegionField}
           name="cloudRegion"
-          props={{ row: true }}
+          label="Region"
         >
-          <Label>Google Cloud</Label>
-          <FormControlLabel
-            control={<Radio />}
-            value="v2018-us-central1"
-            label="v2018-us-central1"
-          />
-          <FormControlLabel
-            control={<Radio />}
-            value="europe-west1"
-            label="europe-west1"
-          />
-          <Label>Amazon Web Services</Label>
-          <FormControlLabel
-            control={<Radio />}
-            value="us-west-2"
-            label="us-west-2"
-          />
-          <FormControlLabel
-            control={<Radio />}
-            value="us-east-1"
-            label="us-east-1"
-          />
+          <ListSubheader>Google Cloud</ListSubheader>
+          <MenuItem value="v2018-us-central1">v2018-us-central1</MenuItem>
+          <MenuItem value="europe-west1">europe-west1</MenuItem>
+          <ListSubheader>Amazon Web Services</ListSubheader>
+          <MenuItem value="us-east-1">us-east-1</MenuItem>
+          <MenuItem value="us-west-2">us-west-2</MenuItem>
         </FormField>
-      </Section>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} color="primary">

@@ -1,6 +1,11 @@
 import DialogContent from '@material-ui/core/DialogContent'
+import Select from '@material-ui/core/Select'
+
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+
 import RadioGroup from '@material-ui/core/RadioGroup'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import { WrappedFieldProps } from 'redux-form'
 import TextField from '@material-ui/core/TextField'
@@ -26,6 +31,25 @@ export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   )
 }
 
+export const renderSelect = ({
+  input,
+  label,
+  meta: { touched, error },
+  children,
+  ...custom
+}: {
+  label: string
+  children: ReactNode
+} & WrappedFieldProps) => (
+  <FormControl error={touched && error}>
+    <InputLabel htmlFor={input.name}>{label}</InputLabel>
+    <Select {...input} {...custom} id={input.name}>
+      {children}
+    </Select>
+    {renderFormHelper({ touched, error })}
+  </FormControl>
+)
+
 export const renderRadioGroup = ({
   input,
   meta: { touched, invalid, error },
@@ -41,6 +65,20 @@ export const renderRadioGroup = ({
     />
   )
 }
+
+const renderFormHelper = ({
+  touched,
+  error
+}: {
+  touched: boolean
+  error: any
+}) => {
+  if (!(touched && error)) {
+  } else {
+    return <FormHelperText>{touched && error}</FormHelperText>
+  }
+}
+
 export const renderError = ({
   label,
   input,
