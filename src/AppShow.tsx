@@ -130,7 +130,7 @@ const Setup = (props: { profile: User; app: App }) => {
 interface Props {
   isLoading: boolean
   profile: User
-  app?: App
+  app: App
   tabs: {
     path: string
     label: string
@@ -186,6 +186,13 @@ class SetupOrShowLayout extends React.Component<
     }, this.props.tabs)
 
     if (index === -1) {
+      // if tab is not found, or is empty
+      if (this.props.app.replicas > 0) {
+        // if there are replicas, go to the Dashboard tab
+        return 1
+      }
+
+      // otheriwse, go to the Setup tab
       return 0
     }
 

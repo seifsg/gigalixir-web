@@ -41,16 +41,16 @@ export const renderSelect = ({
   label: string
   children: ReactNode
 } & WrappedFieldProps) => {
-  //style to match textfield width 
+  // style to match textfield width
   return (
-  <FormControl style={{width: '100%'}} error={touched && error}>
-    <InputLabel htmlFor={input.name}>{label}</InputLabel>
-    <Select {...input} {...custom} id={input.name}>
-      {children}
-    </Select>
-    {renderFormHelper({ touched, error })}
-  </FormControl>
-)
+    <FormControl style={{ width: '100%' }} error={touched && error}>
+      <InputLabel htmlFor={input.name}>{label}</InputLabel>
+      <Select {...input} {...custom} id={input.name}>
+        {children}
+      </Select>
+      {renderFormHelper({ touched, error })}
+    </FormControl>
+  )
 }
 
 export const renderRadioGroup = ({
