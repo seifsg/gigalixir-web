@@ -45,7 +45,7 @@ const customRoutes = [
 const App = () => (
   <BrowserRouter>
     <Admin
-      title="Gigalixir"
+      title=""
       theme={theme}
       customSagas={[errorSagas]}
       customRoutes={customRoutes}
