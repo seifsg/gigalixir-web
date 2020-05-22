@@ -123,10 +123,7 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
               onChange={this.handleTabChange}
             >
               {tabs.map(x => {
-                if (!x.shouldShow || x.shouldShow(record.tier)) {
                   return <StyledTab key={x.label} label={x.label} />
-                }
-                return undefined
               })}
             </StyledTabs>
             {this.selectedTab().element(record, classes)}
@@ -191,10 +188,12 @@ EnhancedProfileShow.defaultProps = {
       }
     },
     {
-      shouldShow: (tier) => tier === 'STANDARD',
       path: 'payment-method',
       label: 'Payment Method',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
+        if (record.tier === 'FREE') {
+          return <Section>No payment method required for free tier accounts.</Section>
+        }
         return (
           <div>
             <PaymentMethod />
@@ -204,7 +203,7 @@ EnhancedProfileShow.defaultProps = {
       }
     },
     {
-      path: 'invocies',
+      path: 'invoices',
       label: 'Invoices',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
         return (
