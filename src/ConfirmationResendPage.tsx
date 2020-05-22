@@ -1,4 +1,5 @@
 import React, { SFC } from 'react'
+import AuthPage from './AuthPage'
 import qs from 'query-string'
 import {
   SubmissionError,
@@ -41,7 +42,8 @@ const styles = ({ spacing }: Theme) =>
       marginTop: '1em'
     },
     button: {
-      width: '100%'
+      width: '100%',
+      marginTop: 20
     },
     icon: {
       arginRight: spacing.unit
@@ -164,10 +166,10 @@ const Page = (props: { location: { search: string } }) => {
     email = params.email
   }
   return (
-    <div>
+    <AuthPage>
       <EnhancedForm location={location} email={email} />
       <Notification />
-    </div>
+    </AuthPage>
   )
 }
 

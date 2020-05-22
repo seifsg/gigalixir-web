@@ -1,5 +1,6 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import React, { SFC } from 'react'
+import AuthPage from './AuthPage'
 import {
   SubmissionError,
   Field,
@@ -38,7 +39,8 @@ const styles = ({ spacing }: Theme) =>
       marginTop: '1em'
     },
     button: {
-      width: '100%'
+      width: '100%',
+      marginTop: 20
     },
     icon: {
       marginRight: spacing.unit
@@ -144,10 +146,10 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
 
 const Page = () => {
   return (
-    <div>
+    <AuthPage>
       <EnhancedForm />
       <Notification />
-    </div>
+    </AuthPage>
   )
 }
 

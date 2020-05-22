@@ -1,5 +1,6 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import qs from 'query-string'
+import AuthPage from './AuthPage'
 import { showNotification, Notification } from 'react-admin'
 import React, { SFC } from 'react'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
@@ -32,6 +33,10 @@ interface FormData {
   newPassword: string
 }
 
+// TODO: pull this stuff out. it's duplicated in
+// PasswordSetPage
+// PasswordResetPage
+// ConfirmationResendPage
 const styles = ({ spacing }: Theme) =>
   createStyles({
     form: {
@@ -41,7 +46,8 @@ const styles = ({ spacing }: Theme) =>
       marginTop: '1em'
     },
     button: {
-      width: '100%'
+      width: '100%',
+      marginTop: 20
     },
     icon: {
       marginRight: spacing.unit
@@ -130,6 +136,7 @@ const Form: SFC<Props & EnhancedProps> = ({
           color="primary"
           disabled={isLoading}
           type="submit"
+          className={classes.button}
         >
           Set Password
         </Button>
@@ -163,10 +170,10 @@ const Page = (props: { location: { search: string } }) => {
     location: { search }
   } = props
   return (
-    <div>
+    <AuthPage>
       <EnhancedForm search={search} />
       <Notification />
-    </div>
+    </AuthPage>
   )
 }
 
