@@ -18,7 +18,7 @@ import { CloseFunction } from './DialogButton'
 import { isNumber, minValue, maxValue, required } from './validators'
 import { extractError } from './errorSagas'
 import { SuccessCallback, FailureCallback } from './callbacks'
-import { renderTextField, renderError } from './fieldComponents'
+import { renderTextField, renderDialogError } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const validateSize = [
@@ -108,7 +108,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle id="form-dialog-title">Scale</DialogTitle>
-      <FormField name="form" component={renderError} />
+      <FormField name="form" component={renderDialogError} />
       <DialogContent>
         <FormField
           validate={validateSize}

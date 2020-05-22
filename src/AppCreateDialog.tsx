@@ -20,7 +20,7 @@ import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { Cloud, Region } from './api/apps'
-import { renderSelect, renderTextField, renderError } from './fieldComponents'
+import { renderSelect, renderTextField, renderDialogError } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const renderNameField = renderTextField({ type: 'input' })
@@ -115,7 +115,7 @@ const AppCreate: FunctionComponent<CreateProps &
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle id="form-dialog-title">Create App</DialogTitle>
-      <FormField name="form" component={renderError} />
+      <FormField name="form" component={renderDialogError} />
       <DialogContent>
         <FormField
           validate={validateName}

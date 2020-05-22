@@ -82,7 +82,23 @@ const renderFormHelper = ({
   }
 }
 
+// TODO: how to not have this *and* renderDialogError?
 export const renderError = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}: {
+  label: string
+} & WrappedFieldProps) => {
+  if (error) {
+    return (
+      <FormHelperText error {...custom}>{error}</FormHelperText>
+    )
+  }
+  return <span />
+}
+export const renderDialogError = ({
   label,
   input,
   meta: { touched, invalid, error },

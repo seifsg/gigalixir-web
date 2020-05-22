@@ -1,6 +1,5 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import qs from 'query-string'
-import AuthPage from './AuthPage'
 import { showNotification, Notification } from 'react-admin'
 import React, { SFC } from 'react'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
@@ -21,6 +20,8 @@ import {
 } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import AuthPage from './AuthPage'
+import { renderError } from './fieldComponents'
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
@@ -91,7 +92,7 @@ const action = (search: string) => (values: object, dispatch: Function) => {
       )
     })
   }
-  dispatch(showNotification('Token missing'))
+  // dispatch(showNotification('Token missing'))
   return Promise.reject(new SubmissionError({ token: 'Token missing' }))
 }
 
@@ -111,15 +112,12 @@ const renderInput = ({
   />
 )
 
-const Form: SFC<Props & EnhancedProps> = ({
-  classes,
-  isLoading,
-  handleSubmit,
-  search
-}) => {
+const Form: SFC<Props & EnhancedProps> = props => {
+  const { classes, isLoading, handleSubmit, search } = props
   return (
     <form onSubmit={handleSubmit(action(search))}>
       <div className={classes.form}>
+        <Field name="token" component={renderError} style={{marginTop: 20}}/>
         <div className={classes.input}>
           <Field
             autoFocus
