@@ -204,6 +204,17 @@ EnhancedProfileShow.defaultProps = {
       }
     },
     {
+      path: 'invocies',
+      label: 'Invoices',
+      element: (record: User, classes: Record<keyof typeof styles, string>) => {
+        return (
+          <Section>
+            <ComingSoon />
+          </Section>
+        )
+      }
+    },
+    {
       path: 'api-key',
       label: 'API Key',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
