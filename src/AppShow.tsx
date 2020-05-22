@@ -1,6 +1,5 @@
 import React from 'react'
 import { withRouter } from 'react-router'
-import Charts from './Charts'
 import { ReduxState } from 'ra-core'
 import { push as routerPush } from 'react-router-redux'
 import compose from 'recompose/compose'
@@ -8,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { ShowController } from 'react-admin'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
+import Charts from './Charts'
 import { CorrectedReduxState } from './CorrectedReduxState'
 import AppScaleDialog from './AppScaleDialog'
 import { StyledTab, StyledTabs } from './Tabs'
@@ -21,7 +21,7 @@ import Bash from './Bash'
 import DialogButton from './DialogButton'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
-
+import ComingSoonDialog from './ComingSoonDialog'
 const styles = {}
 
 interface ShowProps {
@@ -29,7 +29,6 @@ interface ShowProps {
   basePath: string
   resource: string
 }
-
 
 const Setup = (props: { profile: User; app: App }) => {
   const {
@@ -269,20 +268,43 @@ class AppShow extends React.Component<AppShowProps> {
           app: App,
           classes: Record<keyof typeof styles, string>
         ) => {
+          const spacing = 10
           return (
             <div>
               <Section>
-                <Fields>
-                  <Field label="Name">{app.id}</Field>
-                  <Field label="Size">{app.size}</Field>
-                  <Field label="Replicas">{app.replicas}</Field>
-                  <Field label="Cloud">{app.cloud}</Field>
-                  <Field label="Region">{app.region}</Field>
-                  <Field label="Stack">{app.stack}</Field>
-                  <DialogButton label="Scale">
-                    {close => <AppScaleDialog app={app} close={close} />}
-                  </DialogButton>
-                </Fields>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginLeft: -1 * spacing,
+                    marginRight: -1 * spacing
+                  }}
+                >
+                  <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
+                    <DialogButton label="Scale">
+                      {close => <AppScaleDialog app={app} close={close} />}
+                    </DialogButton>
+                  </div>
+                  <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
+                    <DialogButton label="Restart">
+                      {close => <ComingSoonDialog close={close} />}
+                    </DialogButton>
+                  </div>
+                  <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
+                    <DialogButton label="Destroy">
+                      {close => <ComingSoonDialog close={close} />}
+                    </DialogButton>
+                  </div>
+                </div>
+                <div style={{ marginTop: 20 }}>
+                  <Fields>
+                    <Field label="Name">{app.id}</Field>
+                    <Field label="Size">{app.size}</Field>
+                    <Field label="Replicas">{app.replicas}</Field>
+                    <Field label="Cloud">{app.cloud}</Field>
+                    <Field label="Region">{app.region}</Field>
+                    <Field label="Stack">{app.stack}</Field>
+                  </Fields>
+                </div>
               </Section>
               <Charts id={id} />
             </div>

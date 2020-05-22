@@ -11,7 +11,7 @@ interface EnhancedProps extends WithStyles<typeof styles> {}
 const ComingSoon: FunctionComponent<Props & EnhancedProps> = props => {
   return (
     <div>
-      <div>Please use the CLI while we work on implementing this section. </div>
+      <div>Sorry, this is coming soon. Please use the CLI in the meantime. </div>
       <div>
         <a href="https://gigalixir.readthedocs.io/en/latest/main.html#install-the-command-line-interface">
           How to install the CLI
