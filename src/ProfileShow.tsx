@@ -30,6 +30,7 @@ interface Props {
   id: string
   resource: string
   tabs: {
+    shouldShow?: (tier: string) => boolean
     path: string
     label: string
     element: (
@@ -121,9 +122,12 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
               value={this.selectedTabIndex()}
               onChange={this.handleTabChange}
             >
-              {tabs.map(x => (
-                <StyledTab key={x.label} label={x.label} />
-              ))}
+              {tabs.map(x => {
+                if (!x.shouldShow || x.shouldShow(record.tier)) {
+                  return <StyledTab key={x.label} label={x.label} />
+                }
+                return undefined
+              })}
             </StyledTabs>
             {this.selectedTab().element(record, classes)}
           </div>
@@ -187,6 +191,7 @@ EnhancedProfileShow.defaultProps = {
       }
     },
     {
+      shouldShow: (tier) => tier === 'STANDARD',
       path: 'payment-method',
       label: 'Payment Method',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
