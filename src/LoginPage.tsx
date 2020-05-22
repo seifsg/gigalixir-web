@@ -76,12 +76,11 @@ class Login extends Component<
 
   render() {
     const { classes, className, form, ...rest } = this.props
-
-    console.log(this.props)
     return (
       <MuiThemeProvider theme={this.theme}>
         <div
           className={classnames(classes.main, className)}
+          // title gets pass on through here which creates a weird tooltip
           {...rest}
           ref={this.containerRef}
         >
