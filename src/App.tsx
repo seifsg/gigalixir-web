@@ -9,7 +9,7 @@ import ConnectedSuccessPage from './components/SuccessPage'
 import ConfirmationResendPage from './ConfirmationResendPage'
 import dataProvider from './dataProvider'
 import errorSagas from './errorSagas'
-import MyLoginPage from './MyLoginPage'
+import LoginPage from './LoginPage'
 import NotifyPage from './NotifyPage'
 import PasswordResetPage from './PasswordResetPage'
 import PasswordSetPage from './PasswordSetPage'
@@ -49,7 +49,7 @@ const App = () => (
       customSagas={[errorSagas]}
       customRoutes={customRoutes}
       appLayout={AppLayout}
-      loginPage={MyLoginPage}
+      loginPage={LoginPage}
       authProvider={authProvider}
       dataProvider={dataProvider}
     >

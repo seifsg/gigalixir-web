@@ -16,10 +16,8 @@ import {
 } from '@material-ui/core/styles'
 import classnames from 'classnames'
 import Card from '@material-ui/core/Card'
-import Avatar from '@material-ui/core/Avatar'
-import LockIcon from '@material-ui/icons/Lock'
-
 import { Notification, defaultTheme } from 'react-admin'
+import Logo from './Logo'
 import Form from './RegisterForm'
 
 interface Props {
@@ -71,10 +69,8 @@ class Login extends Component<
           ref={this.containerRef}
         >
           <Card className={classes.card}>
-            <div className={classes.avatar}>
-              <Avatar className={classes.icon}>
-                <LockIcon />
-              </Avatar>
+            <div className={classes.avatar} style={{ marginBottom: 30 }}>
+              <Logo />
             </div>
             {form}
           </Card>

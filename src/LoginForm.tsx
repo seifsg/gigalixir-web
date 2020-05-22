@@ -3,8 +3,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
 import React, { SFC } from 'react'
-import { Login } from 'react-admin'
-
 import PropTypes from 'prop-types'
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import { connect } from 'react-redux'
@@ -154,8 +152,4 @@ EnhancedLoginForm.propTypes = {
   redirectTo: PropTypes.string
 }
 
-const MyLoginPage = () => (
-  <Login loginForm={<EnhancedLoginForm />} backgroundImage="" />
-)
-
-export default MyLoginPage
+export default EnhancedLoginForm
