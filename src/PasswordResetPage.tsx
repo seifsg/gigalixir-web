@@ -1,4 +1,5 @@
 // most of this is copied from ConfirmationResendPage. refactor
+import FormHelperText from '@material-ui/core/FormHelperText'
 import React, { SFC } from 'react'
 import {
   SubmissionError,
@@ -15,10 +16,10 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import { Notification } from 'react-admin'
-import { renderTextField, renderError } from './fieldComponents'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import { renderTextField, renderError } from './fieldComponents'
 import AuthPage from './AuthPage'
 import { extractError, extractErrorValue } from './errorSagas'
 import { crudCreate } from './crudCreate'
@@ -70,10 +71,10 @@ const action = (values: object, dispatch: Function) => {
           const {
             payload: { errors }
           } = params
-            console.log(params)
+          console.log(params)
           reject(
             new SubmissionError({
-              form: extractErrorValue(errors, 'form'),
+              _error: extractErrorValue(errors, ''),
               email: extractError(errors, 'email')
             })
           )
@@ -83,16 +84,14 @@ const action = (values: object, dispatch: Function) => {
   })
 }
 
-const renderEmail = renderTextField({type: 'input'})
-const Form: SFC<Props & EnhancedProps> = ({
-  classes,
-  isLoading,
-  handleSubmit
-}) => {
+const renderEmail = renderTextField({ type: 'input' })
+const Form: SFC<Props & EnhancedProps> = props => {
+  const { error, classes, isLoading, handleSubmit } = props
+  console.log(props)
   return (
     <form onSubmit={handleSubmit(action)}>
       <div className={classes.form}>
-          <Field name="form" component={renderError} />
+        {error && <FormHelperText error>{error}</FormHelperText>}
         <div className={classes.input}>
           <Field
             autoFocus

@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
@@ -20,7 +21,11 @@ import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { Cloud, Region } from './api/apps'
-import { renderSelect, renderTextField, renderDialogError } from './fieldComponents'
+import {
+  renderSelect,
+  renderTextField,
+  renderDialogError
+} from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const renderNameField = renderTextField({ type: 'input' })
@@ -62,7 +67,7 @@ interface EnhancedCreateProps
 }
 const AppCreate: FunctionComponent<CreateProps &
   EnhancedCreateProps> = props => {
-  const { submitting, pristine, invalid, close, create, handleSubmit } = props
+  const { error, submitting, pristine, invalid, close, create, handleSubmit } = props
   const onCancel = () => {
     close()
   }
@@ -94,7 +99,7 @@ const AppCreate: FunctionComponent<CreateProps &
         }
         reject(
           new SubmissionError({
-            form: extractError(formErrors, ''),
+            _error: extractError(formErrors, ''),
             name: extractError(formErrors, 'name'),
             cloudRegion:
               extractError(formErrors, 'cloud') ||
@@ -115,7 +120,11 @@ const AppCreate: FunctionComponent<CreateProps &
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle id="form-dialog-title">Create App</DialogTitle>
-      <FormField name="form" component={renderDialogError} />
+      {error && (
+        <DialogContent>
+          <FormHelperText error>{error}</FormHelperText>
+        </DialogContent>
+      )}
       <DialogContent>
         <FormField
           validate={validateName}

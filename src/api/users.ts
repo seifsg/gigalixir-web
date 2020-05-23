@@ -102,7 +102,7 @@ export const resetPassword = (
             // do we have to do this for everything? if so where to put it?
           throw new HttpError('', reason.response.status, {
             errors: {
-              form:
+              '':
                 ['Oops, something went wrong. Please contact help@gigalixir.com']
             }
           })
