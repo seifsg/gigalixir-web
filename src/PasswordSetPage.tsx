@@ -10,7 +10,6 @@ import {
   WithStyles,
   Theme
 } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
 
 import {
   Field,
@@ -20,8 +19,9 @@ import {
 } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import { renderInputField as renderInput, renderError } from './fieldComponents'
 import AuthPage from './AuthPage'
-import { renderError } from './fieldComponents'
+
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
@@ -96,34 +96,19 @@ const action = (search: string) => (values: object, dispatch: Function) => {
   return Promise.reject(new SubmissionError({ token: 'Token missing' }))
 }
 
-// duplicated in RegisterForm
-// see http://redux-form.com/6.4.3/examples/material-ui/
-const renderInput = ({
-  meta: { touched, error } = { touched: false, error: '' }, // eslint-disable-line react/prop-types
-  input: { ...inputProps }, // eslint-disable-line react/prop-types
-  ...props
-}) => (
-  <TextField
-    error={!!(touched && error)}
-    helperText={touched && error}
-    {...inputProps}
-    {...props}
-    fullWidth
-  />
-)
-
 const Form: SFC<Props & EnhancedProps> = props => {
   const { classes, isLoading, handleSubmit, search } = props
   return (
     <form onSubmit={handleSubmit(action(search))}>
       <div className={classes.form}>
-        <Field name="token" component={renderError} style={{marginTop: 20}}/>
+        <Field name="token" component={renderError} style={{ marginTop: 20 }} />
         <div className={classes.input}>
           <Field
             autoFocus
             id="newPassword"
             name="newPassword"
             component={renderInput}
+            fullWidth
             label="New Password"
             type="password"
             disabled={isLoading}

@@ -31,6 +31,8 @@ export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   )
 }
 
+export const renderNumberField = renderTextField({ type: 'number' })
+export const renderInputField = renderTextField({ type: 'input' })
 export const renderSelect = ({
   input,
   label,
@@ -93,7 +95,9 @@ export const renderError = ({
 } & WrappedFieldProps) => {
   if (error) {
     return (
-      <FormHelperText error {...custom}>{error}</FormHelperText>
+      <FormHelperText error {...custom}>
+        {error}
+      </FormHelperText>
     )
   }
   return <span />

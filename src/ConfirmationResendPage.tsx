@@ -1,5 +1,4 @@
 import React, { SFC } from 'react'
-import AuthPage from './AuthPage'
 import qs from 'query-string'
 import {
   SubmissionError,
@@ -15,11 +14,12 @@ import {
   WithStyles,
   Theme
 } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
 import { Notification } from 'react-admin'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import AuthPage from './AuthPage'
+import { renderInputField as renderInput } from './fieldComponents'
 import ConnectedSuccessPage from './components/SuccessPage'
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
@@ -78,22 +78,6 @@ const action = (values: {}, dispatch: Function) => {
   })
 }
 
-// duplicated in RegisterForm
-// see http://redux-form.com/6.4.3/examples/material-ui/
-const renderInput = ({
-  meta: { touched, error } = { touched: false, error: '' }, // eslint-disable-line react/prop-types
-  input: { ...inputProps }, // eslint-disable-line react/prop-types
-  ...props
-}) => (
-  <TextField
-    error={!!(touched && error)}
-    helperText={touched && error}
-    {...inputProps}
-    {...props}
-    fullWidth
-  />
-)
-
 const Form: SFC<Props & EnhancedProps> = ({
   location,
   classes,
@@ -117,6 +101,7 @@ const Form: SFC<Props & EnhancedProps> = ({
               component={renderInput}
               label="Email"
               disabled={isLoading}
+              fullWidth
             />
           </div>
           <Button
