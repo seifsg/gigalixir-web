@@ -110,7 +110,7 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
       this.updateData()
     }
 
-    if (!record || isLoading) {
+    if (!record) {
       return <Loading />
     }
 

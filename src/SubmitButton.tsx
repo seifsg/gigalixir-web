@@ -19,16 +19,25 @@ interface Props {
   pristine: boolean
   submitting: boolean
   label: string
+  variant?: 'text' | 'flat' | 'outlined' | 'contained' | 'raised'
 }
 interface EnhancedProps extends WithStyles<typeof styles> {}
 class SubmitButton extends React.Component<Props & EnhancedProps> {
   render() {
-    const { classes, invalid, pristine, submitting, label } = this.props
+    const {
+      classes,
+      variant,
+      invalid,
+      pristine,
+      submitting,
+      label
+    } = this.props
     return (
       <Button
         type="submit"
         disabled={invalid || pristine || submitting}
         color="primary"
+        variant={variant}
       >
         {submitting && (
           <CircularProgress className={classes.icon} size={18} thickness={2} />

@@ -1,4 +1,5 @@
 import { HttpError } from 'ra-core'
+import { AxiosError } from 'axios'
 import _ from 'lodash/fp'
 import * as api from './api'
 
@@ -15,6 +16,17 @@ export interface User {
   apiKey: string
   email: string
   creditCents: number
+}
+const handleAxiosError = (reason: AxiosError<api.ErrorResponse>) => {
+  // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+  if (reason.response) {
+    const { errors } = reason.response.data
+    throw new HttpError('', reason.response.status, {
+      errors
+    })
+  }
+
+  throw new HttpError('Unknown Axios Error', 500, reason.toJSON())
 }
 export const get = (): Promise<{ data: User }> => {
   return api
@@ -49,15 +61,7 @@ export const create = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(
-      (reason: { response: { data: api.ErrorResponse; status: number } }) => {
-        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch(handleAxiosError)
 }
 
 export const resendConfirmation = (
@@ -70,17 +74,7 @@ export const resendConfirmation = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }): api.ErrorResponse => {
-        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch(handleAxiosError)
 }
 
 export const resetPassword = (
@@ -93,26 +87,7 @@ export const resetPassword = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }): api.ErrorResponse => {
-        if (reason.response.status === 500) {
-          // probably no extra information here
-            // do we have to do this for everything? if so where to put it?
-          throw new HttpError('', reason.response.status, {
-            errors: {
-              '':
-                ['Oops, something went wrong. Please contact help@gigalixir.com']
-            }
-          })
-        }
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch(handleAxiosError)
 }
 
 export const setPassword = (
@@ -127,16 +102,7 @@ export const setPassword = (
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
-    .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }): api.ErrorResponse => {
-        const { errors } = reason.response.data
-        throw new HttpError('', reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch(handleAxiosError)
 }
 
 export const upgrade = (token: string): Promise<{}> => {
@@ -148,15 +114,5 @@ export const upgrade = (token: string): Promise<{}> => {
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
-    .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }): api.ErrorResponse => {
-        const { errors } = reason.response.data
-        // TODO: once we kill the elm frontend, change the errors key here from "" to something more meaningful like "stripe_token" maybe
-        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
-          errors
-        })
-      }
-    )
+    .catch(handleAxiosError)
 }
