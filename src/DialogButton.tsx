@@ -8,7 +8,7 @@ const styles = createStyles({})
 
 export type CloseFunction = Function
 interface Props {
-  label: string
+  label: ReactNode
   children: (close: CloseFunction) => ReactNode
 }
 

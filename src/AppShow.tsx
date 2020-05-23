@@ -290,7 +290,7 @@ class AppShow extends React.Component<AppShowProps> {
                     </DialogButton>
                   </div>
                   <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
-                    <DialogButton label="Destroy">
+                    <DialogButton label="Delete">
                       {close => <ComingSoonDialog close={close} />}
                     </DialogButton>
                   </div>

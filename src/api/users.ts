@@ -37,7 +37,6 @@ export const get = (): Promise<{ data: User }> => {
     })
 }
 
-
 export const create = (
   email: string,
   password: string
@@ -50,13 +49,15 @@ export const create = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch((reason: { response: { data: api.ErrorResponse; status: number } }) => {
-      // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-      const { errors } = reason.response.data
-      throw new HttpError('', reason.response.status, {
-        errors
-      })
-    })
+    .catch(
+      (reason: { response: { data: api.ErrorResponse; status: number } }) => {
+        // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+        const { errors } = reason.response.data
+        throw new HttpError('', reason.response.status, {
+          errors
+        })
+      }
+    )
 }
 
 export const resendConfirmation = (
@@ -96,6 +97,16 @@ export const resetPassword = (
       (reason: {
         response: { data: api.ErrorResponse; status: number }
       }): api.ErrorResponse => {
+        if (reason.response.status === 500) {
+          // probably no extra information here
+            // do we have to do this for everything? if so where to put it?
+          throw new HttpError('', reason.response.status, {
+            errors: {
+              form:
+                ['Oops, something went wrong. Please contact help@gigalixir.com']
+            }
+          })
+        }
         const { errors } = reason.response.data
         throw new HttpError('', reason.response.status, {
           errors

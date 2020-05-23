@@ -1,6 +1,5 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import React, { SFC } from 'react'
-import AuthPage from './AuthPage'
 import {
   SubmissionError,
   Field,
@@ -15,12 +14,13 @@ import {
   WithStyles,
   Theme
 } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
 import { Notification } from 'react-admin'
+import { renderTextField, renderError } from './fieldComponents'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { extractError } from './errorSagas'
+import AuthPage from './AuthPage'
+import { extractError, extractErrorValue } from './errorSagas'
 import { crudCreate } from './crudCreate'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -66,30 +66,24 @@ const action = (values: object, dispatch: Function) => {
         `/success?msg=${encodeURIComponent(msg)}`,
         false,
         resolve,
-        ({ payload: { errors } }) => {
-          reject(new SubmissionError({ email: extractError(errors, 'email') }))
+        params => {
+          const {
+            payload: { errors }
+          } = params
+            console.log(params)
+          reject(
+            new SubmissionError({
+              form: extractErrorValue(errors, 'form'),
+              email: extractError(errors, 'email')
+            })
+          )
         }
       )
     )
   })
 }
 
-// duplicated in RegisterForm
-// see http://redux-form.com/6.4.3/examples/material-ui/
-const renderInput = ({
-  meta: { touched, error } = { touched: false, error: '' }, // eslint-disable-line react/prop-types
-  input: { ...inputProps }, // eslint-disable-line react/prop-types
-  ...props
-}) => (
-  <TextField
-    error={!!(touched && error)}
-    helperText={touched && error}
-    {...inputProps}
-    {...props}
-    fullWidth
-  />
-)
-
+const renderEmail = renderTextField({type: 'input'})
 const Form: SFC<Props & EnhancedProps> = ({
   classes,
   isLoading,
@@ -98,14 +92,16 @@ const Form: SFC<Props & EnhancedProps> = ({
   return (
     <form onSubmit={handleSubmit(action)}>
       <div className={classes.form}>
+          <Field name="form" component={renderError} />
         <div className={classes.input}>
           <Field
             autoFocus
             id="email"
             name="email"
-            component={renderInput}
+            component={renderEmail}
             label="Email"
             disabled={isLoading}
+            fullWidth
           />
         </div>
         <Button

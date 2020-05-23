@@ -7,24 +7,21 @@ import React, {
   HtmlHTMLAttributes
 } from 'react'
 import {
-  createMuiTheme,
   withStyles,
   createStyles,
   WithStyles,
-  Theme,
-  MuiThemeProvider
+  Theme
 } from '@material-ui/core/styles'
-import classnames from 'classnames'
-import Card from '@material-ui/core/Card'
-import { Notification, defaultTheme } from 'react-admin'
-import Logo from './Logo'
+import { defaultTheme } from 'react-admin'
 import Form from './RegisterForm'
+import AuthPage from './AuthPage'
 
 interface Props {
   form: ReactElement<object>
   theme: Theme
 }
 
+// TODO: this stuff is in AuthPage and LoginPage
 const styles = () =>
   createStyles({
     main: {
@@ -39,7 +36,8 @@ const styles = () =>
     },
     card: {
       minWidth: 300,
-      marginTop: '6em'
+      marginTop: '6em',
+      paddingTop: 10
     },
     avatar: {
       margin: '1em',
@@ -52,32 +50,10 @@ const styles = () =>
 class Login extends Component<
   Props & WithStyles<typeof styles> & HtmlHTMLAttributes<HTMLDivElement>
 > {
-  // copy and pasted. don't wanna fix someone else's mistake
-  // eslint-disable-next-line react/destructuring-assignment
-  private theme = createMuiTheme(this.props.theme)
-
-  private containerRef = React.createRef<HTMLDivElement>()
-
   public render() {
-    const { form, classes, className, ...rest } = this.props
+    const { form } = this.props
 
-    return (
-      <MuiThemeProvider theme={this.theme}>
-        <div
-          className={classnames(classes.main, className)}
-          {...rest}
-          ref={this.containerRef}
-        >
-          <Card className={classes.card}>
-            <div className={classes.avatar} style={{ marginBottom: 30 }}>
-              <Logo />
-            </div>
-            {form}
-          </Card>
-          <Notification />
-        </div>
-      </MuiThemeProvider>
-    )
+    return <AuthPage>{form}</AuthPage>
   }
 }
 

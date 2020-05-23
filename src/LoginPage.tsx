@@ -4,19 +4,12 @@ import React, {
   ComponentType,
   HtmlHTMLAttributes
 } from 'react'
-import classnames from 'classnames'
-import Card from '@material-ui/core/Card'
-import {
-  MuiThemeProvider,
-  createMuiTheme,
-  withStyles,
-  createStyles,
-  WithStyles
-} from '@material-ui/core/styles'
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
 
-import { defaultTheme, Notification } from 'react-admin'
-import Logo from './Logo'
+import { Link } from 'react-router-dom'
+import { defaultTheme } from 'react-admin'
 import LoginForm from './LoginForm'
+import AuthPage from './AuthPage'
 
 interface Props {
   form: ReactElement<object>
@@ -37,7 +30,8 @@ const styles = (theme: any) =>
     },
     card: {
       minWidth: 300,
-      marginTop: '6em'
+      marginTop: '6em',
+      paddingTop: 10
     },
     avatar: {
       margin: '1em',
@@ -70,30 +64,22 @@ const styles = (theme: any) =>
 class Login extends Component<
   Props & WithStyles<typeof styles> & HtmlHTMLAttributes<HTMLDivElement>
 > {
-  theme = createMuiTheme(this.props.theme)
-
-  containerRef = React.createRef<HTMLDivElement>()
-
   render() {
-    const { classes, className, form, ...rest } = this.props
-    return (
-      <MuiThemeProvider theme={this.theme}>
-        <div
-          className={classnames(classes.main, className)}
-          // title gets pass on through here which creates a weird tooltip
-          {...rest}
-          ref={this.containerRef}
-        >
-          <Card className={classes.card}>
-            <div className={classes.avatar}>
-              <Logo />
-            </div>
-            {form}
-          </Card>
-          <Notification />
+    const { form } = this.props
+    const bottomLinks = (
+      <div style={{ display: 'flex', margin: 20 }}>
+        <div style={{ margin: 10 }}>
+          <Link to="/register">Register</Link>
         </div>
-      </MuiThemeProvider>
+        <div style={{ margin: 10 }}>
+          <Link to="/password/reset">Reset Password</Link>
+        </div>
+        <div style={{ margin: 10 }}>
+          <Link to="/confirmation/resend">Resend Confirmation</Link>
+        </div>
+      </div>
     )
+    return <AuthPage {...{ bottomLinks }}>{form}</AuthPage>
   }
 }
 

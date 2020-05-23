@@ -1,7 +1,9 @@
 import React, { FunctionComponent, ReactNode } from 'react'
+import { Notification } from 'react-admin'
 import classnames from 'classnames'
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
+import Logo from './Logo'
 
 const styles = () =>
   createStyles({
@@ -17,20 +19,34 @@ const styles = () =>
     },
     card: {
       minWidth: 300,
-      marginTop: '6em'
+      marginTop: '6em',
+      paddingTop: 10
+    },
+    avatar: {
+      margin: '1em',
+      display: 'flex',
+      justifyContent: 'center'
     }
   })
 
 interface Props {
   children: ReactNode
+  bottomLinks?: ReactNode
 }
 
 interface EnhancedProps extends WithStyles<typeof styles> {}
 export const AuthPage: FunctionComponent<Props & EnhancedProps> = props => {
-  const { children, classes } = props
+  const { bottomLinks, children, classes } = props
   return (
     <div className={classnames(classes.main)}>
-      <Card className={classes.card}>{children}</Card>
+      <Card className={classes.card}>
+        <div className={classes.avatar}>
+          <Logo />
+        </div>
+        {children}
+      </Card>
+      {bottomLinks}
+      <Notification />
     </div>
   )
 }
