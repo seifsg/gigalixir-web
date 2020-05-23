@@ -1,16 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import _ from 'lodash/fp'
 import {
   Field,
   reduxForm,
   InjectedFormProps,
-  SubmissionError
 } from 'redux-form'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import Button from '@material-ui/core/Button'
 import { CRUD_UPDATE, UPDATE } from 'react-admin'
 import compose from 'recompose/compose'
 import React, { Component } from 'react'
@@ -78,9 +75,7 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
   public render() {
     const {
       handleSubmit,
-      pristine,
       submitting,
-      invalid,
       classes,
       isLoading,
     } = this.props

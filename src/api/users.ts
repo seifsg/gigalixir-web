@@ -1,6 +1,5 @@
 import { HttpError } from 'ra-core'
 import { AxiosError } from 'axios'
-import _ from 'lodash/fp'
 import * as api from './api'
 
 type tier = 'STANDARD' | 'FREE'

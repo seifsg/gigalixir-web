@@ -24,7 +24,6 @@ import { Cloud, Region } from './api/apps'
 import {
   renderSelect,
   renderTextField,
-  renderDialogError
 } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
