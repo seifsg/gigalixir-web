@@ -12,7 +12,7 @@ import {
   Theme
 } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
-
+import Footer from './Footer'
 import {
   AppBar,
   Sidebar,
@@ -132,6 +132,7 @@ class Layout extends Component<any, any> {
                 : children}
             </div>
           </main>
+          <Footer/>
           {createElement(notification)}
         </div>
       </div>

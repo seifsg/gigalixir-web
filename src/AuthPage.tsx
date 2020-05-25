@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import Logo from './Logo'
+import Footer from './Footer'
 
 const styles = () =>
   createStyles({
@@ -47,6 +48,7 @@ export const AuthPage: FunctionComponent<Props & EnhancedProps> = props => {
         {children}
       </Card>
       {bottomLinks}
+      <Footer/>
       <Notification />
     </div>
   )
