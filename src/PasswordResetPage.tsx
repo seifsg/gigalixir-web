@@ -1,6 +1,6 @@
 // most of this is copied from ConfirmationResendPage. refactor
 import FormHelperText from '@material-ui/core/FormHelperText'
-import React, { SFC } from 'react'
+import React, { FunctionComponent } from 'react'
 import {
   SubmissionError,
   Field,
@@ -71,7 +71,6 @@ const action = (values: object, dispatch: Function) => {
           const {
             payload: { errors }
           } = params
-          console.log(params)
           reject(
             new SubmissionError({
               _error: extractErrorValue(errors, ''),
@@ -85,9 +84,8 @@ const action = (values: object, dispatch: Function) => {
 }
 
 const renderEmail = renderTextField({ type: 'input' })
-const Form: SFC<Props & EnhancedProps> = props => {
+const Form: FunctionComponent<Props & EnhancedProps> = props => {
   const { error, classes, isLoading, handleSubmit } = props
-  console.log(props)
   return (
     <form onSubmit={handleSubmit(action)}>
       <div className={classes.form}>

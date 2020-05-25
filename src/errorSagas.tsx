@@ -89,7 +89,6 @@ function* userLoginFailure(action: UserLoginFailureAction) {
 }
 
 // function* resendConfirmationFailure(action: CrudFailureAction) {
-//    console.log('resendConfirmationFailure')
 //  if (action.payload) {
 //    const violations = {
 //      email: extractError(action.payload.errors, 'email'),

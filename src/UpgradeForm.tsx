@@ -65,7 +65,6 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
   }
 
   onChange(params: ReactStripeElements.ElementChangeResponse) {
-    console.log(params)
     this.setState({
       complete: params.complete,
       error: params.error && params.error.message

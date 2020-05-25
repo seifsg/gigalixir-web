@@ -2,7 +2,7 @@
 // typescript and lint errors right now..
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import React, { SFC } from 'react'
+import React, { FunctionComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import { connect } from 'react-redux'
@@ -59,7 +59,7 @@ interface EnhancedProps
 const login = (auth: any, dispatch: any, { redirectTo }: any) =>
   dispatch(userLogin(auth, redirectTo))
 
-const LoginForm: SFC<Props & EnhancedProps> = ({
+const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
   classes,
   isLoading,
   handleSubmit,

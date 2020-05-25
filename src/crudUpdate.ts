@@ -68,8 +68,6 @@ export const crudUpdate = (
     onFailure: {
       callback: failureCallback
       // callback: (params: any) => {
-      // console.log('onFailure callback')
-      // console.log(JSON.stringify(params))
       // reject(new SubmissionError(params.payload.errors))
       // }
       /* notification: { */

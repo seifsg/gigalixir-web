@@ -1,4 +1,5 @@
-import React, { SFC } from 'react'
+import React, { FunctionComponent } from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import qs from 'query-string'
 import {
   SubmissionError,
@@ -71,14 +72,18 @@ const action = (values: {}, dispatch: Function) => {
         false,
         resolve,
         ({ payload: { errors } }) => {
-          reject(new SubmissionError({ email: extractError(errors, 'email') }))
+          reject(new SubmissionError({ 
+            _error: extractError(errors, ''),
+            email: extractError(errors, 'email') 
+          }))
         }
       )
     )
   })
 }
 
-const Form: SFC<Props & EnhancedProps> = ({
+const Form: FunctionComponent<Props & EnhancedProps> = ({
+  error,
   location,
   classes,
   isLoading,
@@ -93,6 +98,7 @@ const Form: SFC<Props & EnhancedProps> = ({
       <ConnectedSuccessPage location={location} />
       <form onSubmit={handleSubmit(action)}>
         <div className={classes.form}>
+          {error && <FormHelperText error>{error}</FormHelperText>}
           <div className={classes.input}>
             <Field
               autoFocus

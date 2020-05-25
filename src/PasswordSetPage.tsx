@@ -1,7 +1,8 @@
 // most of this is copied from ConfirmationResendPage. refactor
+import FormHelperText from '@material-ui/core/FormHelperText'
 import qs from 'query-string'
 import { showNotification, Notification } from 'react-admin'
-import React, { SFC } from 'react'
+import React, { FunctionComponent } from 'react'
 import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
 import compose from 'recompose/compose'
 import {
@@ -83,6 +84,7 @@ const action = (search: string) => (values: object, dispatch: Function) => {
           ({ payload: { errors } }) => {
             reject(
               new SubmissionError({
+                _error: extractError(errors, ''),
                 token: extractError(errors, 'token'),
                 newPassword: extractError(errors, 'password')
               })
@@ -93,14 +95,15 @@ const action = (search: string) => (values: object, dispatch: Function) => {
     })
   }
   // dispatch(showNotification('Token missing'))
-  return Promise.reject(new SubmissionError({ token: 'Token missing' }))
+  return Promise.reject(new SubmissionError({ _error: 'Token is missing' }))
 }
 
-const Form: SFC<Props & EnhancedProps> = props => {
-  const { classes, isLoading, handleSubmit, search } = props
+const Form: FunctionComponent<Props & EnhancedProps> = props => {
+  const { error, classes, isLoading, handleSubmit, search } = props
   return (
     <form onSubmit={handleSubmit(action(search))}>
       <div className={classes.form}>
+        {error && <FormHelperText error>{error}</FormHelperText>}
         <Field name="token" component={renderError} style={{ marginTop: 20 }} />
         <div className={classes.input}>
           <Field

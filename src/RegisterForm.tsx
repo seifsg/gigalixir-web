@@ -2,7 +2,8 @@
 // typescript and lint errors right now..
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import React, { SFC } from 'react'
+import React, { FunctionComponent } from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import {
   SubmissionError,
   Field,
@@ -72,6 +73,7 @@ const login = (auth: any, dispatch: any) => {
         ({ payload: { errors } }) => {
           reject(
             new SubmissionError({
+              _error: extractError(errors, ''),
               email: extractError(errors, 'email'),
               password: extractError(errors, 'password')
             })
@@ -82,7 +84,8 @@ const login = (auth: any, dispatch: any) => {
   })
 }
 
-const LoginForm: SFC<Props & EnhancedProps> = ({
+const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
+  error,
   classes,
   isLoading,
   handleSubmit,
@@ -91,6 +94,7 @@ const LoginForm: SFC<Props & EnhancedProps> = ({
   return (
     <form onSubmit={handleSubmit(login)}>
       <div className={classes.form}>
+        {error && <FormHelperText error>{error}</FormHelperText>}
         <div className={classes.input}>
           <Field
             autoFocus

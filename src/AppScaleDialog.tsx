@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText'
 
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
@@ -18,7 +19,7 @@ import { CloseFunction } from './DialogButton'
 import { isNumber, minValue, maxValue, required } from './validators'
 import { extractError } from './errorSagas'
 import { SuccessCallback, FailureCallback } from './callbacks'
-import { renderTextField, renderDialogError } from './fieldComponents'
+import { renderTextField } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const validateSize = [
@@ -54,6 +55,7 @@ interface EnhancedScaleProps extends InjectedFormProps<FormData> {
 }
 const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   const {
+    error,
     submitting,
     pristine,
     invalid,
@@ -88,7 +90,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
       const failureCallback: FailureCallback = ({ payload: { errors } }) => {
         reject(
           new SubmissionError({
-            form: extractError(errors, ''),
+            _error: extractError(errors, ''),
             size: extractError(errors, 'size'),
             replicas: extractError(errors, 'replicas')
           })
@@ -108,7 +110,11 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle id="form-dialog-title">Scale</DialogTitle>
-      <FormField name="form" component={renderDialogError} />
+      {error && (
+        <DialogContent>
+          <FormHelperText error>{error}</FormHelperText>
+        </DialogContent>
+      )}
       <DialogContent>
         <FormField
           validate={validateSize}
