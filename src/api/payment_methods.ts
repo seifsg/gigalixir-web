@@ -43,7 +43,7 @@ export const update = (token: string): Promise<{ data: {} }> => {
 
 export const get = (): Promise<{ data: PaymentMethod }> => {
   return api
-    .get<{ data: { data: Response } }>('/frontend/api/payment_methods')
+    .get<{ data: Response }>('/frontend/api/payment_methods')
     .then((response): { data: PaymentMethod } => {
       return {
         data: {

@@ -8,7 +8,7 @@ export interface Session {
 
 export const check = (): Promise<{ data: Session }> =>
   api
-    .get<{ data: { data: Session } }>('/frontend/api/sessions')
+    .get<{ data: Session }>('/frontend/api/sessions')
     .then(response => response.data)
 
 export const login = (
@@ -16,7 +16,7 @@ export const login = (
   password: string
 ): Promise<{ data: Session }> =>
   api
-    .post<{ data: { data: Session } }>('/frontend/api/sessions', {
+    .post<{ data: Session }>('/frontend/api/sessions', {
       session: { email: username, password }
     })
     .then(response => response.data)

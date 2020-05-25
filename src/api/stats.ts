@@ -13,7 +13,7 @@ export type point = value[]
 
 const get = (id: string): Promise<{ data: Stats }> => {
   return api
-    .get<{ data: Stats }>(`/frontend/api/apps/${id}/stats`)
+    .get<Stats>(`/frontend/api/apps/${id}/stats`)
     .then((response): {
       data: Stats
     } => {

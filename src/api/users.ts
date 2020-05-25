@@ -28,24 +28,24 @@ const handleAxiosError = (reason: AxiosError<api.ErrorResponse>) => {
   throw new HttpError('Unknown Axios Error', 500, reason.toJSON())
 }
 export const get = (): Promise<{ data: User }> => {
-  return api
-    .get<{ data: { data: Response } }>(`/frontend/api/users`)
-    .then((response): { data: User } => {
-      // logger.debug(JSON.stringify(response))
-      // debug = {
-      //   data: { data: { tier: 'STANDARD', email: 'fake@email.com', credit_cents: 0 } },
-      // }
+  return api.get<{ data: Response }>(`/frontend/api/users`).then((response): {
+    data: User
+  } => {
+    // logger.debug(JSON.stringify(response))
+    // debug = {
+    //   data: { data: { tier: 'STANDARD', email: 'fake@email.com', credit_cents: 0 } },
+    // }
 
-      return {
-        data: {
-          id: 'ignored',
-          tier: response.data.data.tier,
-          apiKey: response.data.data.api_key,
-          email: response.data.data.email,
-          creditCents: response.data.data.credit_cents
-        }
+    return {
+      data: {
+        id: 'ignored',
+        tier: response.data.data.tier,
+        apiKey: response.data.data.api_key,
+        email: response.data.data.email,
+        creditCents: response.data.data.credit_cents
       }
-    })
+    }
+  })
 }
 
 export const create = (

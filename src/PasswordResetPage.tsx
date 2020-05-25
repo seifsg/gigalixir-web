@@ -19,7 +19,7 @@ import { Notification } from 'react-admin'
 
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { renderTextField} from './fieldComponents'
+import { renderTextField } from './fieldComponents'
 import AuthPage from './AuthPage'
 import { extractError, extractErrorValue } from './errorSagas'
 import { crudCreate } from './crudCreate'

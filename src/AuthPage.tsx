@@ -20,7 +20,8 @@ const styles = () =>
     card: {
       minWidth: 300,
       marginTop: '6em',
-      paddingTop: 10
+      paddingTop: 10,
+      paddingBottom: 10
     },
     avatar: {
       margin: '1em',

@@ -55,7 +55,7 @@ const renameIds = (apps: Response[]): App[] => {
 
 export const list = (): Promise<{ data: App[]; total: number }> => {
   return api
-    .get<{ data: { data: Response[] } }>('/frontend/api/apps')
+    .get<{ data: Response[] }>('/frontend/api/apps')
     .then((response): {
       data: App[]
       total: number
@@ -70,7 +70,7 @@ export const list = (): Promise<{ data: App[]; total: number }> => {
 
 export const get = (id: string): Promise<{ data: App }> => {
   return api
-    .get<{ data: { data: Response } }>(`/frontend/api/apps/${id}`)
+    .get<{ data: Response }>(`/frontend/api/apps/${id}`)
     .then((response): { data: App } => {
       const { unique_name, ...others } = response.data.data
       return {
@@ -89,7 +89,7 @@ export const create = (
 ): Promise<{ data: App }> => {
   return api
     .post<{
-      data: { data: { unique_name: string; replicas: number; size: number } }
+      data: { unique_name: string; replicas: number; size: number }
     }>('/frontend/api/apps', {
       unique_name: name,
       cloud,
@@ -130,7 +130,7 @@ export const scale = (
   replicas: number
 ): Promise<{ data: { size: number; replicas: number } }> => {
   return api
-    .post<{ data: { data: { replicas: number; size: number } } }>(
+    .post<{ data: { replicas: number; size: number } }>(
       `/frontend/api/apps/${name}/scale`,
       {
         size,
