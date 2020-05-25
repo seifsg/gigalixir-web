@@ -65,7 +65,6 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
   handleSubmit,
   translate
 }) => {
-  console.log('LoginForm')
   return (
     <form onSubmit={handleSubmit(login)}>
       <div className={classes.form}>
