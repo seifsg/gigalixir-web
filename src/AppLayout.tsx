@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout } from 'react-admin'
+import Layout from './Layout'
 import AppBar from './AppBar'
 import Sidebar from './Sidebar'
 import Menu from './Menu'
