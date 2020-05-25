@@ -107,7 +107,6 @@ const Form: FunctionComponent<Props & EnhancedProps> = props => {
         <Field name="token" component={renderError} style={{ marginTop: 20 }} />
         <div className={classes.input}>
           <Field
-            autoFocus
             id="newPassword"
             name="newPassword"
             component={renderInput}

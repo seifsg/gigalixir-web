@@ -64,50 +64,55 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
   isLoading,
   handleSubmit,
   translate
-}) => (
-  <form onSubmit={handleSubmit(login)}>
-    <div className={classes.form}>
-      <div className={classes.input}>
-        <Field
-          autoFocus
-          id="email"
-          name="email"
-          component={renderInput}
-          fullWidth
-          label="Email"
-          disabled={isLoading}
-        />
+}) => {
+  console.log('LoginForm')
+  return (
+    <form onSubmit={handleSubmit(login)}>
+      <div className={classes.form}>
+        <div className={classes.input}>
+          <Field
+            id="email"
+            name="email"
+            component={renderInput}
+            fullWidth
+            label="Email"
+            disabled={isLoading}
+          />
+        </div>
+        <div className={classes.input}>
+          <Field
+            id="password"
+            name="password"
+            component={renderInput}
+            fullWidth
+            label={translate('ra.auth.password')}
+            type="password"
+            disabled={isLoading}
+            autoComplete="current-password"
+          />
+        </div>
       </div>
-      <div className={classes.input}>
-        <Field
-          id="password"
-          name="password"
-          component={renderInput}
-          fullWidth
-          label={translate('ra.auth.password')}
-          type="password"
+      <CardActions>
+        <Button
+          variant="raised"
+          type="submit"
+          color="primary"
           disabled={isLoading}
-          autoComplete="current-password"
-        />
-      </div>
-    </div>
-    <CardActions>
-      <Button
-        variant="raised"
-        type="submit"
-        color="primary"
-        disabled={isLoading}
-        className={classes.button}
-      >
-        {isLoading && (
-          <CircularProgress className={classes.icon} size={18} thickness={2} />
-        )}
-        {translate('ra.auth.sign_in')}
-      </Button>
-    </CardActions>
-  </form>
-)
-
+          className={classes.button}
+        >
+          {isLoading && (
+            <CircularProgress
+              className={classes.icon}
+              size={18}
+              thickness={2}
+            />
+          )}
+          {translate('ra.auth.sign_in')}
+        </Button>
+      </CardActions>
+    </form>
+  )
+}
 const mapStateToProps = (state: ReduxState) => ({
   isLoading: state.admin.loading > 0
 })

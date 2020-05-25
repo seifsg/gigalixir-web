@@ -92,7 +92,6 @@ const Form: FunctionComponent<Props & EnhancedProps> = props => {
         {error && <FormHelperText error>{error}</FormHelperText>}
         <div className={classes.input}>
           <Field
-            autoFocus
             id="email"
             name="email"
             component={renderEmail}

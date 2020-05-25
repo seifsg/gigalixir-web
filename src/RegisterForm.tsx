@@ -97,7 +97,6 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
         {error && <FormHelperText error>{error}</FormHelperText>}
         <div className={classes.input}>
           <Field
-            autoFocus
             id="email"
             name="email"
             component={renderInput}

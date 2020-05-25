@@ -20,6 +20,7 @@ const styles = () =>
     },
     card: {
       minWidth: 300,
+      minHeight: 'fit-content',
       marginTop: '6em',
       paddingTop: 10,
       paddingBottom: 10
