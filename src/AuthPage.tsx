@@ -20,10 +20,11 @@ const styles = () =>
     },
     card: {
       minWidth: 300,
-      minHeight: 'fit-content',
+      // minHeight: 'fit-content',
       marginTop: '6em',
       paddingTop: 10,
-      paddingBottom: 10
+      paddingBottom: 10,
+      overflow: 'visible'
     },
     avatar: {
       margin: '1em',
