@@ -12,12 +12,12 @@ export default () => (
   <div style={{ textAlign: 'center', marginTop: 40, fontSize: '0.85em' }}>
     <ul style={{padding: 0}}>
       <li style={style}>
-        <a href="https://gigalixir-home.gigalixirapp.com/terms-of-service.html">
+        <a href="https://www.gigalixir.com/terms-of-service.html">
           Terms of Service
         </a>
       </li>
       <li style={style}>
-        <a href="https://gigalixir-home.gigalixirapp.com/privacy-policy.html">
+        <a href="https://www.gigalixir.com/privacy-policy.html">
           Privacy Policy
         </a>
       </li>
