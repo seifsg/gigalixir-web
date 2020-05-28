@@ -5,7 +5,7 @@ import { Query } from 'ra-core'
 import _ from 'lodash/fp'
 import { Invoice } from './api/invoices'
 import Loading from './Loading'
-import Error from './Error'
+import ErrorComponent from './ErrorComponent'
 
 const styles = createStyles({})
 
@@ -30,7 +30,7 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = () => {
           return <Loading />
         }
         if (error) {
-          return <Error>{error}</Error>
+          return <ErrorComponent>{error.message}</ErrorComponent>
         }
         return (
           <ul>

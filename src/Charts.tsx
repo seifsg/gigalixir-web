@@ -4,6 +4,7 @@ import { Query } from 'react-admin'
 import Loading from './Loading'
 import Chart, { ChartPoint } from './Chart'
 import { point, Stats } from './api/stats'
+import ErrorComponent from './ErrorComponent'
 
 const chartStyles = createStyles({
   loading: {
@@ -77,7 +78,7 @@ export const Charts: React.FunctionComponent<ChartsProps> = (
           )
         }
         if (error) {
-          return <div>Error: {error.message}</div>
+          return <ErrorComponent>{error.message}</ErrorComponent>
         }
         return (
           <div className={classes.chartSection}>

@@ -10,12 +10,14 @@ interface Props {
 
 type EnhancedProps = WithStyles<typeof styles>
 
-const Error: FunctionComponent<Props & EnhancedProps> = ({ children }) => {
+const ErrorComponent: FunctionComponent<Props & EnhancedProps> = ({
+  children
+}) => {
   return <div>{children}</div>
 }
 
-const EnhancedError = compose<Props & EnhancedProps, Props>(withStyles(styles))(
-  Error
-)
+const EnhancedErrorComponent = compose<Props & EnhancedProps, Props>(
+  withStyles(styles)
+)(ErrorComponent)
 
-export default EnhancedError
+export default EnhancedErrorComponent
