@@ -21,7 +21,6 @@ import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import AuthPage from './AuthPage'
 import { renderInputField as renderInput } from './fieldComponents'
-import ConnectedSuccessPage from './components/SuccessPage'
 import { extractError } from './errorSagas'
 import { crudUpdate } from './crudUpdate'
 
@@ -93,9 +92,12 @@ const Form: FunctionComponent<Props & EnhancedProps> = ({
   // if (submitSucceeded) {
   //   return <div>Confirmation email resent. Please check your email.</div>
   // } else {
+  const params = qs.parse(location.search)
+  if (!error && typeof params.msg === 'string') {
+    error = params.msg
+  }
   return (
     <div>
-      <ConnectedSuccessPage location={location} />
       <form onSubmit={handleSubmit(action)}>
         <div className={classes.form}>
           {error && <FormHelperText error>{error}</FormHelperText>}
