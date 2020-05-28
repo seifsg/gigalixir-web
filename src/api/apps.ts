@@ -1,6 +1,6 @@
-import * as api from './api'
 import _ from 'lodash/fp'
 import { HttpError } from 'ra-core'
+import * as api from './api'
 
 export interface App {
   id: string
@@ -54,18 +54,16 @@ const renameIds = (apps: Response[]): App[] => {
 }
 
 export const list = (): Promise<{ data: App[]; total: number }> => {
-  return api
-    .get<{ data: Response[] }>('/frontend/api/apps')
-    .then((response): {
-      data: App[]
-      total: number
-    } => {
-      const apps = response.data.data
-      return {
-        data: renameIds(apps),
-        total: apps.length
-      }
-    })
+  return api.get<{ data: Response[] }>('/frontend/api/apps').then((response): {
+    data: App[]
+    total: number
+  } => {
+    const apps = response.data.data
+    return {
+      data: renameIds(apps),
+      total: apps.length
+    }
+  })
 }
 
 export const get = (id: string): Promise<{ data: App }> => {
@@ -110,13 +108,20 @@ export const create = (
     })
     .catch(
       (reason: {
-          response: { data: api.ErrorResponse; status: number }
-      }): never => {
+        response: { data: api.ErrorResponse; status: number }
+      }) => {
         // duplicated, refactor?
         const { errors } = reason.response.data
-        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
-          errors
-        })
+
+          // I like rejecting here intead of throwing. It seems safer and works
+          // fine with react-admin which uses redux-saga. Also,
+          // it will be an error in future versions of nodejs according
+          // to some warnings I saw
+        return Promise.reject(
+          new HttpError(_.join('. ', errors['']), reason.response.status, {
+            errors
+          })
+        )
       }
     )
 }
@@ -144,9 +149,7 @@ export const scale = (
       return { data: { replicas: newApp.replicas, size: newApp.size } }
     })
     .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }) => {
+      (reason: { response: { data: api.ErrorResponse; status: number } }) => {
         const { errors } = reason.response.data
         throw new HttpError(_.join('. ', errors['']), reason.response.status, {
           errors

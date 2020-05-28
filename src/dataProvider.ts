@@ -2,6 +2,7 @@ import * as apps from './api/apps'
 import getStats from './api/stats'
 import * as users from './api/users'
 import * as paymentMethods from './api/payment_methods'
+import * as invoices from './api/invoices'
 import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -130,6 +131,7 @@ const dataProvider = <T extends DataProviderType>(
   type: T,
   resource:
     | 'apps'
+    | 'invoices'
     | 'stats'
     | 'profile'
     | 'payment_methods'
@@ -139,6 +141,9 @@ const dataProvider = <T extends DataProviderType>(
   params: DataProviderParams
 ): Promise<{}> => {
   if (isGetList(params, type)) {
+    if (resource === 'invoices') {
+      return invoices.pdfs()
+    }
     if (resource === 'apps') {
       const result = apps.list()
       return result.catch(e => {

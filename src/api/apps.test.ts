@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { HttpError } from 'ra-core'
 import { list, create } from './apps'
 
 describe('list', (): void => {
@@ -54,18 +55,31 @@ describe('create', (): void => {
       response: { status: 422, data: { errors } }
     })
 
-    const result = create('fake-name', 'fake-cloud', 'fake-region').finally(
-      (): void => {
+    const result = create('fake-name', 'fake-cloud', 'fake-region')
+      .then(() => {
+        done.fail('The promise should have failed')
+      })
+      .catch(reason => {
+        // failure here does not result in a failed test?! just a warning?
+        // all we get is UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch().
+        // I guess this line just throws or rejects which is then caught by something
+        // jest? which reports it as a warning, not a failure
+        // the try catch block here fixes that, but is this the right way?
+        try {
+          expect(reason.status).toBe(422)
+          expect(reason.body).toStrictEqual({
+            errors: { unique_name: ['is bad'], cloud: ['is also bad'] }
+          })
+        } catch (e) {
+          done.fail(e)
+        }
+      })
+      .finally((): void => {
         expect(postMock).toHaveBeenCalled()
         expect(getMock).toHaveBeenCalled()
         getMock.mockRestore()
         postMock.mockRestore()
         done()
-      }
-    )
-    // is this a race condition? the test finishes when done() is called
-    // in the finally block above, but the rejects function below is not
-    // guaranteed to be called before or after the done function? not sure.
-    expect(result).rejects.toThrow('Name is bad. Cloud is also bad')
+      })
   })
 })
