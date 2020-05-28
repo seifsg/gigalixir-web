@@ -59,16 +59,23 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
               <div>PDF</div>
             </li>
             {_.map(invoice => {
-              return (
-                <li key={invoice.id} className={classes.row}>
-                    <div>{(invoice.periodStart.getMonth() + 1) + '/' + invoice.periodStart.getDate() + '/' + invoice.periodStart.getFullYear() + ' - ' + (invoice.periodEnd.getMonth() + 1) + '/' + invoice.periodEnd.getDate() + '/' + invoice.periodEnd.getFullYear()}</div>
-                  <div>{formatMoney(invoice.amountCents)}</div>
-                  <div>
-                    {' '}
-                    <a href={invoice.pdf}>PDF</a>{' '}
-                  </div>
-                </li>
-              )
+              if (invoice.pdf) {
+                return (
+                  <li key={invoice.id} className={classes.row}>
+                    <div>
+                      {`${invoice.periodStart.getMonth() +
+                        1}/${invoice.periodStart.getDate()}/${invoice.periodStart.getFullYear()} - ${invoice.periodEnd.getMonth() +
+                        1}/${invoice.periodEnd.getDate()}/${invoice.periodEnd.getFullYear()}`}
+                    </div>
+                    <div>{formatMoney(invoice.amountCents)}</div>
+                    <div>
+                      {' '}
+                      <a href={invoice.pdf}>PDF</a>{' '}
+                    </div>
+                  </li>
+                )
+              }
+              return null
             }, data)}
           </ul>
         )
