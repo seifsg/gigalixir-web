@@ -41,7 +41,8 @@ const formatStatsForChart = (data: point[]): ChartPoint[] =>
 const toMegabytes = (data: ChartPoint[]): ChartPoint[] =>
   data.map(
     (p: ChartPoint): ChartPoint => {
-      let { x: time, y: value } = p
+      const { x: time } = p
+      let { y: value } = p
       if (value !== null) {
         value /= 1000000 // convert to megabytes
       }

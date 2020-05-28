@@ -10,7 +10,7 @@ const style = {
 }
 export default () => (
   <div style={{ textAlign: 'center', marginTop: 40, fontSize: '0.85em' }}>
-    <ul style={{padding: 0}}>
+    <ul style={{ padding: 0 }}>
       <li style={style}>
         <a href="https://www.gigalixir.com/terms-of-service.html">
           Terms of Service

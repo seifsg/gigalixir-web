@@ -20,7 +20,7 @@ import TestPage from './TestPage'
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: "#fff"
+      default: '#fff'
     }
   }
 })

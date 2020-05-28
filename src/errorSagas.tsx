@@ -250,7 +250,7 @@ export default function* errorSagas() {
       'UPDATE',
       updatePaymentMethodFailure
     ),
-    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure),
+    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
     // crudFailureSaga(CRUD_UPDATE_FAILURE, 'apps', 'UPDATE', updateAppFailure)
   ])
   // , resendConfirmationFailureSaga()])
