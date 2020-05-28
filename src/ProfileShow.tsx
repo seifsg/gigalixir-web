@@ -19,6 +19,7 @@ import { StyledTab, StyledTabs } from './Tabs'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
 import Invoices from './Invoices'
+import { formatMoney } from './formatters'
 
 const styles = createStyles({})
 
@@ -165,10 +166,6 @@ EnhancedProfileShow.defaultProps = {
       path: 'profile',
       label: 'Profile',
       element: (record: User, classes: Record<keyof typeof styles, string>) => {
-        const formatter = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD'
-        })
 
         return (
           <div>
@@ -178,7 +175,7 @@ EnhancedProfileShow.defaultProps = {
                 <Field label="Tier"> {record.tier} </Field>
                 {record.creditCents !== 0 && (
                   <Field label="Credits">
-                    {formatter.format(record.creditCents / 100.0)}
+                    {formatMoney(record.creditCents)}
                   </Field>
                 )}
               </Fields>
