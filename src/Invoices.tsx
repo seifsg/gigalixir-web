@@ -61,7 +61,7 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
             {_.map(invoice => {
               return (
                 <li key={invoice.id} className={classes.row}>
-                    <div>{invoice.periodStart.getMonth() + '/' + invoice.periodStart.getDay() + '/' + invoice.periodStart.getFullYear() + ' - ' + invoice.periodEnd.getMonth() + '/' + invoice.periodEnd.getDay() + '/' + invoice.periodEnd.getFullYear()}</div>
+                    <div>{(invoice.periodStart.getMonth() + 1) + '/' + invoice.periodStart.getDate() + '/' + invoice.periodStart.getFullYear() + ' - ' + (invoice.periodEnd.getMonth() + 1) + '/' + invoice.periodEnd.getDate() + '/' + invoice.periodEnd.getFullYear()}</div>
                   <div>{formatMoney(invoice.amountCents)}</div>
                   <div>
                     {' '}
