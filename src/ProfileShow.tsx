@@ -50,53 +50,48 @@ interface EnhancedProps extends WithStyles<typeof styles> {
   version: number
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface State {}
 
 class ProfileShow extends React.Component<Props & EnhancedProps, State> {
-  constructor(props: Props & EnhancedProps) {
+  public constructor(props: Props & EnhancedProps) {
     super(props)
     this.handleTabChange = this.handleTabChange.bind(this)
   }
 
-  componentDidMount() {
-    // not an infinite loop like the child component because this does not
-    // have to re-render on every state change (i think). But just to stay
-    // consistent, we updateData below in the render function based on the
-    // record and isLoading state
-    // this.updateData();
-  }
-
-  componentWillReceiveProps(nextProps: Props & EnhancedProps) {
-    if (
-      this.props.id !== nextProps.id ||
-      nextProps.version !== this.props.version
-    ) {
+  public componentWillReceiveProps(nextProps: Props & EnhancedProps) {
+    const { id, version } = this.props
+    if (id !== nextProps.id || version !== nextProps.version) {
       this.updateData()
     }
   }
 
-  updateData() {
-    this.props.crudGetOne(this.props.resource, this.props.id, '/login')
+  private updateData() {
+    const { crudGetOne, id, resource } = this.props
+    crudGetOne(resource, id, '/login')
 
     // should we load everything from the "container" and let everything
     // else be "presentational" only?
     // this.props.crudGetOne('payment_methods', 'ignored', '/login')
   }
 
-  handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
-    const tabName = this.props.tabs[newValue].path
-    this.props.push(`/account/${tabName}`)
+  private handleTabChange(event: React.ChangeEvent<{}>, newValue: number) {
+    const { tabs, push } = this.props
+    const tabName = tabs[newValue].path
+    push(`/account/${tabName}`)
   }
 
-  selectedTab() {
+  private selectedTab() {
+    const { tabs } = this.props
     const index = this.selectedTabIndex()
-    return this.props.tabs[index]
+    return tabs[index]
   }
 
-  selectedTabIndex() {
+  private selectedTabIndex() {
+    const { tabs, match } = this.props
     const index = _.findIndex(tab => {
-      return tab.path === this.props.match.params.tab
-    }, this.props.tabs)
+      return tab.path === match.params.tab
+    }, tabs)
 
     if (index === -1) {
       return 0
@@ -105,7 +100,7 @@ class ProfileShow extends React.Component<Props & EnhancedProps, State> {
     return index
   }
 
-  render() {
+  public render() {
     const { tabs, isLoading, record, classes } = this.props
 
     if (!record && !isLoading) {
@@ -165,8 +160,7 @@ EnhancedProfileShow.defaultProps = {
     {
       path: 'profile',
       label: 'Profile',
-      element: (record: User, classes: Record<keyof typeof styles, string>) => {
-
+      element: (record: User) => {
         return (
           <div>
             <Section>
@@ -188,7 +182,7 @@ EnhancedProfileShow.defaultProps = {
     {
       path: 'payment-method',
       label: 'Payment Method',
-      element: (record: User, classes: Record<keyof typeof styles, string>) => {
+      element: (record: User) => {
         if (record.tier === 'FREE') {
           return (
             <Section>
@@ -207,7 +201,7 @@ EnhancedProfileShow.defaultProps = {
     {
       path: 'invoices',
       label: 'Invoices',
-      element: (record: User, classes: Record<keyof typeof styles, string>) => {
+      element: () => {
         return (
           <Section>
             <Invoices />
@@ -218,7 +212,7 @@ EnhancedProfileShow.defaultProps = {
     {
       path: 'api-key',
       label: 'API Key',
-      element: (record: User, classes: Record<keyof typeof styles, string>) => {
+      element: () => {
         return (
           <Section>
             <ComingSoon />
@@ -229,7 +223,7 @@ EnhancedProfileShow.defaultProps = {
     {
       path: 'ssh-keys',
       label: 'SSH Keys',
-      element: (record: User, classes: Record<keyof typeof styles, string>) => {
+      element: () => {
         return (
           <Section>
             <ComingSoon />
