@@ -42,7 +42,7 @@ const handleError = (reason: {
   response: { data: ErrorResponse; status: number }
 }) => {
   const { errors } = reason.response.data
-  throw new HttpError(reason.response.status, {
+  throw new HttpError('', reason.response.status, {
     errors
   })
 }

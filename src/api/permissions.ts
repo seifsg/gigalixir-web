@@ -1,4 +1,6 @@
 import * as api from './api'
+import { extractAllErrors } from '../errorSagas'
+import { HttpError } from 'ra-core'
 
 type Email = string
 interface Response {
@@ -28,9 +30,16 @@ export const get = (id: string): Promise<{ data: Permissions }> => {
 
 export const del = (id: string, email: string): Promise<{ data: {} }> =>
   api
-    .del<{ data: {} }>(`/frontend/api/apps/${id}/permissions?email=${encodeURIComponent(email)}`)
+    .del<{ data: {} }>(
+      `/frontend/api/apps/${id}/permissions?email=${encodeURIComponent(email)}`
+    )
     .then(response => {
       return {
         data: response.data
       }
+    })
+    .catch(error => {
+      // fill in the error message so it shows up as a notification
+      // we don't use the error body for these
+      return Promise.reject(new HttpError(extractAllErrors(error.body.errors), error.status, error.body))
     })

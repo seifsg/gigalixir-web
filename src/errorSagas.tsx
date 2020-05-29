@@ -8,30 +8,34 @@ import _ from 'lodash/fp'
 import { USER_LOGIN_FAILURE, FETCH_ERROR } from 'ra-core'
 
 // TODO: can we replace everything in this file with failureCallbacks instead?
-
+interface ErrorPayload {
+  [k: string]: string[]
+}
 export const extractErrorValue = (
-  errors: { [k: string]: string[] },
+  errors: ErrorPayload,
   key: string
 ): string => {
   const errorList = _.get(key, errors) || []
   return _.join('. ', errorList)
 }
 
-export const extractError = (
-  errors: { [k: string]: string[] },
-  key: string
-): string => {
+const errorListWithKey = (key: string) =>
+  _.map(msg => `${_.capitalize(key)} ${msg}`)
+export const extractError = (errors: ErrorPayload, key: string): string => {
   const errorList = _.get(key, errors) || []
-  const errorListWithKey = _.map(
-    msg => `${_.capitalize(key)} ${msg}`,
-    errorList
-  )
-  return _.join('. ', errorListWithKey)
+  return _.join('. ', errorListWithKey(key)(errorList))
+}
+
+export const extractAllErrors = (errors: ErrorPayload): string => {
+  const strings = Object.entries(errors).map(([k, v]) => {
+    return errorListWithKey(k)(v)
+  })
+  return _.join('. ', strings)
 }
 
 export interface CrudFailureAction extends Action {
   error?: string
-  payload?: { errors: { [k: string]: string[] } }
+  payload?: { errors: ErrorPayload }
   meta?: {
     resource: string
     fetchResponse: string
@@ -50,7 +54,7 @@ interface UserLoginFailureAction extends Action {
   }
 }
 
-function extractEmailError(errors: { [k: string]: string[] }) {
+function extractEmailError(errors: ErrorPayload) {
   const key = 'email'
   const errorList = _.get(key, errors) || []
   const msg = extractError(errors, key)

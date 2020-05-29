@@ -23,6 +23,7 @@ const styles = ({ spacing }: Theme) =>
       margin: 0
     },
     row: {
+      height: 36,
       display: 'flex',
       padding: 12,
       fontSize: '0.875rem',
