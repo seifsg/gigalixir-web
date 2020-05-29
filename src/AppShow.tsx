@@ -1,4 +1,6 @@
 import { withStyles } from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
+import Button from '@material-ui/core/Button'
 import React, { FunctionComponent } from 'react'
 import { ShowController } from 'react-admin'
 import { App } from './api/apps'
@@ -165,7 +167,7 @@ const AppShow: FunctionComponent<AppShowProps> = ({
                   </DialogButton>
                 </div>
                 <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
-                  <DialogButton label="Restart">
+                  <DialogButton label="Restart" disabled={app.replicas === 0}>
                     {close => <ComingSoonDialog close={close} />}
                   </DialogButton>
                 </div>
@@ -173,6 +175,16 @@ const AppShow: FunctionComponent<AppShowProps> = ({
                   <DialogButton label="Delete">
                     {close => <ComingSoonDialog close={close} />}
                   </DialogButton>
+                </div>
+                <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
+                  <Button
+                    href={`https://${app.id}.gigalixirapp.com/`}
+                    variant="raised"
+                    color="primary"
+                    disabled={app.replicas === 0}
+                  >
+                    Open
+                  </Button>
                 </div>
               </div>
               <div style={{ marginTop: 20 }}>

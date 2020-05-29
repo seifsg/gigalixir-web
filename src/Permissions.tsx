@@ -93,12 +93,12 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
             <li className={classnames(classes.row, classes.header)}>
               <div>Email</div>
               <div>Role</div>
-              <div></div>
+              <div />
             </li>
             <li key={data.owner} className={classes.row}>
               <div>{data.owner}</div>
               <div>Owner</div>
-              <div></div>
+              <div />
             </li>
             {_.map(email => {
               return (
@@ -113,10 +113,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                       options={delOptions}
                     >
                       {(del: () => void, { loading }: { loading: boolean }) => (
-                          <Button 
-                          color="primary"
-                          variant="raised"
-                          onClick={del}>
+                        <Button color="primary" variant="raised" onClick={del}>
                           {loading && (
                             <CircularProgress
                               className={classes.icon}

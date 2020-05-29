@@ -9,6 +9,7 @@ const styles = createStyles({})
 export type CloseFunction = Function
 interface Props {
   label: ReactNode
+  disabled?: boolean
   children: (close: CloseFunction) => ReactNode
 }
 
@@ -40,7 +41,7 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
       this.setState({ open })
     }
 
-    const { label, children } = this.props
+    const { label, disabled, children } = this.props
     const { open } = this.state
     return (
       <div>
@@ -48,6 +49,7 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
           onClick={toggleDrawer(true)}
           variant="contained"
           color="primary"
+          disabled={disabled}
         >
           {label}
         </Button>
