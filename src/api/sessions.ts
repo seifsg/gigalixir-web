@@ -27,7 +27,7 @@ export const login = (
       // itself checks for the error and dispatches the notification. I'm not sure how to hide the
       // notification here, but we can change the msg to be better than "401". i think we probably need
       // to override the Notification element at some point since this is getting really messy.
-      e.message = "Sorry, please try again"
+      e.message = 'Sorry, please try again'
       return Promise.reject(e)
     })
 

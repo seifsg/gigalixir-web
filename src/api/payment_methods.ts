@@ -1,6 +1,7 @@
 import _ from 'lodash/fp'
 import { HttpError } from 'ra-core'
 import * as api from './api'
+import logger from '../logger'
 
 interface Response {
   brand: string
@@ -27,10 +28,11 @@ export const update = (token: string): Promise<{ data: {} }> => {
       return { data: { id: token } }
     })
     .catch(error => {
+      logger.info(JSON.stringify(error))
       return Promise.reject(
         new HttpError(
           _.join('. ', error.body.stripe_token),
-          error.response.status,
+          error.status,
           error.body
         )
       )

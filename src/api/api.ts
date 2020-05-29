@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError, AxiosPromise } from 'axios'
 import _ from 'lodash/fp'
 import { HttpError } from 'ra-core'
+import logger from '../logger'
 
 const host = process.env.REACT_APP_API_HOST
 
@@ -47,8 +48,9 @@ const handle500 = <T>(params: AxiosError<T>): AxiosPromise<T> => {
 }
 
 const handleError = (reason: AxiosError<ErrorResponse>) => {
-  // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+  logger.info(JSON.stringify(reason))
   if (reason.response) {
+    logger.info(JSON.stringify(reason.response))
     const { data, status } = reason.response
     const { errors } = data
     if (status === 401) {

@@ -1,10 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Field,
-  reduxForm,
-  InjectedFormProps,
-} from 'redux-form'
+import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import FormHelperText from '@material-ui/core/FormHelperText'
@@ -29,9 +25,12 @@ const styles = createStyles({
     marginTop: '20px'
   }
 })
-
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface FormData {}
+
 interface EnhancedProps
   extends WithStyles<typeof styles>,
     InjectedFormProps<FormData> {
@@ -41,8 +40,8 @@ interface EnhancedProps
 }
 
 interface State {
-    complete: boolean,
-        error?: string
+  complete: boolean
+  error?: string
 }
 class UpgradeForm extends Component<Props & EnhancedProps, State> {
   public constructor(props: Props & EnhancedProps) {
@@ -50,11 +49,18 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
     this.submit = this.submit.bind(this)
     this.onChange = this.onChange.bind(this)
     this.state = {
-        complete: false,
+      complete: false
     }
   }
 
-  public async submit() {
+  private onChange(params: ReactStripeElements.ElementChangeResponse) {
+    this.setState({
+      complete: params.complete,
+      error: params.error && params.error.message
+    })
+  }
+
+  private async submit() {
     const { stripe, upgrade } = this.props
     const { token } = await stripe.createToken({ name: 'Name' })
     if (!token) {
@@ -64,20 +70,8 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
     }
   }
 
-  onChange(params: ReactStripeElements.ElementChangeResponse) {
-    this.setState({
-      complete: params.complete,
-      error: params.error && params.error.message
-    })
-  }
-
   public render() {
-    const {
-      handleSubmit,
-      submitting,
-      classes,
-      isLoading,
-    } = this.props
+    const { handleSubmit, submitting, classes, isLoading } = this.props
     const { complete } = this.state
     const error = this.props.error || this.state.error
     // hacky because the stripe CardElement isn't a regular field
@@ -91,7 +85,7 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
         />
         <Field name="token" component={renderError} />
         {error && <FormHelperText error>{error}</FormHelperText>}
-        <form onSubmit={handleSubmit(this.submit)} style={{marginTop: 10}}>
+        <form onSubmit={handleSubmit(this.submit)} style={{ marginTop: 10 }}>
           <SubmitButton
             invalid={!complete}
             pristine={false}

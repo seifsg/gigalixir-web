@@ -1,18 +1,19 @@
-import React, { Component } from 'react'
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import FormHelperText from '@material-ui/core/FormHelperText'
-
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import _ from 'lodash/fp'
-import compose from 'recompose/compose'
-import { CRUD_UPDATE_FAILURE, CRUD_UPDATE, UPDATE } from 'react-admin'
-
+import React, { Component } from 'react'
+import { CRUD_UPDATE, UPDATE } from 'react-admin'
 import { connect } from 'react-redux'
-import { CardElement, injectStripe } from 'react-stripe-elements'
-import { FETCH_ERROR } from 'ra-core'
-import { reset } from 'redux-form'
+import {
+  CardElement,
+  injectStripe,
+  ReactStripeElements
+} from 'react-stripe-elements'
+import compose from 'recompose/compose'
+import { Field, InjectedFormProps, reduxForm } from 'redux-form'
 import { CrudUpdateAction } from './crudUpdate'
-import { CrudFailureAction } from './errorSagas'
+import { renderError } from './fieldComponents'
+import SubmitButton from './SubmitButton'
 
 const styles = createStyles({
   checkout: {
@@ -26,13 +27,16 @@ const styles = createStyles({
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
-interface EnhancedProps extends WithStyles<typeof styles> {
-  error?: string
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface FormData {}
+
+interface EnhancedProps
+  extends WithStyles<typeof styles>,
+    InjectedFormProps<FormData> {
   isLoading: boolean
   stripe: { createToken: Function }
   updatePaymentMethod: (token: string) => void
-  showError: (error: StripeErrorResponse) => void
-  myReset: () => void
 }
 
 interface StripeErrorResponse {
@@ -45,50 +49,62 @@ interface StripeTokenResponse {
     id: string
   }
 }
-class UpdatePaymentMethodForm extends Component<Props & EnhancedProps> {
+
+interface State {
+  complete: boolean
+  error?: string
+}
+
+class UpdatePaymentMethodForm extends Component<Props & EnhancedProps, State> {
   public constructor(props: Props & EnhancedProps) {
     super(props)
     this.submit = this.submit.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.state = {
+      complete: false
+    }
   }
 
-  public submit = () => {
+  private onChange(params: ReactStripeElements.ElementChangeResponse) {
+    this.setState({
+      complete: params.complete,
+      error: params.error && params.error.message
+    })
+  }
+
+  private async submit() {
     // TODO: name is not used
-    const { stripe, updatePaymentMethod, showError, myReset } = this.props
+    const { stripe, updatePaymentMethod } = this.props
     // TODO: how does createToken get the card info?
-    stripe
-      .createToken({ name: 'Name' })
-      .then((response: StripeErrorResponse | StripeTokenResponse) => {
-        if ('token' in response) {
-          updatePaymentMethod(response.token.id)
-          myReset()
-        } else if ('error' in response) {
-          showError(response)
-        } else {
-          showError({ error: { message: 'Unknown Error' } })
-        }
-      })
-      .catch(() => {
-        showError({ error: { message: 'Unknown Error' } })
-      })
+    const { token } = await stripe.createToken({ name: 'Name' })
+    if (!token) {
+      // do nothing
+    } else {
+      updatePaymentMethod(token.id)
+    }
   }
 
   public render = () => {
-    const { classes, isLoading, error } = this.props
+    const { handleSubmit, classes, isLoading, submitting } = this.props
+    const { complete } = this.state
+    const error = this.props.error || this.state.error
     return (
       <div className={classes.checkout}>
-        <CardElement disabled={isLoading} />
-        <FormHelperText error>{error}</FormHelperText>
-
-        <Button
-          type="submit"
-          className={classes.button}
-          variant="raised"
-          color="primary"
-          onClick={this.submit}
-          disabled={isLoading}
-        >
-          Update
-        </Button>
+        <CardElement
+          disabled={isLoading || submitting}
+          onChange={this.onChange}
+        />
+        <Field name="token" component={renderError} />
+        {error && <FormHelperText error>{error}</FormHelperText>}
+        <form onSubmit={handleSubmit(this.submit)} style={{ marginTop: 10 }}>
+          <SubmitButton
+            invalid={!complete}
+            pristine={false}
+            submitting={submitting || isLoading}
+            variant="raised"
+            label="Update"
+          />
+        </form>
       </div>
     )
   }
@@ -122,45 +138,17 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
       redirectTo: false,
       basePath: '/'
     },
-    onFailure: {
-      notification: {
-        body: 'ra.notification.http_error',
-        level: 'warning'
-      }
-    }
+    onFailure: {}
   }
 })
-
-// could this be CrudUpdateFailureAction instead? The problem is payload which they define as a string
-// but we use sometimes as an object with errors and stuff.
-const showError = (error: StripeErrorResponse): CrudFailureAction => {
-  return {
-    type: CRUD_UPDATE_FAILURE,
-    error: error.error.message,
-    payload: {
-      errors: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        stripe_token: [error.error.message]
-      }
-    },
-    meta: {
-      resource: 'payment_methods',
-      fetchResponse: UPDATE,
-      fetchStatus: FETCH_ERROR,
-      notification: {
-        body: '',
-        level: 'warning'
-      }
-    }
-  }
-}
 
 export default compose<Props & EnhancedProps, Props>(
   withStyles(styles),
   injectStripe,
   connect(mapStateToProps, {
-    updatePaymentMethod,
-    showError,
-    myReset: () => reset('updatePaymentMethod')
+    updatePaymentMethod
+  }),
+  reduxForm({
+    form: 'updatePaymentMethod'
   })
 )(UpdatePaymentMethodForm)
