@@ -28,7 +28,7 @@ export const get = (id: string): Promise<{ data: Permissions }> => {
 
 export const del = (id: string, email: string): Promise<{ data: {} }> =>
   api
-    .del<{ data: {} }>(`/frontend/api/apps/${id}/permissions?email=${email}`)
+    .del<{ data: {} }>(`/frontend/api/apps/${id}/permissions?email=${encodeURIComponent(email)}`)
     .then(response => {
       return {
         data: response.data
