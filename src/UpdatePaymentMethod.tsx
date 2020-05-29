@@ -6,9 +6,9 @@ import Section from './Section'
 const stripeKey = process.env.REACT_APP_STRIPE_API_KEY || 'missing'
 
 interface Props {
-    record: {
-        tier: string
-    }
+  record: {
+    tier: string
+  }
 }
 
 export default (props: Props) => {
@@ -21,12 +21,12 @@ export default (props: Props) => {
         <Section>
           <h4>Update Payment Method</h4>
           <div>
-              Enter your card details below
-              <Elements>
-                {/* stripe parameter is injected automatically by StripeProvider, but 
+            Enter your card details below
+            <Elements>
+              {/* stripe parameter is injected automatically by StripeProvider, but 
                     typescript complains about it if I don't put something here */}
-                <UpdatePaymentMethodForm />
-              </Elements>
+              <UpdatePaymentMethodForm />
+            </Elements>
           </div>
         </Section>
       </StripeProvider>

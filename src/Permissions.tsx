@@ -113,18 +113,24 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                       payload={{ id, email }}
                       options={delOptions}
                     >
-                      {(del: () => void, { loading }: { loading: boolean }) => (
-                        <Button color="primary" variant="raised" onClick={del}>
-                          {loading && (
-                            <CircularProgress
-                              className={classes.icon}
-                              size={18}
-                              thickness={2}
-                            />
-                          )}
-                          Delete
-                        </Button>
-                      )}
+                      {(del: () => void, state: { loading: boolean }) => {
+                        return (
+                          <Button
+                            color="primary"
+                            variant="raised"
+                            onClick={del}
+                          >
+                            {state.loading && (
+                              <CircularProgress
+                                className={classes.icon}
+                                size={18}
+                                thickness={2}
+                              />
+                            )}
+                            Delete
+                          </Button>
+                        )
+                      }}
                     </Mutation>
                   </div>
                 </li>

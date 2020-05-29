@@ -18,7 +18,7 @@ interface Props {
   marginTop?: number
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {}
+type EnhancedProps = WithStyles<typeof styles>
 
 const Section = (props: Props & EnhancedProps) => {
   const { marginTop, classes, children } = props

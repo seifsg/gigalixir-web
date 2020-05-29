@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import {
@@ -21,31 +21,28 @@ interface Props {
   label: string
   variant?: 'text' | 'flat' | 'outlined' | 'contained' | 'raised'
 }
-interface EnhancedProps extends WithStyles<typeof styles> {}
-class SubmitButton extends React.Component<Props & EnhancedProps> {
-  render() {
-    const {
-      classes,
-      variant,
-      invalid,
-      pristine,
-      submitting,
-      label
-    } = this.props
-    return (
-      <Button
-        type="submit"
-        disabled={invalid || pristine || submitting}
-        color="primary"
-        variant={variant}
-      >
-        {submitting && (
-          <CircularProgress className={classes.icon} size={18} thickness={2} />
-        )}
-        {label}
-      </Button>
-    )
-  }
+type EnhancedProps = WithStyles<typeof styles>
+const SubmitButton: FunctionComponent<Props & EnhancedProps> = ({
+  classes,
+  variant,
+  invalid,
+  pristine,
+  submitting,
+  label
+}) => {
+  return (
+    <Button
+      type="submit"
+      disabled={invalid || pristine || submitting}
+      color="primary"
+      variant={variant}
+    >
+      {submitting && (
+        <CircularProgress className={classes.icon} size={18} thickness={2} />
+      )}
+      {label}
+    </Button>
+  )
 }
 
 export default withStyles(styles)(SubmitButton)

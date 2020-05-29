@@ -87,6 +87,7 @@ class UpdatePaymentMethodForm extends Component<Props & EnhancedProps, State> {
   public render = () => {
     const { handleSubmit, classes, isLoading, submitting } = this.props
     const { complete } = this.state
+    // eslint-disable-next-line react/destructuring-assignment
     const error = this.props.error || this.state.error
     return (
       <div className={classes.checkout}>
