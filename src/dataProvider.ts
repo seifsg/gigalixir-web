@@ -157,15 +157,9 @@ const dataProvider = <T extends DataProviderType>(
       return invoices.pdfs()
     }
     if (resource === 'apps') {
-      const result = apps.list()
-      return result.catch(e => {
-        if (e.message === 'Request failed with status code 401') {
-          logger.error(JSON.stringify(e))
-          // return Promise.reject(e)
-          // return Promise.reject({
-          //     message: "fake-message"
-          // })
-          // return Promise.reject("error-as-string")
+      return apps.list().catch(e => {
+        logger.debug(JSON.stringify(e))
+        if (e.status === 401) {
           // semantically, probably better to reject here since it's an error, but
           // this is the only way I can figure out to stop showing 401 notifications.
           // maybe try overriding the Notification component instead!
@@ -184,7 +178,7 @@ const dataProvider = <T extends DataProviderType>(
     return users.create(email, password)
   }
   if (isDeleteOne(params, type)) {
-      return permissions.del(params.id, params.email)
+    return permissions.del(params.id, params.email)
   }
   if (isGetOne(params, type)) {
     if (resource === 'permissions') {
@@ -197,13 +191,7 @@ const dataProvider = <T extends DataProviderType>(
       return getStats(params.id)
     }
     if (resource === 'profile') {
-      return users.get().catch(e => {
-        if (e.message === 'Request failed with status code 401') {
-          logger.error(JSON.stringify(e))
-          return Promise.resolve({ data: { id: 'ignored' } })
-        }
-        return Promise.reject(e)
-      })
+      return users.get()
     }
     if (resource === 'payment_methods') {
       return paymentMethods.get()

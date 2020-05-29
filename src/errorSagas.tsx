@@ -46,10 +46,8 @@ export interface CrudFailureAction extends Action {
 
 interface UserLoginFailureAction extends Action {
   error?: {
-    response: {
-      data: {
-        errors: {}
-      }
+    body: {
+      errors: ErrorPayload
     }
   }
 }
@@ -81,8 +79,8 @@ function extractEmailError(errors: ErrorPayload) {
 function* userLoginFailure(action: UserLoginFailureAction) {
   if (action.error) {
     const violations = {
-      email: extractEmailError(action.error.response.data.errors),
-      password: extractError(action.error.response.data.errors, 'password')
+      email: extractEmailError(action.error.body.errors),
+      password: extractError(action.error.body.errors, 'password')
     }
 
     const a = stopSubmit('signIn', violations)
@@ -91,30 +89,6 @@ function* userLoginFailure(action: UserLoginFailureAction) {
     throw new Error('userLoginFailure with no payload')
   }
 }
-
-// function* resendConfirmationFailure(action: CrudFailureAction) {
-//  if (action.payload) {
-//    const violations = {
-//      email: extractError(action.payload.errors, 'email'),
-//    }
-//    const a = stopSubmit('resendConfirmation', violations)
-//    yield put(a)
-//  } else {
-//    throw new Error('resendConfirmationFailure with no payload')
-//  }
-// }
-// function* userRegisterFailure(action: CrudFailureAction) {
-//   if (action.payload) {
-//     const violations = {
-//       email: extractError(action.payload.errors, 'email'),
-//       password: extractError(action.payload.errors, 'password')
-//     }
-//     const a = stopSubmit('signUp', violations)
-//     yield put(a)
-//   } else {
-//     throw new Error('userRegisterFailure with no payload')
-//   }
-// }
 function* upgradeUserFailure(action: CrudFailureAction) {
   if (action.payload) {
     // since we use token here, but '' in the api, maybe translate it
@@ -156,63 +130,6 @@ function* updatePaymentMethodFailure(action: CrudFailureAction) {
   }
 }
 
-// function* setPasswordFailure(action: CrudFailureAction) {
-//   if (action.payload) {
-//     const tokenViolation = extractError(action.payload.errors, 'token')
-//     const violations = {
-//       newPassword: extractError(action.payload.errors, 'password'),
-//       token: tokenViolation
-//     }
-//       if (tokenViolation) {
-//         yield put(
-//         showNotification(tokenViolation, 'warning')
-//     );
-
-// }
-
-//     const a = stopSubmit('setPassword', violations)
-//     yield put(a)
-//   } else {
-//     throw new Error('setPasswordFailure with no payload')
-//   }
-// }
-
-// function* resetPasswordFailure(action: CrudFailureAction) {
-//   if (action.payload) {
-//     const violations = {
-//       email: extractError(action.payload.errors, 'email')
-//     }
-//     const a = stopSubmit('resetPassword', violations)
-//     yield put(a)
-//   } else {
-//     throw new Error('resetPasswordFailure with no payload')
-//   }
-// }
-
-// function* resendConfirmationFailureSaga() {
-//   yield takeEvery((action: CrudFailureAction): boolean => {
-//     return (
-//       action.type === CRUD_UPDATE_FAILURE &&
-//       action.meta !== undefined &&
-//       action.meta.resource === 'confirmation' &&
-//       action.meta.fetchResponse === 'UPDATE' &&
-//       action.payload !== undefined
-//     )
-//   }, resendConfirmationFailure)
-// }
-
-// function* userRegisterFailureSaga() {
-//   yield takeEvery((action: CrudFailureAction): boolean => {
-//     return (
-//       action.type === CRUD_CREATE_FAILURE &&
-//       action.meta !== undefined &&
-//       action.meta.resource === 'users' &&
-//       action.meta.fetchResponse === 'CREATE' &&
-//       action.payload !== undefined
-//     )
-//   }, userRegisterFailure)
-// }
-
 function* crudFailureSaga(
   type: string,
   resource: string,
@@ -232,22 +149,13 @@ function* crudFailureSaga(
 
 function* userLoginFailureSaga() {
   yield takeEvery((action: UserLoginFailureAction): boolean => {
-    return (
-      action.type === USER_LOGIN_FAILURE &&
-      action.error !== undefined &&
-      action.error.response !== undefined &&
-      action.error.response.data !== undefined &&
-      action.error.response.data.errors !== undefined
-    )
+    return action.type === USER_LOGIN_FAILURE && action.error !== undefined
   }, userLoginFailure)
 }
 
 export default function* errorSagas() {
   yield all([
-    // userRegisterFailureSaga()
     userLoginFailureSaga(),
-    // , crudFailureSaga(CRUD_CREATE_FAILURE, 'password', 'CREATE', resetPasswordFailure)
-    // , crudFailureSaga(CRUD_UPDATE_FAILURE, 'password', 'UPDATE', setPasswordFailure)
     crudFailureSaga(
       CRUD_UPDATE_FAILURE,
       'payment_methods',
@@ -255,7 +163,5 @@ export default function* errorSagas() {
       updatePaymentMethodFailure
     ),
     crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
-    // crudFailureSaga(CRUD_UPDATE_FAILURE, 'apps', 'UPDATE', updateAppFailure)
   ])
-  // , resendConfirmationFailureSaga()])
 }

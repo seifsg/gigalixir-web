@@ -52,17 +52,13 @@ const handleError = (reason: AxiosError<ErrorResponse>) => {
     const { data, status } = reason.response
     const { errors } = data
     if (status === 401) {
-      return Promise.reject(
-        new HttpError(`Unknown Axios Error ${status}`, status, data)
-      )
+      return Promise.reject(new HttpError(`Please Sign In`, status, data))
     }
     if (errors !== undefined) {
       // I like rejecting here intead of throwing. It seems safer and works
       // fine with react-admin which uses redux-saga. Also,
       // it will be an error in future versions of nodejs according
       // to some warnings I saw
-      console.log('handleError')
-        console.log(errors)
       return Promise.reject(
         new HttpError(_.join('. ', errors[''] || []), status, {
           errors

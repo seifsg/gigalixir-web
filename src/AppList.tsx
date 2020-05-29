@@ -1,9 +1,10 @@
 import compose from 'recompose/compose'
+import { Datagrid, NumberField, TextField } from 'react-admin'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { push as routerPush } from 'react-router-redux'
 import React from 'react'
-import { Datagrid, NumberField, TextField } from 'react-admin'
+
 import AppCreateDialog from './AppCreateDialog'
 import DialogButton, { CloseFunction } from './DialogButton'
 import List from './List'
