@@ -73,6 +73,7 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
   public render() {
     const { handleSubmit, submitting, classes, isLoading } = this.props
     const { complete } = this.state
+    // eslint-disable-next-line react/destructuring-assignment
     const error = this.props.error || this.state.error
     // hacky because the stripe CardElement isn't a regular field
     // and doesn't hook into reduxForm that easily

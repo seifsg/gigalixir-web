@@ -21,28 +21,19 @@ interface Props {
   resource: string
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {}
+type EnhancedProps = WithStyles<typeof styles>
 
 // setting props properly here is hard because 1) there are a ton of props that react-admin injects for us
 // and 2) any props defined here need to be specified below, but we would just be putting dummy values in
 // the real values are injected by redux-form, react-admin, etc. need to find a better way to do this.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 class MaybeEmptyDatagrid extends React.Component<any> {
-  constructor(props: any) {
-    super(props)
-    this.state = { open: false }
-  }
-
-  openCreate() {
-    this.setState({ open: true })
-  }
-
-  createDialog(close: CloseFunction) {
+  private static createDialog(close: CloseFunction) {
     return <AppCreateDialog close={close} />
   }
 
-  render() {
-    const { push, ...sanitizedProps } = this.props
+  public render() {
+    const { ...sanitizedProps } = this.props
     const { loadedOnce, total, ids } = sanitizedProps
 
     // if we use isLoading here instead of loadedOnce, then it basically shows
@@ -82,14 +73,18 @@ class MaybeEmptyDatagrid extends React.Component<any> {
         <Section>
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: 20 }}>No apps yet.</div>
-            <DialogButton label="Create">{this.createDialog}</DialogButton>
+            <DialogButton label="Create">
+              {MaybeEmptyDatagrid.createDialog}
+            </DialogButton>
           </div>
         </Section>
       )
     }
     return (
       <div>
-        <DialogButton label="Create">{this.createDialog}</DialogButton>
+        <DialogButton label="Create">
+          {MaybeEmptyDatagrid.createDialog}
+        </DialogButton>
         <Datagrid elevation={0} rowClick="show" {...sanitizedProps}>
           <TextField label="Name" source="id" sortable={false} />
           <NumberField source="size" sortable={false} />
