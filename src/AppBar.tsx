@@ -17,9 +17,9 @@ import Headroom from './Headroom'
 const styles = (theme: Theme) =>
   createStyles({
     border: {
-      display: "block",
-      margin: "0 25px",
-      borderBottom: "2px solid rgba(0,0,0,0.1)"
+      display: 'block',
+      margin: '0 25px',
+      borderBottom: '2px solid rgba(0,0,0,0.1)'
     },
     toolbar: {
       paddingRight: 24
@@ -54,12 +54,14 @@ const AppBar = ({
   children,
   classes,
   className,
-  // logo,
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  logo,
   logout,
   open,
-  // title,
+  title,
   toggleSidebar,
   userMenu,
+  /* eslint-enable @typescript-eslint/no-unused-vars */
   width,
   ...rest
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,7 +105,7 @@ any) => (
         )}
       </Toolbar>
     </MuiAppBar>
-    <div className={classes.border}></div>
+    <div className={classes.border} />
   </Headroom>
 )
 

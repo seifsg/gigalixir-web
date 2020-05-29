@@ -18,9 +18,10 @@ interface Props {
   children: ReactNode
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface EnhancedProps extends WithStyles<typeof styles> {}
 
-const Field: FunctionComponent<Props & EnhancedProps> = (props) => {
+const Field: FunctionComponent<Props & EnhancedProps> = props => {
   const { classes, label, children } = props
   return (
     <div className={classes.field}>

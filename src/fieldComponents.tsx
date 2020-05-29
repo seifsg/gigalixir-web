@@ -10,6 +10,20 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import { WrappedFieldProps } from 'redux-form'
 import TextField from '@material-ui/core/TextField'
 
+const renderFormHelper = ({
+  touched,
+  error
+}: {
+  touched: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: any
+}) => {
+  if (!(touched && error)) {
+    return <span />
+  }
+  return <FormHelperText>{touched && error}</FormHelperText>
+}
+
 export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   label,
   input,
@@ -57,7 +71,6 @@ export const renderSelect = ({
 
 export const renderRadioGroup = ({
   input,
-  meta: { touched, invalid, error },
   ...custom
 }: {} & WrappedFieldProps) => {
   return (
@@ -65,30 +78,18 @@ export const renderRadioGroup = ({
       {...input}
       {...custom}
       value={input.value}
-      onChange={(event: React.ChangeEvent<{}>, value: string) =>
-        input.onChange(value)}
+      onChange={(event: React.ChangeEvent<{}>, value: string) => {
+        input.onChange(value)
+      }}
     />
   )
 }
 
-const renderFormHelper = ({
-  touched,
-  error
-}: {
-  touched: boolean
-  error: any
-}) => {
-  if (!(touched && error)) {
-  } else {
-    return <FormHelperText>{touched && error}</FormHelperText>
-  }
-}
-
 // TODO: how to not have this *and* renderDialogError?
 export const renderError = ({
-  label,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   input,
-  meta: { touched, invalid, error },
+  meta: { error },
   ...custom
 }: {
   label: string
@@ -103,10 +104,7 @@ export const renderError = ({
   return <span />
 }
 export const renderDialogError = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
+  meta: { error }
 }: {
   label: string
 } & WrappedFieldProps) => {

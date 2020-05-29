@@ -50,7 +50,10 @@ it('rejects csrf error', done => {
       done.fail('The promise should have failed')
     })
     .catch(reason => {
-      expect(reason).toStrictEqual({ data: { errors: 'some-error' }, message: undefined })
+      expect(reason).toStrictEqual({
+        data: { errors: 'some-error' },
+        message: undefined
+      })
       expect(csrfMock).toHaveBeenCalled()
       expect(createSessionMock).not.toHaveBeenCalled()
     })

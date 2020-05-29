@@ -8,12 +8,13 @@ const styles = createStyles({
   }
 })
 
-interface Props {
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface EnhancedProps extends WithStyles<typeof styles> {}
 
-const Fields: FunctionComponent<Props & EnhancedProps> = (props) => {
+const Fields: FunctionComponent<Props & EnhancedProps> = props => {
   const { classes, children } = props
   return <div className={classes.fields}>{children}</div>
 }

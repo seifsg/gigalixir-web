@@ -7,7 +7,7 @@ describe('gets', () => {
     const mock = jest.spyOn(axios, 'get')
     mock.mockResolvedValueOnce({ data: { data: content } })
 
-    const result = get<{ data: { data: string } }>('/foo')
+    const result = get<{ data: string }>('/foo')
     result
       .then((r: { data: { data: string } }) => {
         expect(r.data.data).toStrictEqual(content)

@@ -29,6 +29,7 @@ const handle500 = <T>(params: AxiosError<T>): AxiosPromise<T> => {
     // i tihnk we should change all of api.ts to hide axios and always
     // return HttpError and never axios stuff? but what about success?
     // does it continue to return AxiosResponse?
+    // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject<AxiosResponse<T>>({
       response: {
         data: {

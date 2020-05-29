@@ -9,16 +9,14 @@ interface Props {
   close: CloseFunction
 }
 const Dialog: FunctionComponent<Props> = props => {
-  const {
-    close,
-  } = props
+  const { close } = props
   const onCancel = () => {
     close()
   }
   return (
     <div>
       <DialogContent>
-        <ComingSoon/>
+        <ComingSoon />
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} color="primary">

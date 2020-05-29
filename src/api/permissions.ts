@@ -1,6 +1,6 @@
+import { HttpError } from 'ra-core'
 import * as api from './api'
 import { extractAllErrors } from '../errorSagas'
-import { HttpError } from 'ra-core'
 
 type Email = string
 interface Response {
@@ -41,5 +41,11 @@ export const del = (id: string, email: string): Promise<{ data: {} }> =>
     .catch(error => {
       // fill in the error message so it shows up as a notification
       // we don't use the error body for these
-      return Promise.reject(new HttpError(extractAllErrors(error.body.errors), error.status, error.body))
+      return Promise.reject(
+        new HttpError(
+          extractAllErrors(error.body.errors),
+          error.status,
+          error.body
+        )
+      )
     })

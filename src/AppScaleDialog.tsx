@@ -84,7 +84,7 @@ const AppScale: FunctionComponent<ScaleProps & EnhancedScaleProps> = props => {
     const newApp = {
       ...app,
       size: size ? parseFloat(size) : app.size,
-      replicas: replicas ? parseInt(replicas) : app.replicas
+      replicas: replicas ? parseInt(replicas, 10) : app.replicas
     }
     return new Promise((resolve, reject) => {
       const failureCallback: FailureCallback = ({ payload: { errors } }) => {

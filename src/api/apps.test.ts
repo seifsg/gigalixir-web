@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { HttpError } from 'ra-core'
-import { list, create } from './apps'
+import { create, list } from './apps'
 
 describe('list', (): void => {
   it('fetches ', (done): void => {
@@ -55,7 +54,7 @@ describe('create', (): void => {
       response: { status: 422, data: { errors } }
     })
 
-    const result = create('fake-name', 'fake-cloud', 'fake-region')
+    create('fake-name', 'fake-cloud', 'fake-region')
       .then(() => {
         done.fail('The promise should have failed')
       })
@@ -68,6 +67,7 @@ describe('create', (): void => {
         try {
           expect(reason.status).toBe(422)
           expect(reason.body).toStrictEqual({
+            // eslint-disable-next-line @typescript-eslint/camelcase
             errors: { unique_name: ['is bad'], cloud: ['is also bad'] }
           })
         } catch (e) {

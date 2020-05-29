@@ -21,10 +21,7 @@ import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
 import { SuccessCallback, FailureCallback } from './callbacks'
 import { Cloud, Region } from './api/apps'
-import {
-  renderSelect,
-  renderTextField,
-} from './fieldComponents'
+import { renderSelect, renderTextField } from './fieldComponents'
 import SubmitButton from './SubmitButton'
 
 const renderNameField = renderTextField({ type: 'input' })
@@ -66,7 +63,15 @@ interface EnhancedCreateProps
 }
 const AppCreate: FunctionComponent<CreateProps &
   EnhancedCreateProps> = props => {
-  const { error, submitting, pristine, invalid, close, create, handleSubmit } = props
+  const {
+    error,
+    submitting,
+    pristine,
+    invalid,
+    close,
+    create,
+    handleSubmit
+  } = props
   const onCancel = () => {
     close()
   }
@@ -184,7 +189,7 @@ const EnhancedAppCreate = compose<
 >(
   withStyles(styles),
   connect(
-    (state, ownProps: CreateProps) => ({
+    () => ({
       initialValues: {
         cloudRegion: 'v2018-us-central1'
       }

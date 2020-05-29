@@ -19,7 +19,7 @@ export interface Invoice {
   pdf: Url
 }
 
-export const pdfs = (): Promise<{ data: Invoice[], total: number }> => {
+export const pdfs = (): Promise<{ data: Invoice[]; total: number }> => {
   return api
     .get<{ data: Response[] }>(`/frontend/api/invoices/pdfs`)
     .then(response => {

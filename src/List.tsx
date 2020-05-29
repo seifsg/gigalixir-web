@@ -1,207 +1,216 @@
-import React, { Children, cloneElement } from 'react';
-import PropTypes from 'prop-types';
-import Card from '@material-ui/core/Card';
-import classnames from 'classnames';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import { ListController, getListControllerProps } from 'ra-core';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { Children, cloneElement } from 'react'
+import Card from '@material-ui/core/Card'
+import classnames from 'classnames'
+import { withStyles, createStyles } from '@material-ui/core/styles'
+import { ListController, getListControllerProps } from 'ra-core'
 
-import { Title, defaultTheme, BulkDeleteButton, Pagination, BulkActionsToolbar, ListActions, ListToolbar } from 'react-admin';
+import {
+  Title,
+  defaultTheme,
+  BulkDeleteButton,
+  Pagination,
+  BulkActionsToolbar,
+  ListActions,
+  ListToolbar
+} from 'react-admin'
 
-const DefaultBulkActionButtons = (props: any) => <BulkDeleteButton {...props} />;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DefaultBulkActionButtons = (props: any) => <BulkDeleteButton {...props} />
 
 export const styles = createStyles({
-    root: {
-        display: 'flex',
-    },
-    card: {
-        position: 'relative',
-        flex: '1 1 auto',
-    },
-    actions: {
-        zIndex: 2,
-        display: 'flex',
-        justifyContent: 'flex-end',
-        flexWrap: 'wrap',
-    },
-    header: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignSelf: 'flex-start',
-    },
-    noResults: { padding: 20 },
-});
+  root: {
+    display: 'flex'
+  },
+  card: {
+    position: 'relative',
+    flex: '1 1 auto'
+  },
+  actions: {
+    zIndex: 2,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-start'
+  },
+  noResults: { padding: 20 }
+})
 
 const sanitizeRestProps = ({
-    actions,
-    basePath,
-    bulkActions,
-    changeListParams,
-    children,
-    classes,
-    className,
-    crudGetList,
-    currentSort,
-    data,
-    defaultTitle,
-    displayedFilters,
-    exporter,
-    filter,
-    filterDefaultValues,
-    filters,
-    filterValues,
-    hasCreate,
-    hasEdit,
-    hasList,
-    hasShow,
-    hideFilter,
-    history,
-    ids,
-    isLoading,
-    loadedOnce,
-    locale,
-    location,
-    match,
-    onSelect,
-    onToggleItem,
-    onUnselectItems,
-    options,
-    page,
-    pagination,
-    params,
-    permissions,
-    perPage,
-    push,
-    query,
-    refresh,
-    resource,
-    selectedIds,
-    setFilters,
-    setPage,
-    setPerPage,
-    setSelectedIds,
-    setSort,
-    showFilter,
-    sort,
-    theme,
-    title,
-    toggleItem,
-    total,
-    translate,
-    version,
-    ...rest
-}: any) => rest;
+  actions,
+  basePath,
+  bulkActions,
+  changeListParams,
+  children,
+  classes,
+  className,
+  crudGetList,
+  currentSort,
+  data,
+  defaultTitle,
+  displayedFilters,
+  exporter,
+  filter,
+  filterDefaultValues,
+  filters,
+  filterValues,
+  hasCreate,
+  hasEdit,
+  hasList,
+  hasShow,
+  hideFilter,
+  history,
+  ids,
+  isLoading,
+  loadedOnce,
+  locale,
+  location,
+  match,
+  onSelect,
+  onToggleItem,
+  onUnselectItems,
+  options,
+  page,
+  pagination,
+  params,
+  permissions,
+  perPage,
+  push,
+  query,
+  refresh,
+  resource,
+  selectedIds,
+  setFilters,
+  setPage,
+  setPerPage,
+  setSelectedIds,
+  setSort,
+  showFilter,
+  sort,
+  theme,
+  title,
+  toggleItem,
+  total,
+  translate,
+  version,
+  ...rest
+}: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+any) => rest
 
 export const ListView = withStyles(styles)(
-    ({
-        actions,
-        aside,
-        filter,
-        filters,
-        bulkActions,
-        bulkActionButtons,
-        pagination,
-        children,
-        className,
-        classes,
-        exporter,
-        title,
-        ...rest
-    }: any) => {
-        const { defaultTitle, version } = rest;
-        const controllerProps = getListControllerProps(rest);
-        return (
-            <div
-                className={classnames('list-page', classes.root, className)}
-                {...sanitizeRestProps(rest)}
-            >
-                <Title title={title} defaultTitle={defaultTitle} />
-                <Card elevation={0} className={classes.card}>
-                    {bulkActions !== false &&
-                        bulkActionButtons !== false &&
-                        bulkActionButtons &&
-                        !bulkActions && (
-                            <BulkActionsToolbar {...controllerProps}>
-                                {bulkActionButtons}
-                            </BulkActionsToolbar>
-                        )}
-                    {(filters || actions) && (
-                        <ListToolbar
-                            filters={filters}
-                            {...controllerProps}
-                            actions={actions}
-                            bulkActions={bulkActions}
-                            exporter={exporter}
-                            permanentFilter={filter}
-                        />
-                    )}
-                    <div key={version}>
-                        {children &&
-                            cloneElement(Children.only(children), {
-                                ...controllerProps,
-                                hasBulkActions:
-                                    bulkActions !== false &&
-                                    bulkActionButtons !== false,
-                            })}
-                        {pagination &&
-                            cloneElement(pagination, controllerProps)}
-                    </div>
-                </Card>
-                {aside && cloneElement(aside, controllerProps)}
-            </div>
-        );
-    }
-);
+  ({
+    actions,
+    aside,
+    filter,
+    filters,
+    bulkActions,
+    bulkActionButtons,
+    pagination,
+    children,
+    className,
+    classes,
+    exporter,
+    title,
+    ...rest
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
+    const { defaultTitle, version } = rest
+    const controllerProps = getListControllerProps(rest)
+    return (
+      <div
+        className={classnames('list-page', classes.root, className)}
+        {...sanitizeRestProps(rest)}
+      >
+        <Title title={title} defaultTitle={defaultTitle} />
+        <Card elevation={0} className={classes.card}>
+          {bulkActions !== false &&
+            bulkActionButtons !== false &&
+            bulkActionButtons &&
+            !bulkActions && (
+              <BulkActionsToolbar {...controllerProps}>
+                {bulkActionButtons}
+              </BulkActionsToolbar>
+            )}
+          {(filters || actions) && (
+            <ListToolbar
+              filters={filters}
+              {...controllerProps}
+              actions={actions}
+              bulkActions={bulkActions}
+              exporter={exporter}
+              permanentFilter={filter}
+            />
+          )}
+          <div key={version}>
+            {children &&
+              cloneElement(Children.only(children), {
+                ...controllerProps,
+                hasBulkActions:
+                  bulkActions !== false && bulkActionButtons !== false
+              })}
+            {pagination && cloneElement(pagination, controllerProps)}
+          </div>
+        </Card>
+        {aside && cloneElement(aside, controllerProps)}
+      </div>
+    )
+  }
+)
 
-ListView.propTypes = {
-    actions: PropTypes.element,
-    aside: PropTypes.node,
-    basePath: PropTypes.string,
-    bulkActions: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-    bulkActionButtons: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-    children: PropTypes.element,
-    className: PropTypes.string,
-    classes: PropTypes.object,
-    currentSort: PropTypes.shape({
-        field: PropTypes.string,
-        order: PropTypes.string,
-    }),
-    data: PropTypes.object,
-    defaultTitle: PropTypes.string,
-    displayedFilters: PropTypes.object,
-    exporter: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-    filterDefaultValues: PropTypes.object,
-    filters: PropTypes.element,
-    filterValues: PropTypes.object,
-    hasCreate: PropTypes.bool,
-    hideFilter: PropTypes.func,
-    ids: PropTypes.array,
-    isLoading: PropTypes.bool,
-    onSelect: PropTypes.func,
-    onToggleItem: PropTypes.func,
-    onUnselectItems: PropTypes.func,
-    page: PropTypes.number,
-    pagination: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-    perPage: PropTypes.number,
-    refresh: PropTypes.func,
-    resource: PropTypes.string,
-    selectedIds: PropTypes.array,
-    setFilters: PropTypes.func,
-    setPage: PropTypes.func,
-    setPerPage: PropTypes.func,
-    setSort: PropTypes.func,
-    showFilter: PropTypes.func,
-    title: PropTypes.any,
-    total: PropTypes.number,
-    translate: PropTypes.func,
-    version: PropTypes.number,
-};
+// ListView.propTypes = {
+//   actions: PropTypes.element,
+//   aside: PropTypes.node,
+//   basePath: PropTypes.string,
+//   bulkActions: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
+//   bulkActionButtons: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
+//   children: PropTypes.element,
+//   className: PropTypes.string,
+//   classes: PropTypes.object,
+//   currentSort: PropTypes.shape({
+//     field: PropTypes.string,
+//     order: PropTypes.string
+//   }),
+//   data: PropTypes.object,
+//   defaultTitle: PropTypes.string,
+//   displayedFilters: PropTypes.object,
+//   exporter: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+//   filterDefaultValues: PropTypes.object,
+//   filters: PropTypes.element,
+//   filterValues: PropTypes.object,
+//   hasCreate: PropTypes.bool,
+//   hideFilter: PropTypes.func,
+//   ids: PropTypes.array,
+//   isLoading: PropTypes.bool,
+//   onSelect: PropTypes.func,
+//   onToggleItem: PropTypes.func,
+//   onUnselectItems: PropTypes.func,
+//   page: PropTypes.number,
+//   pagination: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
+//   perPage: PropTypes.number,
+//   refresh: PropTypes.func,
+//   resource: PropTypes.string,
+//   selectedIds: PropTypes.array,
+//   setFilters: PropTypes.func,
+//   setPage: PropTypes.func,
+//   setPerPage: PropTypes.func,
+//   setSort: PropTypes.func,
+//   showFilter: PropTypes.func,
+//   title: PropTypes.any,
+//   total: PropTypes.number,
+//   translate: PropTypes.func,
+//   version: PropTypes.number
+// }
 
 ListView.defaultProps = {
-    actions: <ListActions />,
-    classes: {},
-    bulkActionButtons: <DefaultBulkActionButtons />,
-    pagination: <Pagination />,
-};
+  actions: <ListActions />,
+  classes: {},
+  bulkActionButtons: <DefaultBulkActionButtons />,
+  pagination: <Pagination />
+}
 
 /**
  * List page component
@@ -244,11 +253,12 @@ ListView.defaultProps = {
  *         </List>
  *     );
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const List = (props: any) => (
-    <ListController {...props}>
-        {controllerProps => <ListView {...props} {...controllerProps} />}
-    </ListController>
-);
+  <ListController {...props}>
+    {controllerProps => <ListView {...props} {...controllerProps} />}
+  </ListController>
+)
 
 // List.propTypes = {
 //     // the props you can change
@@ -283,10 +293,9 @@ const List = (props: any) => (
 // };
 
 List.defaultProps = {
-    filter: {},
-    perPage: 10,
-    theme: defaultTheme,
-};
+  filter: {},
+  perPage: 10,
+  theme: defaultTheme
+}
 
-export default List;
-
+export default List

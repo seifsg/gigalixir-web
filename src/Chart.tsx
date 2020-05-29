@@ -6,7 +6,9 @@ import { Line } from 'react-chartjs-2'
 import { value } from './api/stats'
 
 import Section from './Section'
+
 const Chartjs = require('react-chartjs-2').Chart
+
 Chartjs.plugins.register(zoom)
 
 const styles = createStyles({

@@ -71,10 +71,12 @@ const action = (values: {}, dispatch: Function) => {
         false,
         resolve,
         ({ payload: { errors } }) => {
-          reject(new SubmissionError({ 
-            _error: extractError(errors, ''),
-            email: extractError(errors, 'email') 
-          }))
+          reject(
+            new SubmissionError({
+              _error: extractError(errors, ''),
+              email: extractError(errors, 'email')
+            })
+          )
         }
       )
     )
@@ -93,14 +95,15 @@ const Form: FunctionComponent<Props & EnhancedProps> = ({
   //   return <div>Confirmation email resent. Please check your email.</div>
   // } else {
   const params = qs.parse(location.search)
+  let error_ = error
   if (!error && typeof params.msg === 'string') {
-    error = params.msg
+    error_ = params.msg
   }
   return (
     <div>
       <form onSubmit={handleSubmit(action)}>
         <div className={classes.form}>
-          {error && <FormHelperText error>{error}</FormHelperText>}
+          {error && <FormHelperText error>{error_}</FormHelperText>}
           <div className={classes.input}>
             <Field
               id="email"
