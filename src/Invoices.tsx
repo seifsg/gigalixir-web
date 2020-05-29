@@ -51,6 +51,9 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
         if (error) {
           return <ErrorComponent>{error.message}</ErrorComponent>
         }
+        if (data.length === 0) {
+          return <div>No invoices yet</div>
+        }
         return (
           <ul className={classes.table}>
             <li className={classnames(classes.row, classes.header)}>
