@@ -88,8 +88,11 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
         {error && <FormHelperText error>{error}</FormHelperText>}
         <form onSubmit={handleSubmit(this.submit)} style={{ marginTop: 10 }}>
           <SubmitButton
+            // we let CardElement tell us when the button is disabled
             invalid={!complete}
             pristine={false}
+            // we add isLoading because submitting=true is when we call stripe
+            // isLoading=true is when we hit the api server
             submitting={submitting || isLoading}
             variant="raised"
             label="Upgrade"

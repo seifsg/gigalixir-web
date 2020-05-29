@@ -99,9 +99,12 @@ class UpdatePaymentMethodForm extends Component<Props & EnhancedProps, State> {
         {error && <FormHelperText error>{error}</FormHelperText>}
         <form onSubmit={handleSubmit(this.submit)} style={{ marginTop: 10 }}>
           <SubmitButton
+            // let CardElement tell us when to disable the button
             invalid={!complete}
-            pristine={false}
-            submitting={submitting || isLoading}
+            pristine={isLoading}
+            // isLoading here might be when fetching the payment method which looks weird
+            // for the button to be loading on page load
+            submitting={submitting}
             variant="raised"
             label="Update"
           />

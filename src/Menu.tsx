@@ -3,16 +3,12 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/PowerSettingsNew'
 import DefaultIcon from '@material-ui/icons/ViewList'
 import classnames from 'classnames'
-import inflection from 'inflection'
-import {
-  getResources,
-  translate as translateRaCore,
-  userLogout as userLogoutAction
-} from 'ra-core'
+import { getResources, userLogout as userLogoutAction } from 'ra-core'
 import React from 'react'
 import { MenuItemLink } from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
+import _ from 'lodash/fp'
 
 const styles = createStyles({
   main: {
@@ -23,28 +19,12 @@ const styles = createStyles({
   }
 })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const translatedResourceName = (resource: any, translate_: any) =>
-  translate_(`resources.${resource.name}.name`, {
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    smart_count: 2,
-    _:
-      resource.options && resource.options.label
-        ? translate_(resource.options.label, {
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            smart_count: 2,
-            _: resource.options.label
-          })
-        : inflection.humanize(inflection.pluralize(resource.name))
-  })
-
 const Menu = ({
   classes,
   className,
   dense,
   onMenuClick,
   resources,
-  translate,
   userLogout,
   ...rest
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,7 +38,7 @@ any) => (
         <MenuItemLink
           key={resource.name}
           to={`/${resource.name}`}
-          primaryText={translatedResourceName(resource, translate)}
+          primaryText={_.capitalize(resource.name)}
           leftIcon={resource.icon ? <resource.icon /> : <DefaultIcon />}
           onClick={onMenuClick}
           dense={dense}
@@ -102,7 +82,6 @@ Menu.defaultProps = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapStateToProps = (state: any) => ({
-  translate: translateRaCore,
   open: state.admin.ui.sidebarOpen,
   resources: getResources(state),
   pathname: state.router.location.pathname // used to force redraw on navigation
