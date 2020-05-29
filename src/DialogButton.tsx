@@ -13,19 +13,19 @@ interface Props {
   children: (close: CloseFunction) => ReactNode
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {}
+type EnhancedProps = WithStyles<typeof styles>
 
 interface State {
   open: boolean
 }
 
 class DialogButton extends React.Component<Props & EnhancedProps, State> {
-  constructor(props: Props & EnhancedProps) {
+  public constructor(props: Props & EnhancedProps) {
     super(props)
     this.state = { open: false }
   }
 
-  render() {
+  public render() {
     const toggleDrawer = (open: boolean) => (
       event: React.KeyboardEvent | React.MouseEvent
     ) => {

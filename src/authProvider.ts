@@ -43,7 +43,7 @@ function authProvider<T extends AuthActions>(
   if (isLogin(params, authType)) {
     // called when the user attempts to log in
     const { email, password } = params
-    result = login(email, password)  
+    result = login(email, password)
   } else if (authType === AUTH_LOGOUT) {
     // called when the user clicks on the logout button
     result = logout()

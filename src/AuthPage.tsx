@@ -38,8 +38,9 @@ interface Props {
   bottomLinks?: ReactNode
 }
 
-interface EnhancedProps extends WithStyles<typeof styles> {}
-export const AuthPage: FunctionComponent<Props & EnhancedProps> = props => {
+type EnhancedProps = WithStyles<typeof styles>
+
+const AuthPage: FunctionComponent<Props & EnhancedProps> = props => {
   const { bottomLinks, children, classes } = props
   return (
     <div className={classnames(classes.main)}>
@@ -50,7 +51,7 @@ export const AuthPage: FunctionComponent<Props & EnhancedProps> = props => {
         {children}
       </Card>
       {bottomLinks}
-      <Footer/>
+      <Footer />
       <Notification />
     </div>
   )
