@@ -18,10 +18,19 @@ export const get = (id: string): Promise<{ data: Permissions }> => {
     .then(response => {
       return {
         data: {
-          id: id,
+          id,
           owner: response.data.data.owner,
-          collaborators: response.data.data.collaborators,
+          collaborators: response.data.data.collaborators
         }
       }
     })
 }
+
+export const del = (id: string, email: string): Promise<{ data: {} }> =>
+  api
+    .del<{ data: {} }>(`/frontend/api/apps/${id}/permissions?email=${email}`)
+    .then(response => {
+      return {
+        data: response.data
+      }
+    })

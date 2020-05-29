@@ -66,6 +66,8 @@ const App = () => (
         Still don't 100% understand, but this fixes it.
       */}
       <Resource name="payment_methods" />
+      <Resource name="invoices" />
+      <Resource name="permissions" />
     </Admin>
   </BrowserRouter>
 )

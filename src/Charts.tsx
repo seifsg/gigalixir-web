@@ -51,7 +51,7 @@ const toMegabytes = (data: ChartPoint[]): ChartPoint[] =>
     }
   )
 
-export const Charts: React.FunctionComponent<ChartsProps> = (
+const Charts: React.FunctionComponent<ChartsProps> = (
   props
 ): React.ReactElement => {
   const { classes, id } = props

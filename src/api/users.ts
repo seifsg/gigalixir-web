@@ -31,11 +31,6 @@ export const get = (): Promise<{ data: User }> => {
   return api.get<{ data: Response }>(`/frontend/api/users`).then((response): {
     data: User
   } => {
-    // logger.debug(JSON.stringify(response))
-    // debug = {
-    //   data: { data: { tier: 'STANDARD', email: 'fake@email.com', credit_cents: 0 } },
-    // }
-
     return {
       data: {
         id: 'ignored',

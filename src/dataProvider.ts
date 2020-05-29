@@ -28,6 +28,11 @@ interface GetOneParams {
   id: string
 }
 
+interface DeletePermissionParams {
+  id: string
+  email: string
+}
+
 interface UpdateConfirmationParams {
   email: string
 }
@@ -54,6 +59,7 @@ type DataProviderParams =
   | CreateParams<CreateAppParams | CreateUserParams | CreatePasswordParams>
   | GetListParams
   | GetOneParams
+  | DeletePermissionParams
   | UpdateParams<
       | UpdateAppParams
       | UpdatePaymentMethodParams
@@ -88,6 +94,10 @@ const isGetOne = (
   params: DataProviderParams,
   type: string
 ): params is GetOneParams => type === 'GET_ONE'
+const isDeleteOne = (
+  params: DataProviderParams,
+  type: string
+): params is DeletePermissionParams => type === 'DELETE'
 const isUpdatePassword = (
   params: DataProviderParams,
   resource: string,
@@ -122,7 +132,7 @@ const isUpdateConfirmation = (
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
 // type DataProviderType = typeof a[number]
-type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE'
+type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE' | 'DELETE'
 
 // function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams
 //     : T extends 'GET_LIST' ? GetListParams
@@ -172,6 +182,9 @@ const dataProvider = <T extends DataProviderType>(
   if (isCreateUser(params, resource, type)) {
     const { email, password } = params.data
     return users.create(email, password)
+  }
+  if (isDeleteOne(params, type)) {
+      return permissions.del(params.id, params.email)
   }
   if (isGetOne(params, type)) {
     if (resource === 'permissions') {
