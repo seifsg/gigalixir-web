@@ -1,5 +1,3 @@
-import { HttpError } from 'ra-core'
-import { AxiosError } from 'axios'
 import * as api from './api'
 
 type tier = 'STANDARD' | 'FREE'
@@ -16,17 +14,7 @@ export interface User {
   email: string
   creditCents: number
 }
-const handleAxiosError = (reason: AxiosError<api.ErrorResponse>) => {
-  // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
-  if (reason.response) {
-    const { errors } = reason.response.data
-    throw new HttpError('', reason.response.status, {
-      errors
-    })
-  }
 
-  throw new HttpError('Unknown Axios Error', 500, reason.toJSON())
-}
 export const get = (): Promise<{ data: User }> => {
   return api.get<{ data: Response }>(`/frontend/api/users`).then((response): {
     data: User
@@ -55,7 +43,6 @@ export const create = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(handleAxiosError)
 }
 
 export const resendConfirmation = (
@@ -68,7 +55,6 @@ export const resendConfirmation = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(handleAxiosError)
 }
 
 export const resetPassword = (
@@ -81,7 +67,6 @@ export const resetPassword = (
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
-    .catch(handleAxiosError)
 }
 
 export const setPassword = (
@@ -96,7 +81,6 @@ export const setPassword = (
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
-    .catch(handleAxiosError)
 }
 
 export const upgrade = (token: string): Promise<{}> => {
@@ -108,5 +92,4 @@ export const upgrade = (token: string): Promise<{}> => {
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
-    .catch(handleAxiosError)
 }

@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosError, AxiosPromise } from 'axios'
+import _ from 'lodash/fp'
 import { HttpError } from 'ra-core'
 
 const host = process.env.REACT_APP_API_HOST
@@ -20,6 +21,13 @@ const getCsrf = async (): Promise<string> => {
 const handle500 = <T>(params: AxiosError<T>): AxiosPromise<T> => {
   if (params.response && params.response.status === 500) {
     // probably no extra information here
+    // this is an AxiosError instead of an HttpError to preserve
+    // the axios return type that way existing code does not need
+    // to be changed.
+    //
+    // i tihnk we should change all of api.ts to hide axios and always
+    // return HttpError and never axios stuff? but what about success?
+    // does it continue to return AxiosResponse?
     return Promise.reject<AxiosResponse<T>>({
       response: {
         data: {
@@ -38,13 +46,37 @@ const handle500 = <T>(params: AxiosError<T>): AxiosPromise<T> => {
   return Promise.reject<AxiosResponse<T>>(params)
 }
 
-const handleError = (reason: {
-  response: { data: ErrorResponse; status: number }
-}) => {
-  const { errors } = reason.response.data
-  throw new HttpError('', reason.response.status, {
-    errors
-  })
+const handleError = (reason: AxiosError<ErrorResponse>) => {
+  // {"errors":{"password":["should be at least 4 character(s)"],"email":["has invalid format"]}}
+  if (reason.response) {
+    const { data, status } = reason.response
+    const { errors } = data
+    if (status === 401) {
+      return Promise.reject(
+        new HttpError(`Unknown Axios Error ${status}`, status, data)
+      )
+    }
+    if (errors !== undefined) {
+      // I like rejecting here intead of throwing. It seems safer and works
+      // fine with react-admin which uses redux-saga. Also,
+      // it will be an error in future versions of nodejs according
+      // to some warnings I saw
+      console.log('handleError')
+        console.log(errors)
+      return Promise.reject(
+        new HttpError(_.join('. ', errors[''] || []), status, {
+          errors
+        })
+      )
+    }
+    return Promise.reject(
+      new HttpError(`Unknown Axios Error ${status}`, status, data)
+    )
+  }
+
+  return Promise.reject(
+    new HttpError('Unknown Axios Error', 500, reason.toJSON())
+  )
 }
 
 export const get = <T>(path: string): AxiosPromise<T> =>
@@ -73,6 +105,7 @@ export const post = <T>(
         return handle500(params)
       }
     )
+    .catch(handleError)
 
 export const put = <T>(path: string, data: object): AxiosPromise<T> =>
   getCsrf()
@@ -87,6 +120,7 @@ export const put = <T>(path: string, data: object): AxiosPromise<T> =>
         return handle500(params)
       }
     )
+    .catch(handleError)
 
 export const del = <T>(path: string): AxiosPromise<T> =>
   getCsrf()

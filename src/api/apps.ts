@@ -1,5 +1,3 @@
-import _ from 'lodash/fp'
-import { HttpError } from 'ra-core'
 import * as api from './api'
 
 export interface App {
@@ -106,24 +104,6 @@ export const create = (
         }
       }
     })
-    .catch(
-      (reason: {
-        response: { data: api.ErrorResponse; status: number }
-      }) => {
-        // duplicated, refactor?
-        const { errors } = reason.response.data
-
-          // I like rejecting here intead of throwing. It seems safer and works
-          // fine with react-admin which uses redux-saga. Also,
-          // it will be an error in future versions of nodejs according
-          // to some warnings I saw
-        return Promise.reject(
-          new HttpError(_.join('. ', errors['']), reason.response.status, {
-            errors
-          })
-        )
-      }
-    )
 }
 /* eslint-enable @typescript-eslint/camelcase */
 
@@ -148,12 +128,4 @@ export const scale = (
       const newApp = response.data.data
       return { data: { replicas: newApp.replicas, size: newApp.size } }
     })
-    .catch(
-      (reason: { response: { data: api.ErrorResponse; status: number } }) => {
-        const { errors } = reason.response.data
-        throw new HttpError(_.join('. ', errors['']), reason.response.status, {
-          errors
-        })
-      }
-    )
 }

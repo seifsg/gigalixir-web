@@ -51,6 +51,8 @@ function authProvider<T extends AuthActions>(
     // notification here, but we can change the msg to be better than "401". i think we probably need
     // to override the Notification element at some point since this is getting really messy.
     result = login(email, password).catch(e => {
+        console.log('login error')
+        console.log(e)
       e.message = undefined
       return Promise.reject(e)
     })
