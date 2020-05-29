@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosError, AxiosPromise } from 'axios'
+import { HttpError } from 'ra-core'
 
 const host = process.env.REACT_APP_API_HOST
 
@@ -38,11 +39,19 @@ const handle500 = <T>(params: AxiosError<T>): AxiosPromise<T> => {
 }
 
 export const get = <T>(path: string): AxiosPromise<T> =>
-  axios.get(host + path, { withCredentials: true }).catch(
-    (params: AxiosError<T>): AxiosPromise<T> => {
-      return handle500(params)
-    }
-  )
+  axios
+    .get(host + path, { withCredentials: true })
+    .catch(
+      (params: AxiosError<T>): AxiosPromise<T> => {
+        return handle500(params)
+      }
+    )
+    .catch((reason: { response: { data: ErrorResponse; status: number } }) => {
+      const { errors } = reason.response.data
+      throw new HttpError(reason.response.status, {
+        errors
+      })
+    })
 
 export const post = <T>(
   path: string,

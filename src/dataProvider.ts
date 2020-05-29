@@ -1,4 +1,5 @@
 import * as apps from './api/apps'
+import * as permissions from './api/permissions'
 import getStats from './api/stats'
 import * as users from './api/users'
 import * as paymentMethods from './api/payment_methods'
@@ -131,6 +132,7 @@ const dataProvider = <T extends DataProviderType>(
   type: T,
   resource:
     | 'apps'
+    | 'permissions'
     | 'invoices'
     | 'stats'
     | 'profile'
@@ -172,6 +174,9 @@ const dataProvider = <T extends DataProviderType>(
     return users.create(email, password)
   }
   if (isGetOne(params, type)) {
+    if (resource === 'permissions') {
+      return permissions.get(params.id)
+    }
     if (resource === 'apps') {
       return apps.get(params.id)
     }

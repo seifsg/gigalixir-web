@@ -22,6 +22,8 @@ import DialogButton from './DialogButton'
 import Loading from './Loading'
 import ComingSoon from './ComingSoon'
 import ComingSoonDialog from './ComingSoonDialog'
+import Permissions from './Permissions'
+
 const styles = {}
 
 interface ShowProps {
@@ -351,7 +353,7 @@ class AppShow extends React.Component<AppShowProps> {
         ) => {
           return (
             <Section>
-              <ComingSoon />
+              <Permissions id={app.id} />
             </Section>
           )
         }

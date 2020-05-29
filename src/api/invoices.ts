@@ -1,5 +1,4 @@
 import _ from 'lodash/fp'
-import { HttpError } from 'ra-core'
 import * as api from './api'
 
 interface Response {
@@ -37,12 +36,4 @@ export const pdfs = (): Promise<{ data: Invoice[], total: number }> => {
         }, response.data.data)
       }
     })
-    .catch(
-      (reason: { response: { data: api.ErrorResponse; status: number } }) => {
-        const { errors } = reason.response.data
-        throw new HttpError(reason.response.status, {
-          errors
-        })
-      }
-    )
 }
