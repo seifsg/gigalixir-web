@@ -1,5 +1,4 @@
 import { withStyles } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import React, { FunctionComponent } from 'react'
 import { ShowController } from 'react-admin'
