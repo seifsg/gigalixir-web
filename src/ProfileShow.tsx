@@ -20,6 +20,7 @@ import Loading from './Loading'
 import ComingSoon from './ComingSoon'
 import Invoices from './Invoices'
 import { formatMoney } from './formatters'
+import ApiKeyTab from './ApiKeyTab'
 
 const styles = createStyles({})
 
@@ -215,7 +216,7 @@ EnhancedProfileShow.defaultProps = {
       element: () => {
         return (
           <Section>
-            <ComingSoon />
+            <ApiKeyTab />
           </Section>
         )
       }
