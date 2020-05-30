@@ -23,6 +23,10 @@ interface CreateAppParams {
 interface CreatePasswordParams {
   email: string
 }
+interface CreatePermissionParams {
+  id: string // app id
+  email: string
+}
 
 interface GetOneParams {
   id: string
@@ -56,7 +60,12 @@ interface UpdateParams<T> {
   previousData: T
 }
 type DataProviderParams =
-  | CreateParams<CreateAppParams | CreateUserParams | CreatePasswordParams>
+  | CreateParams<
+      | CreateAppParams
+      | CreateUserParams
+      | CreatePasswordParams
+      | CreatePermissionParams
+    >
   | GetListParams
   | GetOneParams
   | DeletePermissionParams
@@ -90,6 +99,12 @@ const isCreatePassword = (
   type: string
 ): params is CreateParams<CreatePasswordParams> =>
   type === 'CREATE' && resource === 'password'
+const isCreatePermission = (
+  params: DataProviderParams,
+  resource: string,
+  type: string
+): params is CreateParams<CreatePermissionParams> =>
+  type === 'CREATE' && resource === 'permissions'
 const isGetOne = (
   params: DataProviderParams,
   type: string
@@ -176,6 +191,10 @@ const dataProvider = <T extends DataProviderType>(
   if (isCreateUser(params, resource, type)) {
     const { email, password } = params.data
     return users.create(email, password)
+  }
+  if (isCreatePermission(params, resource, type)) {
+    const { email, id } = params.data
+    return permissions.create(id, email)
   }
   if (isDeleteOne(params, type)) {
     return permissions.del(params.id, params.email)

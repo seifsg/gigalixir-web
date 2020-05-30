@@ -14,16 +14,17 @@ import _ from 'lodash/fp'
 import { Permissions } from './api/permissions'
 import Loading from './Loading'
 import ErrorComponent from './ErrorComponent'
+import DialogButton, { CloseFunction } from './DialogButton'
+import CollaboratorAddDialog from './CollaboratorAddDialog'
 
 // TODO: duplicated in Invoices.tsx
 const styles = ({ spacing }: Theme) =>
   createStyles({
     table: {
       padding: 0,
-      margin: 0
+      margin: '20px 0 0 0'
     },
     row: {
-      height: 36,
       display: 'flex',
       padding: 12,
       fontSize: '0.875rem',
@@ -90,53 +91,63 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
           }
         }
         return (
-          <ul className={classes.table}>
-            <li className={classnames(classes.row, classes.header)}>
-              <div>Email</div>
-              <div>Role</div>
-              <div />
-            </li>
-            <li key={data.owner} className={classes.row}>
-              <div>{data.owner}</div>
-              <div>Owner</div>
-              <div />
-            </li>
-            {_.map(email => {
-              return (
-                <li key={email} className={classes.row}>
-                  <div>{email}</div>
-                  <div>Collaborator</div>
-                  <div>
-                    <Mutation
-                      type="DELETE"
-                      resource="permissions"
-                      payload={{ id, email }}
-                      options={delOptions}
-                    >
-                      {(del: () => void, state: { loading: boolean }) => {
-                        return (
-                          <Button
-                            color="primary"
-                            variant="raised"
-                            onClick={del}
-                          >
-                            {state.loading && (
-                              <CircularProgress
-                                className={classes.icon}
-                                size={18}
-                                thickness={2}
-                              />
-                            )}
-                            Delete
-                          </Button>
-                        )
-                      }}
-                    </Mutation>
-                  </div>
-                </li>
-              )
-            }, data.collaborators)}
-          </ul>
+          <div>
+            <DialogButton label="Add Collaborator">
+              {(close: CloseFunction) => {
+                return <CollaboratorAddDialog id={id} close={close} />
+              }}
+            </DialogButton>
+
+            <ul className={classes.table}>
+              <li className={classnames(classes.row, classes.header)}>
+                <div>Email</div>
+                <div>Role</div>
+                <div />
+              </li>
+              <li key={data.owner} className={classes.row}>
+                <div>{data.owner}</div>
+                <div>Owner</div>
+                <div />
+              </li>
+              {_.map(email => {
+                return (
+                  <li key={email} className={classes.row}>
+                    <div>{email}</div>
+                    <div>Collaborator</div>
+                    <div>
+                      <Mutation
+                        type="DELETE"
+                        resource="permissions"
+                        payload={{ id, email }}
+                        options={delOptions}
+                      >
+                        {(del: () => void, state: { loading: boolean }) => {
+                          return (
+                            <Button
+                              color="primary"
+                              variant="raised"
+                              size="small"
+                              style={{ margin: '-10px 0px' }}
+                              onClick={del}
+                            >
+                              {state.loading && (
+                                <CircularProgress
+                                  className={classes.icon}
+                                  size={18}
+                                  thickness={2}
+                                />
+                              )}
+                              Delete
+                            </Button>
+                          )
+                        }}
+                      </Mutation>
+                    </div>
+                  </li>
+                )
+              }, data.collaborators)}
+            </ul>
+          </div>
         )
       }}
     </Query>

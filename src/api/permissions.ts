@@ -49,3 +49,22 @@ export const del = (id: string, email: string): Promise<{ data: {} }> =>
         )
       )
     })
+
+export const create = (
+  id: string,
+  email: string
+): Promise<{ data: { id: string } }> => {
+  return api
+    .post<{
+      data: {}
+    }>(`/frontend/api/apps/${id}/permissions`, {
+      email
+    })
+    .then((): { data: { id: string } } => {
+      return {
+        data: {
+          id
+        }
+      }
+    })
+}

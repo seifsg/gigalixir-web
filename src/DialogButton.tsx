@@ -19,7 +19,7 @@ interface State {
   open: boolean
 }
 
-class DialogButton extends React.Component<Props & EnhancedProps, State> {
+class BaseDialogButton extends React.Component<Props & EnhancedProps, State> {
   public constructor(props: Props & EnhancedProps) {
     super(props)
     this.state = { open: false }
@@ -65,8 +65,8 @@ class DialogButton extends React.Component<Props & EnhancedProps, State> {
   }
 }
 
-const EnhancedDialogButton = compose<Props & EnhancedProps, Props>(
-  withStyles(styles)
-)(DialogButton)
+const DialogButton = compose<Props & EnhancedProps, Props>(withStyles(styles))(
+  BaseDialogButton
+)
 
-export default EnhancedDialogButton
+export default DialogButton
