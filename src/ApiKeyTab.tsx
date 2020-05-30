@@ -3,44 +3,33 @@ Author: Seif Sgayer (seif@sghaier.me)
 ApiKeyTab.tsx (c) 2020
 Desc: description
 Created:  2020-05-30T17:11:17.070Z
-Modified: 2020-05-30T18:21:33.545Z
+Modified: 2020-05-30T21:53:22.042Z
 */
-
-// import React from 'react'
-// import { useSelector } from 'react-redux'
-
-// const ApiKeyTab = () => {
-//   const apiKey = useSelector(
-//     (state: any) =>
-//   )
-//   return <div>Api key: {apiKey}</div>
-// }
-
-// export default ApiKeyTab
 
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { ReduxState } from 'ra-core'
 import Field from './Field'
 import Fields from './Fields'
 
-class ApiKeyTab extends PureComponent<any, any> {
+interface ApiKeyTabProps {
+  apiKey: string
+}
+class ApiKeyTab extends PureComponent<ApiKeyTabProps, any> {
   render() {
-    try {
-      return (
-        <Fields>
-          <Field label="Api key">
-            {this.props.profile.data.ignored.apiKey}
-          </Field>
-        </Fields>
-      )
-    } catch (error) {
-      return <div>No Api Key Found.</div>
-    }
+    const { apiKey } = this.props
+    return (
+      <Fields>
+        <Field label="Api key">
+          {apiKey !== undefined ? apiKey : 'No Api Key Found.'}
+        </Field>
+      </Fields>
+    )
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  profile: state.admin.resources.profile
+const mapStateToProps = (state: ReduxState) => ({
+  apiKey: state.admin?.resources?.profile?.data?.ignored?.apiKey
 })
 
 const mapDispatchToProps = {}
