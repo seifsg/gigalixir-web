@@ -7,7 +7,7 @@ import Fields from './Fields'
 interface ApiKeyTabProps {
   apiKey: string
 }
-class ApiKeyTab extends PureComponent<ApiKeyTabProps, any> {
+class ApiKeyTab extends PureComponent<ApiKeyTabProps> {
   render() {
     const { apiKey } = this.props
     return (

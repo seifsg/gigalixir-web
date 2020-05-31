@@ -3,6 +3,7 @@ import * as api from './api'
 export interface Session {
   tier: 'STANDARD' | 'FREE'
   email: string
+  // eslint-disable-next-line camelcase
   api_key: string
 }
 
@@ -31,7 +32,7 @@ export const login = (
       return Promise.reject(e)
     })
 
-export const logout = (): Promise<{}> =>
+export const logout = (): Promise<Record<string, unknown>> =>
   api
-    .del<{ data: {} }>('/frontend/api/sessions')
+    .del<{ data: Record<string, unknown> }>('/frontend/api/sessions')
     .then(response => response.data)

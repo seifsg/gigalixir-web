@@ -3,8 +3,10 @@ import * as api from './api'
 type tier = 'STANDARD' | 'FREE'
 interface Response {
   tier: tier
+  // eslint-disable-next-line camelcase
   api_key: string
   email: string
+  // eslint-disable-next-line camelcase
   credit_cents: number
 }
 export interface User {
@@ -36,7 +38,7 @@ export const create = (
   password: string
 ): Promise<{ data: { id: string } }> => {
   return api
-    .post<{ data: {} }>(`/frontend/api/users`, {
+    .post<{ data: Record<string, unknown> }>(`/frontend/api/users`, {
       email,
       password
     })
@@ -49,9 +51,12 @@ export const resendConfirmation = (
   email: string
 ): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
-    .post<{ data: {} }>(`/frontend/api/users/reconfirm_email`, {
-      email
-    })
+    .post<{ data: Record<string, unknown> }>(
+      `/frontend/api/users/reconfirm_email`,
+      {
+        email
+      }
+    )
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
@@ -61,9 +66,12 @@ export const resetPassword = (
   email: string
 ): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
-    .post<{ data: {} }>(`/frontend/api/users/reset_password`, {
-      email
-    })
+    .post<{ data: Record<string, unknown> }>(
+      `/frontend/api/users/reset_password`,
+      {
+        email
+      }
+    )
     .then((): { data: { id: string } } => {
       return { data: { id: email } }
     })
@@ -74,19 +82,21 @@ export const setPassword = (
   newPassword: string
 ): Promise<{ data: { id: string } } | api.ErrorResponse> => {
   return api
-    .post<{ data: {} }>(`/frontend/api/users/set_password`, {
-      token,
-      password: newPassword
-    })
+    .post<{ data: Record<string, unknown> }>(
+      `/frontend/api/users/set_password`,
+      {
+        token,
+        password: newPassword
+      }
+    )
     .then((): { data: { id: string } } => {
       return { data: { id: token } }
     })
 }
 
-export const upgrade = (token: string): Promise<{}> => {
+export const upgrade = (token: string): Promise<Record<string, unknown>> => {
   return api
     .post('/frontend/api/upgrade', {
-      // eslint-disable-next-line @typescript-eslint/camelcase
       stripe_token: token
     })
     .then((): { data: { id: string } } => {
