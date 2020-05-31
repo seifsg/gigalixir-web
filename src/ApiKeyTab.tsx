@@ -12,8 +12,8 @@ class ApiKeyTab extends PureComponent<ApiKeyTabProps, any> {
     const { apiKey } = this.props
     return (
       <Fields>
-        <Field label="Api key">
-          {apiKey !== undefined ? apiKey : 'No Api Key Found.'}
+        <Field label="API Key">
+          {apiKey !== undefined ? apiKey : 'No API Key Found.'}
         </Field>
       </Fields>
     )
