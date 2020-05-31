@@ -9,10 +9,12 @@
         "data": {
             "tier": "STANDARD",
             "email": "fake.user@gigalixir.com",
-            "credit_cents": 0
+            "credit_cents": 0,
+            "api_key": "aad56c1e-65d3-49db-bdec-4609d9d634da"
         }
     },
-    "apps": [{
+    "apps": [
+        {
             "id": "bar",
             "unique_name": "bar",
             "stack": "gigalixir-14",
