@@ -56,6 +56,7 @@ const App = () => (
     >
       <Resource name="apps" list={AppList} />
       <Resource name="profile" />
+      <Resource name="databases" />
 
       {/*
         You have to put this here to "register" the resource
