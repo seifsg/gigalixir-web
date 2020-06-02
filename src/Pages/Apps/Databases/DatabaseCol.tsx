@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
-import { Database } from '../../../api/databases'
+import { StandardDatabase, FreeDatabase } from '../../../api/databases'
 
 const styles = createStyles({
   divider: {
@@ -26,7 +26,7 @@ const styles = createStyles({
 })
 
 interface DatabaseCol {
-  database: Database
+  database: StandardDatabase | FreeDatabase
   dividingBorder?: boolean
 }
 
@@ -59,9 +59,13 @@ const Component: FunctionComponent<DatabaseCol & EnhancedProps> = ({
       <DbField leftSide="Password" rightSide={database.password} />
       <DbField leftSide="Database" rightSide={database.database} />
       <DbField leftSide="State" rightSide={database.state} />
-      <DbField leftSide="Cloud" rightSide={database.cloud} />
-      <DbField leftSide="Region" rightSide={database.region} />
-      <DbField leftSide="Size" rightSide={database.size} />
+      {database.tier === 'STANDARD' ? (
+        <>
+          <DbField leftSide="Cloud" rightSide={database.cloud} />
+          <DbField leftSide="Region" rightSide={database.region} />
+          <DbField leftSide="Size" rightSide={database.size} />
+        </>
+      ) : null}
       <DbFieldTextArea leftSide="URL" rightSide={database.url} />
     </div>
   )
