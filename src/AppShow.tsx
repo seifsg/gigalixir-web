@@ -35,14 +35,14 @@ const Setup = (props: { profile: User; app: App }) => {
       <h4>Prepare Your App</h4>
       <div>
         Follow the instructions on{' '}
-        <a href="http://gigalixir.readthedocs.io/en/latest/main.html#modifying-an-existing-app-to-run-on-gigalixir">
+        <a href="https://gigalixir.readthedocs.io/en/latest/modify-app/index.html#modifying-an-existing-app-to-run-on-gigalixir">
           how to modify an existing app to run on Gigalixir
         </a>
         .
       </div>
       <div>
         Or if you prefer video, watch{' '}
-        <a href="https://gigalixir.readthedocs.io/en/latest/main.html#screencast">
+        <a href="https://gigalixir.readthedocs.io/en/latest/intro.html#overview-screencast">
           {' '}
           Deploying with Gigalixir
         </a>
@@ -78,37 +78,37 @@ const Setup = (props: { profile: User; app: App }) => {
       <h4>What&apos;s next?</h4>
       <ul>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#how-to-provision-a-free-postgresql-database">
+          <a href="https://gigalixir.readthedocs.io/en/latest/database.html#how-to-provision-a-free-postgresql-database">
             Create a database
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#logging">
+          <a href="https://gigalixir.readthedocs.io/en/latest/log.html#how-to-tail-logs">
             Tail logs
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-console">
+          <a href="https://gigalixir.readthedocs.io/en/latest/runtime.html#how-to-drop-into-a-remote-console">
             Remote console
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#remote-observer">
+          <a href="https://gigalixir.readthedocs.io/en/latest/runtime.html#how-to-launch-a-remote-observer">
             Remote observer
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#migrations">
+          <a href="https://gigalixir.readthedocs.io/en/latest/database.html#how-to-run-migrations">
             Run migrations
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#hot-upgrade">
+          <a href="https://gigalixir.readthedocs.io/en/latest/deploy.html#how-to-hot-upgrade-an-app">
             Hot upgrade
           </a>
         </li>
         <li>
-          <a href="http://gigalixir.readthedocs.io/en/latest/main.html#rollback">
+          <a href="https://gigalixir.readthedocs.io/en/latest/deploy.html#how-to-rollback-an-app">
             Rollback
           </a>
         </li>

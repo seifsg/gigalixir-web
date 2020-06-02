@@ -32,14 +32,14 @@ export default (props: Props) => {
             </ul>
             <p>
               For more details about the standard tier, see the{' '}
-              <a href="https://gigalixir.readthedocs.io/en/latest/main.html#tiers">
+              <a href="https://gigalixir.readthedocs.io/en/latest/tiers-pricing.html#tiers">
                 Tier Comparison
               </a>
             </p>
             <p>
               The standard plan costs $10/mo per 200MB of memory. CPU, power,
               &amp; bandwidth are free. Pro-rated to the second.{' '}
-              <a href="https://gigalixir.readthedocs.io/en/latest/main.html#pricing-details">
+              <a href="https://gigalixir.readthedocs.io/en/latest/tiers-pricing.html#pricing-details">
                 Pricing Details
               </a>
             </p>

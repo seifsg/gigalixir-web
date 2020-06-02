@@ -16,7 +16,7 @@ const ComingSoon: FunctionComponent<Props & EnhancedProps> = () => {
         Sorry, this is coming soon. Please use the CLI in the meantime.{' '}
       </div>
       <div>
-        <a href="https://gigalixir.readthedocs.io/en/latest/main.html#install-the-command-line-interface">
+        <a href="https://gigalixir.readthedocs.io/en/latest/getting-started-guide.html#install-the-command-line-interface">
           How to install the CLI
         </a>
       </div>
