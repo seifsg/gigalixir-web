@@ -3,7 +3,6 @@ import React, { FunctionComponent } from 'react'
 import classnames from 'classnames'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
-import _ from 'lodash/fp'
 import { Grid } from '@material-ui/core'
 import { Database } from '../../../api/databases'
 
