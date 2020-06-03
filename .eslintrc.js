@@ -29,11 +29,11 @@ module.exports = {
         "react/jsx-one-expression-per-line": "off",
 
         // conflicts with prettier
-        "react/jsx-wrap-multilines": 1,
+        "react/jsx-wrap-multilines": 0,
         // just don't see why this is necessary
         "import/extensions": 0,
 
-        "react/prop-types": 1,
+        "react/prop-types": 0,
 
         // would love to turn this back on, but not worth the effort since react-admin uses it so much, everywhere
         "react/jsx-props-no-spreading": "off",

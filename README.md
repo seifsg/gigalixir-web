@@ -8,9 +8,9 @@ Start the fake api server
 
     npm run server
 
-Run this app in development mode
+Run this app in development mode. We need HTTPS=true so that the proxy works properly. See https://create-react-app.dev/docs/using-https-in-development
 
-    npm start
+    HTTPS=true npm start
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

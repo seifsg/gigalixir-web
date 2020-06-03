@@ -2,6 +2,7 @@
     "name": "gigalixir-web",
     "version": "0.1.0",
     "private": true,
+    "proxy": "https://api.gigalixir.com/",
     "engines": {
         "npm": "6.4.1",
         "node": "11.1.0"
