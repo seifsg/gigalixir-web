@@ -2,12 +2,12 @@ import { LocationChangeAction, LOCATION_CHANGE } from 'react-router-redux'
 import { takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
 import ReactGA from 'react-ga'
-import logger from './logger'
 
 function trackPageview(action: LocationChangeAction) {
-  ReactGA.initialize('UA-97210391-1')
-  ReactGA.pageview(action.payload.pathname + action.payload.search)
-  logger.debug(JSON.stringify(action))
+  if (process.env.NODE_ENV === 'production') {
+    ReactGA.initialize('UA-97210391-1')
+    ReactGA.pageview(action.payload.pathname + action.payload.search)
+  }
 }
 
 export default function* analyticsSaga() {
