@@ -1,17 +1,35 @@
 import React, { FunctionComponent } from 'react'
 import compose from 'recompose/compose'
 import { Query } from 'ra-core'
-import { Grid, Divider } from '@material-ui/core'
+import {
+  Grid,
+  Divider,
+  createStyles,
+  WithStyles,
+  withStyles
+} from '@material-ui/core'
+import classnames from 'classnames'
 import Loading from '../../../Loading'
 import ErrorComponent from '../../../ErrorComponent'
 import { DatabasesArray } from '../../../api/databases'
 import DatabaseCol from './DatabaseCol'
 
+const styles = createStyles({
+  container: {
+    padding: '1.3em 0'
+  }
+})
+
 interface Props {
   id: string
 }
 
-const Component: FunctionComponent<Props> = ({ id }) => {
+type EnhancedProps = WithStyles<typeof styles>
+
+const Component: FunctionComponent<Props & EnhancedProps> = ({
+  id,
+  classes
+}) => {
   return (
     <>
       <h4>Databases</h4>
@@ -34,7 +52,7 @@ const Component: FunctionComponent<Props> = ({ id }) => {
           }
           if (data.length === 2) {
             return (
-              <div>
+              <div className={classnames(classes.container)}>
                 <Grid container spacing={24}>
                   <Grid item xs={6}>
                     <DatabaseCol database={data[0]} dividingBorder />
@@ -48,7 +66,7 @@ const Component: FunctionComponent<Props> = ({ id }) => {
           }
           if (data.length === 1) {
             return (
-              <div>
+              <div className={classnames(classes.container)}>
                 <Grid container spacing={24}>
                   <Grid item xs={12}>
                     <DatabaseCol database={data[0]} />
@@ -57,11 +75,19 @@ const Component: FunctionComponent<Props> = ({ id }) => {
               </div>
             )
           }
-          return <div>No databases found.</div>
+          return (
+            <div className={classnames(classes.container)}>
+              No databases found.
+            </div>
+          )
         }}
       </Query>
     </>
   )
 }
 
-export default compose<Props, Props>()(Component)
+const EnhancedComponent = compose<Props & EnhancedProps, Props>(
+  withStyles(styles)
+)(Component)
+
+export default EnhancedComponent

@@ -41,11 +41,11 @@
             "state": "AVAILABLE",
             "port": 5432,
             "password": "pw-2530b98e-962b-4a13-927c-187c8c22db7f",
-            "limited_at": null,
             "id": "bcd6ced6-a13d-4b7a-857e-53cb8e4b643d",
             "host": "postgres-free-tier-1.gigalixir.com",
             "database": "bcd6ced6-a13d-4b7a-857e-53cb8e4b643d",
-            "app_name": "bar"
+            "app_name": "bar",
+            "limited_at": "2020-06-03T18:29:15.301Z"
         },
         {
             "username": "gigalixir_admin",
