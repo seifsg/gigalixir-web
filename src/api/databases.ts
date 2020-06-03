@@ -55,10 +55,10 @@ export interface FreeDatabase extends Database {
 
 export const get = (id: string): Promise<Response> => {
   return api
-    .get<{ data: DatabasesArray }>(`/frontend/api/apps/${id}/databases`)
+    .get<ServerResponse>(`/frontend/api/apps/${id}/databases`)
     .then(
       (response): Response => {
-        const data = (_.map(response.data, (r: ServerResponseDatabase):
+        const data = (_.map(response.data.data, (r: ServerResponseDatabase):
           | FreeDatabase
           | StandardDatabase => {
           if (r.tier === 'FREE') {
@@ -94,7 +94,7 @@ export const get = (id: string): Promise<Response> => {
             appName: r.app_name
           }
           return db
-        }) as unknown) as DatabasesArray
+        }))
 
         return {
           data
