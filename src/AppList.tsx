@@ -33,7 +33,7 @@ class MaybeEmptyDatagrid extends React.Component<any> {
   }
 
   public render() {
-    const { ...sanitizedProps } = this.props
+    const { push, ...sanitizedProps } = this.props
     const { loadedOnce, total, ids } = sanitizedProps
 
     // if we use isLoading here instead of loadedOnce, then it basically shows

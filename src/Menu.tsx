@@ -26,6 +26,9 @@ const Menu = ({
   onMenuClick,
   resources,
   userLogout,
+  // this is here so that it isn't in `rest` and does not get passed into the div which errors
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  hasDashboard,
   ...rest
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 any) => (

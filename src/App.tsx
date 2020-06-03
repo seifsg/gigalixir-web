@@ -9,6 +9,7 @@ import ConnectedSuccessPage from './components/SuccessPage'
 import ConfirmationResendPage from './ConfirmationResendPage'
 import dataProvider from './dataProvider'
 import errorSagas from './errorSagas'
+import analyticsSaga from './analyticsSaga'
 import LoginPage from './LoginPage'
 import NotifyPage from './NotifyPage'
 import PasswordResetPage from './PasswordResetPage'
@@ -47,7 +48,7 @@ const App = () => (
     <Admin
       title=""
       theme={theme}
-      customSagas={[errorSagas]}
+      customSagas={[errorSagas, analyticsSaga]}
       customRoutes={customRoutes}
       appLayout={AppLayout}
       loginPage={LoginPage}

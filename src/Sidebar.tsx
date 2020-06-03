@@ -84,6 +84,9 @@ class Sidebar extends PureComponent<Props & EnhancedProps> {
   public render() {
     const { children, classes, closedSize, open, size, ...rest } = this.props
 
+    // pulls out properties we do not want to pass to components below
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { setSidebarVisibility, ...sanitizedProps } = rest
     const child = Children.only(children)
 
     return (
@@ -97,7 +100,7 @@ class Sidebar extends PureComponent<Props & EnhancedProps> {
               style: { width: size }
             }}
             onClose={this.toggleSidebar}
-            {...rest}
+            {...sanitizedProps}
           >
             {cloneElement(child, {
               onMenuClick: this.handleClose
@@ -115,7 +118,7 @@ class Sidebar extends PureComponent<Props & EnhancedProps> {
               }
             }}
             onClose={this.toggleSidebar}
-            {...rest}
+            {...sanitizedProps}
           >
             {cloneElement(child, {
               dense: true,
@@ -134,7 +137,7 @@ class Sidebar extends PureComponent<Props & EnhancedProps> {
               }
             }}
             onClose={this.toggleSidebar}
-            {...rest}
+            {...sanitizedProps}
           >
             {cloneElement(child, { dense: true })}
           </Drawer>
