@@ -54,51 +54,49 @@ export interface FreeDatabase extends Database {
 }
 
 export const get = (id: string): Promise<Response> => {
-  return api
-    .get<ServerResponse>(`/frontend/api/apps/${id}/databases`)
-    .then(
-      (response): Response => {
-        const data = (_.map(response.data.data, (r: ServerResponseDatabase):
-          | FreeDatabase
-          | StandardDatabase => {
-          if (r.tier === 'FREE') {
-            const db: FreeDatabase = {
-              username: r.username,
-              url: r.url,
-              tier: r.tier,
-              state: r.state,
-              port: r.port,
-              password: r.password,
-              id: r.id,
-              host: r.host,
-              database: r.database,
-              appName: r.app_name,
-              limitedAt: r.limited_at
-            }
-            return db
-          }
-
-          const db: StandardDatabase = {
+  return api.get<ServerResponse>(`/frontend/api/apps/${id}/databases`).then(
+    (response): Response => {
+      const data = _.map(response.data.data, (r: ServerResponseDatabase):
+        | FreeDatabase
+        | StandardDatabase => {
+        if (r.tier === 'FREE') {
+          const db: FreeDatabase = {
             username: r.username,
             url: r.url,
             tier: r.tier,
             state: r.state,
-            size: r.size,
-            region: r.region,
             port: r.port,
             password: r.password,
             id: r.id,
             host: r.host,
             database: r.database,
-            cloud: r.cloud,
-            appName: r.app_name
+            appName: r.app_name,
+            limitedAt: r.limited_at
           }
           return db
-        }))
-
-        return {
-          data
         }
+
+        const db: StandardDatabase = {
+          username: r.username,
+          url: r.url,
+          tier: r.tier,
+          state: r.state,
+          size: r.size,
+          region: r.region,
+          port: r.port,
+          password: r.password,
+          id: r.id,
+          host: r.host,
+          database: r.database,
+          cloud: r.cloud,
+          appName: r.app_name
+        }
+        return db
+      })
+
+      return {
+        data
       }
-    )
+    }
+  )
 }
