@@ -48,7 +48,7 @@ const Component: FunctionComponent<DatabaseCol & EnhancedProps> = ({
         dividingBorder === true ? classnames(classes.dividingBorder) : ''
       } ${classnames(classes.container)}`}
     >
-      {database.tier === 'FREE' ? (
+      {database.tier === 'FREE' && database.limitedAt !== null ? (
         <div className={classnames(classes.dbLimitedAt)}>
           <DbLimitedAt limitedAt={database.limitedAt} />
         </div>
@@ -137,7 +137,7 @@ const DbFieldTextArea: FunctionComponent<{
         {leftSide}
       </Grid>
       <Grid item xs={9}>
-        <textarea style={{ width: '100%', resize: 'none', minHeight: '80px' }}>
+        <textarea style={{ width: '100%', resize: 'none' }}>
           {rightSide}
         </textarea>
       </Grid>
