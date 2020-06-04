@@ -1,5 +1,6 @@
 import * as apps from './api/apps'
 import * as permissions from './api/permissions'
+import * as databases from './api/databases'
 import getStats from './api/stats'
 import * as users from './api/users'
 import * as paymentMethods from './api/payment_methods'
@@ -8,6 +9,9 @@ import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GetListParams {}
+interface GetListParamsByID extends GetListParams {
+  id: string // app id
+}
 interface CreateParams<T> {
   data: T
 }
@@ -67,6 +71,7 @@ type DataProviderParams =
       | CreatePermissionParams
     >
   | GetListParams
+  | GetListParamsByID
   | GetOneParams
   | DeletePermissionParams
   | UpdateParams<
@@ -80,7 +85,11 @@ type DataProviderParams =
 const isGetList = (
   params: DataProviderParams,
   type: string
-): params is GetListParams => type === 'GET_LIST'
+): params is GetListParams | GetListParamsByID => type === 'GET_LIST'
+const isGetListByID = (
+  params: DataProviderParams,
+  type: string
+): params is GetListParamsByID => type === 'GET_LIST_BY_ID'
 const isCreateApp = (
   params: DataProviderParams,
   resource: string,
@@ -147,7 +156,13 @@ const isUpdateConfirmation = (
 // can I use imported CREATE and GET_LIST instead?
 // const a = ['GET_LIST', 'CREATE'] as const
 // type DataProviderType = typeof a[number]
-type DataProviderType = 'GET_LIST' | 'CREATE' | 'GET_ONE' | 'UPDATE' | 'DELETE'
+type DataProviderType =
+  | 'GET_LIST_BY_ID'
+  | 'GET_LIST'
+  | 'CREATE'
+  | 'GET_ONE'
+  | 'UPDATE'
+  | 'DELETE'
 
 // function foo<T extends DataProviderType>(type: T, resource: string, params: T extends 'CREATE' ? CreateParams
 //     : T extends 'GET_LIST' ? GetListParams
@@ -164,7 +179,8 @@ const dataProvider = <T extends DataProviderType>(
     | 'payment_methods'
     | 'users'
     | 'password'
-    | 'confirmation',
+    | 'confirmation'
+    | 'databases',
   params: DataProviderParams
 ): Promise<{}> => {
   if (isGetList(params, type)) {
@@ -182,6 +198,11 @@ const dataProvider = <T extends DataProviderType>(
         }
         return Promise.reject(e)
       })
+    }
+  }
+  if (isGetListByID(params, type)) {
+    if (resource === 'databases') {
+      return databases.get(params.id)
     }
   }
   if (isCreateApp(params, resource, type)) {

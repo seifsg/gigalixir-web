@@ -31,6 +31,17 @@ module.exports = (req, res, next) => {
                 removeIds
             )
         )
+    } 
+    // eslint-disable-next-line no-useless-escape
+    else if (req.path.match('^.*\/apps.*\/databases.*', 'i')) {
+        const removeIds = body => body.map(removeId)
+        res.send = modifyResponseBody(
+            res,
+            compose(
+                wrapInData,
+                removeIds
+            )
+        )
     } else if (req.path.match('^/apps/[^/]+$')) {
         res.send = modifyResponseBody(
             res,

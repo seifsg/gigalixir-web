@@ -16,6 +16,7 @@ import Page from './Page'
 import Permissions from './Permissions'
 import Section from './Section'
 import SetupOrShowLayout from './SetupOrShowLayout'
+import Databases from './Pages/Apps/Databases/Databases'
 
 const styles = {}
 
@@ -208,7 +209,7 @@ const AppShow: FunctionComponent<AppShowProps> = ({
       element: () => {
         return (
           <Section>
-            <ComingSoon />
+            <Databases id={id} />
           </Section>
         )
       }

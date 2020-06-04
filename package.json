@@ -10,6 +10,7 @@
     "dependencies": {
         "@material-ui/core": "^1.4.0",
         "@material-ui/icons": "^1.0.0",
+        "antd": "^3.26.16",
         "axios": "^0.19.2",
         "caniuse-lite": "^1.0.30001054",
         "chart.js": "^2.9.3",
@@ -18,6 +19,7 @@
         "funfix-core": "^7.0.1",
         "inflection": "^1.12.0",
         "lodash": "~4.17.5",
+        "moment": "^2.26.0",
         "prop-types": "~15.6.1",
         "query-string": "^6.12.1",
         "ra-core": "^2.9.9",
@@ -40,7 +42,7 @@
         "winston": "^3.2.1"
     },
     "scripts": {
-        "server": "node_modules/.bin/json-server --watch server/db.json --port 3080 --routes server/routes.json --middlewares server/middleware.js",
+        "server": "node_modules/.bin/json-server --watch server/db.json --port 4000 --routes server/routes.json --middlewares server/middleware.js",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
