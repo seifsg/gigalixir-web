@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { HttpError } from 'ra-core'
 import { AUTH_LOGIN, AUTH_CHECK, AUTH_LOGOUT, AUTH_ERROR } from 'react-admin'
 import authProvider from './authProvider'
 
@@ -34,7 +35,9 @@ it('logs in', done => {
 
 it('rejects csrf error', done => {
   const csrfMock = jest.spyOn(axios, 'get')
-  csrfMock.mockRejectedValueOnce({ data: { errors: 'some-error' } })
+    // TODO: create a *real* AxiosError
+  // csrfMock.mockRejectedValueOnce(axios.createError('some-message', {}, 500, {}, { data: { errors: 'some-error' } }))
+  csrfMock.mockRejectedValueOnce({ toJSON: () => ({}), response: { data: { status: 500, errors: 'some-error' } }})
   //   csrfMock.mockReturnValueOnce(Promise.reject({ data: { errors: 'some-error' } }))
   const createSessionMock = jest.spyOn(axios, 'post')
   createSessionMock.mockReturnValueOnce(
@@ -50,12 +53,13 @@ it('rejects csrf error', done => {
       done.fail('The promise should have failed')
     })
     .catch(reason => {
-      expect(reason).toStrictEqual({
-        data: { errors: 'some-error' },
-        message: undefined
-      })
-      expect(csrfMock).toHaveBeenCalled()
-      expect(createSessionMock).not.toHaveBeenCalled()
+      try {
+        expect(reason).toEqual(new HttpError('Sorry, please try again', 500, {}))
+        expect(csrfMock).toHaveBeenCalled()
+        expect(createSessionMock).not.toHaveBeenCalled()
+      } catch (e) {
+        done.fail(e)
+      }
     })
     .finally(() => {
       csrfMock.mockRestore()
