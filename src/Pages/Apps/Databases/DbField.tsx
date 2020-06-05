@@ -1,23 +1,26 @@
 import React, { FunctionComponent } from 'react'
 import { Grid } from '@material-ui/core'
 
-const DbFieldTextArea: FunctionComponent<{
+const DbField: FunctionComponent<{
   leftSide: string | number
   rightSide: string | number
 }> = ({ leftSide, rightSide }) => {
-  if (typeof rightSide === 'undefined' || rightSide === null) return null
+  if (
+    typeof rightSide === 'undefined' ||
+    rightSide === null ||
+    (typeof rightSide === 'string' && rightSide.trim() === '')
+  )
+    return null
   return (
     <Grid container spacing={24}>
-      <Grid item xs={2} style={{ fontWeight: 'bold' }}>
+      <Grid item xs={2} style={{ color: 'rgba(0,0,0,0.5)' }}>
         {leftSide}
       </Grid>
       <Grid item xs={9}>
-        <textarea style={{ width: '100%', resize: 'none' }}>
-          {rightSide}
-        </textarea>
+        {rightSide}
       </Grid>
     </Grid>
   )
 }
 
-export default DbFieldTextArea
+export default DbField

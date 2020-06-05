@@ -62,7 +62,7 @@ interface EnhancedProps extends WithStyles<typeof styles> {
   children: ReactElement
   closedSize: number
   open: boolean
-  setSidebarVisibility: Function
+  setSidebarVisibility: (open: boolean) => void
   size: number
   width: string
 }

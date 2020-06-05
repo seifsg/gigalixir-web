@@ -1,13 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import compose from 'recompose/compose'
 import { Query } from 'ra-core'
-import {
-  Grid,
-  Divider,
-  createStyles,
-  WithStyles,
-  withStyles
-} from '@material-ui/core'
+import { Grid, createStyles, WithStyles, withStyles } from '@material-ui/core'
 import classnames from 'classnames'
 import Loading from '../../../Loading'
 import ErrorComponent from '../../../ErrorComponent'
@@ -16,7 +10,7 @@ import DatabaseCol from './DatabaseCol'
 
 const styles = createStyles({
   container: {
-    padding: '1.3em 0'
+    // padding: '1.3em 0'
   }
 })
 
@@ -31,9 +25,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
   classes
 }) => {
   return (
-    <>
-      <h4>Databases</h4>
-      <Divider />
+    <div>
       <Query type="GET_LIST_BY_ID" resource="databases" payload={{ id }}>
         {({
           data,
@@ -82,7 +74,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
           )
         }}
       </Query>
-    </>
+    </div>
   )
 }
 

@@ -42,7 +42,7 @@
         "winston": "^3.2.1"
     },
     "scripts": {
-        "server": "node_modules/.bin/json-server --watch server/db.json --port 4000 --routes server/routes.json --middlewares server/middleware.js",
+        "server": "node_modules/.bin/json-server --watch server/db.json --port 3080 --routes server/routes.json --middlewares server/middleware.js",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

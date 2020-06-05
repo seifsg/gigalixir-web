@@ -182,7 +182,7 @@ const dataProvider = <T extends DataProviderType>(
     | 'confirmation'
     | 'databases',
   params: DataProviderParams
-): Promise<{}> => {
+): Promise<unknown> => {
   if (isGetList(params, type)) {
     if (resource === 'invoices') {
       return invoices.pdfs()
