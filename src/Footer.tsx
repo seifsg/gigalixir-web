@@ -5,7 +5,7 @@ const style = {
   display: 'inline-block',
   listStyle: 'none',
   margin: 5,
-  borderRight: '1px solid #323232',
+  borderRight: '1px solid rgba(0,0,0,0.2)',
   paddingRight: 10
 }
 export default () => (

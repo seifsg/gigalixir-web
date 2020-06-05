@@ -47,6 +47,10 @@ const styles = (theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         border: 'none',
         marginTop: '1.5em'
+      },
+      // undo antd hover color
+      '& a:hover': {
+        color: 'inherit'
       }
     }
   })
