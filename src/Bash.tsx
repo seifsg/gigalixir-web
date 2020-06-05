@@ -8,7 +8,7 @@ const styles = createStyles({
     color: '#ddd',
     padding: '8px',
     marginBottom: '10px',
-    fontFamily: 'Courier,serif',
+    fontFamily: 'Roboto Mono',
     letterSpacing: '-1px'
   }
 })

@@ -80,7 +80,7 @@ const Component: FunctionComponent<DatabaseCol & EnhancedProps> = ({
           <DbFieldLimitedAt limitedAt={database.limitedAt} />
         )}
 
-        <DbFieldTextArea leftSide="URL" rightSide={database.url} />
+        <DbField leftSide="URL" rightSide={database.url} />
       </div>
     </div>
   )

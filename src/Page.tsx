@@ -7,6 +7,7 @@ const styles = createStyles({
     marginLeft: '15px'
   },
   title: {
+    marginTop: 20,
     borderBottom: '1px solid rgba(0,0,0,0.1)',
     paddingBottom: '20px'
   }
