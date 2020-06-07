@@ -4,7 +4,7 @@
 /* eslint-disable react/prop-types */
 import React, { FunctionComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Field, reduxForm, InjectedFormProps } from 'redux-form'
+import { Field } from 'react-final-form'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import CardActions from '@material-ui/core/CardActions'
@@ -51,10 +51,7 @@ const styles = ({ spacing }: Theme) =>
     }
   })
 
-interface EnhancedProps
-  extends TranslationContextProps,
-    InjectedFormProps<FormData>,
-    WithStyles<typeof styles> {
+interface EnhancedProps extends I18nProvider, WithStyles<typeof styles> {
   isLoading: boolean
 }
 

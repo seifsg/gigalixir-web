@@ -1,6 +1,6 @@
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import _ from 'lodash/fp'
-import { push as routerPush } from 'react-router-redux'
+import { push as routerPush } from 'connected-react-router'
 import React from 'react'
 import { Authenticated, crudGetOne as crudGetOneAction } from 'react-admin'
 import { connect } from 'react-redux'

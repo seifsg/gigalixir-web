@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
-import { goBack, RouterAction } from 'react-router-redux'
+import { goBack, RouterAction } from 'connected-react-router'
 
 interface Props {
   myGoBack: () => RouterAction
