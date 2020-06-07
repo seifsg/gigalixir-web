@@ -16,6 +16,7 @@ import {
   FormControl
 } from '@material-ui/core'
 import { Slider } from 'antd'
+import css from './Slider.module.css' 
 import { CloseFunction } from '../../../DialogButton'
 // import { required, choices } from '../../../validators'
 import { extractError } from '../../../errorSagas'
@@ -176,7 +177,7 @@ class DBCreate extends React.Component<
         </DialogContent>
         <DialogContent style={{ display: displaySlider ? 'block' : 'none' }}>
           <div>
-            <Slider marks={marks} step={null} defaultValue={48} max={144} />
+            <Slider marks={marks} step={null} defaultValue={48} max={144} className={css.slider}/>
           </div>
         </DialogContent>
         <DialogActions>
