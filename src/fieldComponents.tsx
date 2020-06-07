@@ -8,6 +8,7 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import React, { ReactNode } from 'react'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import { WrappedFieldProps } from 'redux-form'
+import { FieldRenderProps } from 'react-final-form'
 import TextField from '@material-ui/core/TextField'
 
 const renderFormHelper = ({
@@ -29,9 +30,7 @@ export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   input,
   meta: { touched, invalid, error },
   ...custom
-}: {
-  label: string
-} & WrappedFieldProps) => {
+}: { label: string } & FieldRenderProps<string, HTMLElement>): JSX.Element => {
   return (
     <TextField
       type={type}
