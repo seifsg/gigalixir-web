@@ -39,7 +39,7 @@ const styles = ({ spacing }: Theme) =>
     },
     // duplicated in SubmitButton. how to not duplicate?
     icon: {
-      marginRight: spacing.unit
+      marginRight: spacing()
     }
   })
 
@@ -71,9 +71,9 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
         loading,
         error
       }: {
-        data: Permissions
+        data?: Permissions
         loading: boolean
-        error: Error
+        error?: Error
       }): React.ReactElement => {
         if (loading) {
           return <Loading />
@@ -104,8 +104,8 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                 <div>Role</div>
                 <div />
               </li>
-              <li key={data.owner} className={classes.row}>
-                <div>{data.owner}</div>
+              <li key={data?.owner} className={classes.row}>
+                <div>{data?.owner}</div>
                 <div>Owner</div>
                 <div />
               </li>
@@ -125,7 +125,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                           return (
                             <Button
                               color="primary"
-                              variant="raised"
+                              variant="contained"
                               size="small"
                               style={{ margin: '-10px 0px' }}
                               onClick={del}
@@ -145,7 +145,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                     </div>
                   </li>
                 )
-              }, data.collaborators)}
+              }, data?.collaborators)}
             </ul>
           </div>
         )

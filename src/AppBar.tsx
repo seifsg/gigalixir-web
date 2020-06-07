@@ -95,7 +95,7 @@ any) => (
         </IconButton>
         {Children.count(children) === 0 ? (
           <Typography
-            variant="title"
+            variant="h1"
             color="inherit"
             className={classes.title}
             id="react-admin-title"

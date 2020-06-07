@@ -105,7 +105,7 @@ class UpdatePaymentMethodForm extends Component<Props & EnhancedProps, State> {
             // isLoading here might be when fetching the payment method which looks weird
             // for the button to be loading on page load
             submitting={submitting}
-            variant="raised"
+            variant="contained"
             label="Update"
           />
         </form>
@@ -134,7 +134,6 @@ const updatePaymentMethod = (token: string): CrudUpdateAction => ({
         level: 'info',
         messageArgs: {
           // not sure if this is needed. copy and pasted from somewhere.
-          // eslint-disable-next-line @typescript-eslint/camelcase
           smart_count: 1
         }
       },

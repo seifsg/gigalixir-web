@@ -7,7 +7,12 @@ import {
   reduxForm,
   InjectedFormProps
 } from 'redux-form'
-import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
+import {
+  withTranslate,
+  TranslationContextProps,
+  ReduxState,
+  I18nProvider
+} from 'ra-core'
 import compose from 'recompose/compose'
 import {
   withStyles,
@@ -46,7 +51,7 @@ const styles = ({ spacing }: Theme) =>
       marginTop: 20
     },
     icon: {
-      arginRight: spacing.unit
+      arginRight: spacing()
     }
   })
 
@@ -115,7 +120,7 @@ const Form: FunctionComponent<Props & EnhancedProps> = ({
             />
           </div>
           <Button
-            variant="raised"
+            variant="contained"
             type="submit"
             color="primary"
             disabled={isLoading}
@@ -142,7 +147,7 @@ const EnhancedForm = compose<Props & EnhancedProps, Props>(
   connect(mapStateToProps),
   reduxForm({
     form: 'resendConfirmation',
-    validate: (values: FormData, props: TranslationContextProps) => {
+    validate: (values: FormData, props: I18nProvider) => {
       const errors = { email: '', password: '' }
       const { translate } = props
       if (!values.email) {

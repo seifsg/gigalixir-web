@@ -94,7 +94,7 @@ class UpgradeForm extends Component<Props & EnhancedProps, State> {
             // we add isLoading because submitting=true is when we call stripe
             // isLoading=true is when we hit the api server
             submitting={submitting || isLoading}
-            variant="raised"
+            variant="contained"
             label="Upgrade"
           />
         </form>
@@ -114,7 +114,6 @@ const upgrade = (token: string): CrudUpdateAction => ({
         body: 'Account Upgraded',
         level: 'info',
         messageArgs: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
           smart_count: 1
         }
       },

@@ -3,7 +3,12 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import qs from 'query-string'
 import { showNotification, Notification } from 'react-admin'
 import React, { FunctionComponent } from 'react'
-import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
+import {
+  TranslationContextProps,
+  ReduxState,
+  I18nProvider,
+  withTranslate
+} from 'ra-core'
 import compose from 'recompose/compose'
 import {
   withStyles,
@@ -52,7 +57,7 @@ const styles = ({ spacing }: Theme) =>
       marginTop: 20
     },
     icon: {
-      marginRight: spacing.unit
+      marginRight: spacing()
     }
   })
 
@@ -117,7 +122,7 @@ const Form: FunctionComponent<Props & EnhancedProps> = props => {
           />
         </div>
         <Button
-          variant="raised"
+          variant="contained"
           color="primary"
           disabled={isLoading}
           type="submit"
@@ -133,13 +138,14 @@ const Form: FunctionComponent<Props & EnhancedProps> = props => {
 const mapStateToProps = (state: ReduxState) => ({
   isLoading: state.admin.loading > 0
 })
+
 const EnhancedForm = compose<Props & EnhancedProps, Props>(
   withStyles(styles),
   withTranslate,
   connect(mapStateToProps),
   reduxForm({
     form: 'setPassword',
-    validate: (values: FormData, props: TranslationContextProps) => {
+    validate: (values: FormData, props: I18nProvider) => {
       const errors = { newPassword: '' }
       const { translate } = props
       if (!values.newPassword) {

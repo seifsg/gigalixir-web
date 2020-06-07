@@ -250,6 +250,9 @@ const dataProvider = <T extends DataProviderType>(
   if (isDeletePermissions(params, resource, type)) {
     return permissions.del(params.id, params.email)
   }
+  if (isDeleteDatabase(params, resource, type)) {
+    return databases.del(params.appID, params.id)
+  }
   if (isGetOne(params, type)) {
     if (resource === 'permissions') {
       return permissions.get(params.id)

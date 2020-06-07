@@ -12,6 +12,7 @@ import {
 } from 'redux-form'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { useTranslate } from 'react-admin'
 import compose from 'recompose/compose'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
@@ -22,7 +23,12 @@ import {
   WithStyles,
   Theme
 } from '@material-ui/core/styles'
-import { withTranslate, TranslationContextProps, ReduxState } from 'ra-core'
+import {
+  TranslationContextProps,
+  ReduxState,
+  withTranslate,
+  I18nProvider
+} from 'ra-core'
 import { renderInputField as renderInput } from './fieldComponents'
 import { extractError } from './errorSagas'
 import { crudCreate } from './crudCreate'
@@ -48,7 +54,7 @@ const styles = ({ spacing }: Theme) =>
       width: '100%'
     },
     icon: {
-      marginRight: spacing.unit
+      marginRight: spacing()
     }
   })
 
@@ -88,9 +94,9 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
   error,
   classes,
   isLoading,
-  handleSubmit,
-  translate
+  handleSubmit
 }) => {
+  const translate = useTranslate()
   return (
     <form onSubmit={handleSubmit(login)}>
       <div className={classes.form}>
@@ -119,7 +125,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
       </div>
       <CardActions>
         <Button
-          variant="raised"
+          variant="contained"
           type="submit"
           color="primary"
           disabled={isLoading}
@@ -150,7 +156,7 @@ const enhance = compose<Props & EnhancedProps, Props>(
   connect(mapStateToProps),
   reduxForm({
     form: 'signUp',
-    validate: (values: FormData, props: TranslationContextProps) => {
+    validate: (values: FormData, props: I18nProvider) => {
       const errors = { email: '', password: '' }
       const { translate } = props
       if (!values.email) {
