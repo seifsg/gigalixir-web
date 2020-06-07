@@ -1,4 +1,4 @@
-import { LocationChangeAction, LOCATION_CHANGE } from 'react-router-redux'
+import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
 import { takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
 import ReactGA from 'react-ga'
@@ -6,7 +6,9 @@ import ReactGA from 'react-ga'
 function trackPageview(action: LocationChangeAction) {
   if (process.env.NODE_ENV === 'production') {
     ReactGA.initialize('UA-97210391-1')
-    ReactGA.pageview(action.payload.pathname + action.payload.search)
+    ReactGA.pageview(
+      action.payload.location.pathname + action.payload.location.search
+    )
   }
 }
 
