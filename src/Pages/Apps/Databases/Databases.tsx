@@ -9,14 +9,32 @@ import {
   withStyles
 } from '@material-ui/core'
 import classnames from 'classnames'
+import { Icon } from 'antd'
 import Loading from '../../../Loading'
 import ErrorComponent from '../../../ErrorComponent'
 import { DatabasesArray } from '../../../api/databases'
 import DatabaseCol from './DatabaseCol'
+import DialogButton from '../../../DialogButton'
+import { CreateDialog } from './CreateDB'
 
 const styles = createStyles({
   container: {
     padding: '1.3em 0'
+  },
+  title: {
+    display: 'inline-block'
+  },
+  titleContainer: {
+    width: '100%',
+    marginBottom: 5
+  },
+  controlButtons: {
+    float: 'right',
+    marginRight: 2
+  },
+  btn: {
+    display: 'inline',
+    marginLeft: '1em'
   }
 })
 
@@ -32,7 +50,36 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
 }) => {
   return (
     <>
-      <h4>Databases</h4>
+      <div className={classnames(classes.titleContainer)}>
+        <Grid container spacing={24}>
+          <Grid item xs={6}>
+            <h2 className={classnames(classes.title)}>Databases</h2>
+          </Grid>
+          <Grid item xs={6} style={{ textAlign: 'right' }}>
+            <DialogButton
+              containerClassName={classnames(classes.btn)}
+              label={
+                <>
+                  <Icon type="plus" /> &nbsp; &nbsp; <span>Add Database</span>
+                </>
+              }
+            >
+              {CreateDialog}
+            </DialogButton>
+            <DialogButton
+              containerClassName={classnames(classes.btn)}
+              color="secondary"
+              label={
+                <>
+                  <Icon type="delete" /> &nbsp; &nbsp; <span>Delete</span>
+                </>
+              }
+            >
+              {CreateDialog}
+            </DialogButton>
+          </Grid>
+        </Grid>
+      </div>
       <Divider />
       <Query type="GET_LIST_BY_ID" resource="databases" payload={{ id }}>
         {({
@@ -77,7 +124,21 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
           }
           return (
             <div className={classnames(classes.container)}>
-              No databases found.
+              <div>No database listed yet.</div>
+              <div>
+                {' '}
+                <DialogButton
+                  containerClassName={classnames(classes.btn)}
+                  label={
+                    <>
+                      <Icon type="plus" /> &nbsp; &nbsp;{' '}
+                      <span>Add Database</span>
+                    </>
+                  }
+                >
+                  {CreateDialog}
+                </DialogButton>
+              </div>
             </div>
           )
         }}

@@ -3,12 +3,16 @@ import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import { PropTypes as MaterialUiPropTypes } from '@material-ui/core'
 
 const styles = createStyles({})
 
 export type CloseFunction = Function
 interface Props {
   label: ReactNode
+  className?: string
+  containerClassName?: string
+  color?: MaterialUiPropTypes.Color
   disabled?: boolean
   children: (close: CloseFunction) => ReactNode
 }
@@ -41,15 +45,23 @@ class BaseDialogButton extends React.Component<Props & EnhancedProps, State> {
       this.setState({ open })
     }
 
-    const { label, disabled, children } = this.props
+    const {
+      label,
+      disabled,
+      children,
+      className,
+      color,
+      containerClassName
+    } = this.props
     const { open } = this.state
     return (
-      <div>
+      <div className={containerClassName || ''}>
         <Button
           onClick={toggleDrawer(true)}
           variant="contained"
-          color="primary"
+          color={color || 'primary'}
           disabled={disabled}
+          className={className || ''}
         >
           {label}
         </Button>

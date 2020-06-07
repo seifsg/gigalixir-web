@@ -11,6 +11,10 @@ interface ServerResponse {
   data: Array<ServerResponseDatabase>
 }
 
+interface ServerResponseSingular {
+  data: ServerResponseDatabase
+}
+
 interface ServerResponseDatabase {
   username: string
   url: string
@@ -99,4 +103,107 @@ export const get = (id: string): Promise<Response> => {
       }
     }
   )
+}
+
+export const createFree = (appID: string): Promise<{ data: FreeDatabase }> => {
+  return api
+    .post<ServerResponseSingular>(
+      `/frontend/api/apps/${appID}/free_databases`,
+      {}
+    )
+    .then((response): { data: FreeDatabase } => {
+      const r = response.data.data
+      return {
+        data: {
+          id: r.id,
+          username: r.username,
+          url: r.url,
+          tier: 'FREE',
+          state: r.state,
+          port: r.port,
+          password: r.password,
+          host: r.host,
+          database: r.database,
+          // eslint-disable-next-line camelcase
+          appName: r.app_name,
+          // eslint-disable-next-line camelcase
+          limitedAt: r.limited_at
+        }
+      }
+    })
+}
+
+export const createStandard = (
+  appID: string,
+  size: number
+): Promise<{ data: StandardDatabase }> => {
+  return api
+    .post<ServerResponseSingular>(`/frontend/api/apps/${appID}/databases`, {
+      size
+    })
+    .then((response): { data: StandardDatabase } => {
+      const r = response.data.data
+      return {
+        data: {
+          id: r.id,
+          username: r.username,
+          url: r.url,
+          tier: 'STANDARD',
+          state: r.state,
+          port: r.port,
+          password: r.password,
+          host: r.host,
+          database: r.database,
+          // eslint-disable-next-line camelcase
+          appName: r.app_name,
+          size: r.size,
+          region: r.region,
+          cloud: r.cloud
+        }
+      }
+    })
+}
+
+export const del = (
+  appID: string,
+  id: string
+): Promise<{ data: FreeDatabase | StandardDatabase }> => {
+  return api
+    .del<ServerResponseSingular>(`/frontend/api/apps/${appID}/databases/${id}`)
+    .then((response): { data: FreeDatabase | StandardDatabase } => {
+      const r = response.data.data
+      let db: FreeDatabase | StandardDatabase
+
+      if (r.tier === 'FREE') {
+        db = {
+          username: r.username,
+          url: r.url,
+          tier: r.tier,
+          state: r.state,
+          port: r.port,
+          password: r.password,
+          id: r.id,
+          host: r.host,
+          database: r.database,
+          appName: r.app_name,
+          limitedAt: r.limited_at
+        }
+      } else
+        db = {
+          username: r.username,
+          url: r.url,
+          tier: r.tier,
+          state: r.state,
+          size: r.size,
+          region: r.region,
+          port: r.port,
+          password: r.password,
+          id: r.id,
+          host: r.host,
+          database: r.database,
+          cloud: r.cloud,
+          appName: r.app_name
+        }
+      return { data: db }
+    })
 }

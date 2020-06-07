@@ -24,6 +24,14 @@ interface CreateAppParams {
   cloud: string
   region: string
 }
+interface CreateDatabaseParams {
+  appID: string
+  size?: number
+}
+interface DeleteDatabaseParams {
+  appID: string
+  id: string
+}
 interface CreatePasswordParams {
   email: string
 }
@@ -69,6 +77,7 @@ type DataProviderParams =
       | CreateUserParams
       | CreatePasswordParams
       | CreatePermissionParams
+      | CreateDatabaseParams
     >
   | GetListParams
   | GetListParamsByID
@@ -96,6 +105,12 @@ const isCreateApp = (
   type: string
 ): params is CreateParams<CreateAppParams> =>
   type === 'CREATE' && resource === 'apps'
+const isCreateDatabase = (
+  params: DataProviderParams,
+  resource: string,
+  type: string
+): params is CreateParams<CreateDatabaseParams> =>
+  type === 'CREATE' && resource === 'databases'
 const isCreateUser = (
   params: DataProviderParams,
   resource: string,
@@ -118,10 +133,18 @@ const isGetOne = (
   params: DataProviderParams,
   type: string
 ): params is GetOneParams => type === 'GET_ONE'
-const isDeleteOne = (
+const isDeletePermissions = (
   params: DataProviderParams,
+  resource: string,
   type: string
-): params is DeletePermissionParams => type === 'DELETE'
+): params is DeletePermissionParams =>
+  type === 'DELETE' && resource === 'permissions'
+const isDeleteDatabase = (
+  params: DataProviderParams,
+  resource: string,
+  type: string
+): params is DeleteDatabaseParams =>
+  type === 'DELETE' && resource === 'databases'
 const isUpdatePassword = (
   params: DataProviderParams,
   resource: string,
@@ -209,6 +232,13 @@ const dataProvider = <T extends DataProviderType>(
     const { name, cloud, region } = params.data
     return apps.create(name, cloud, region)
   }
+  if (isCreateDatabase(params, resource, type)) {
+    const { size, appID } = params.data
+    if (typeof size !== 'undefined') {
+      return databases.createStandard(appID, size)
+    }
+    return databases.createFree(appID)
+  }
   if (isCreateUser(params, resource, type)) {
     const { email, password } = params.data
     return users.create(email, password)
@@ -217,7 +247,7 @@ const dataProvider = <T extends DataProviderType>(
     const { email, id } = params.data
     return permissions.create(id, email)
   }
-  if (isDeleteOne(params, type)) {
+  if (isDeletePermissions(params, resource, type)) {
     return permissions.del(params.id, params.email)
   }
   if (isGetOne(params, type)) {
