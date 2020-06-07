@@ -11,7 +11,7 @@ import {
 const styles = ({ spacing }: Theme) =>
   createStyles({
     icon: {
-      marginRight: spacing.unit
+      marginRight: spacing()
     }
   })
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
   pristine: boolean
   submitting: boolean
   label: string
-  variant?: 'text' | 'flat' | 'outlined' | 'contained' | 'raised'
+  variant?: 'text' | 'outlined' | 'contained' | undefined
 }
 type EnhancedProps = WithStyles<typeof styles>
 const SubmitButton: FunctionComponent<Props & EnhancedProps> = ({

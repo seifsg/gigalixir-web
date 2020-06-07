@@ -20,8 +20,10 @@ import {
   userLogin,
   withTranslate,
   TranslationContextProps,
-  ReduxState
+  ReduxState,
+  I18nProvider
 } from 'ra-core'
+import { useTranslate } from 'react-admin'
 import { renderInputField as renderInput } from './fieldComponents'
 
 interface Props {
@@ -45,7 +47,7 @@ const styles = ({ spacing }: Theme) =>
       width: '100%'
     },
     icon: {
-      marginRight: spacing.unit
+      marginRight: spacing()
     }
   })
 
@@ -62,9 +64,9 @@ const login = (auth: any, dispatch: any, { redirectTo }: any) =>
 const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
   classes,
   isLoading,
-  handleSubmit,
-  translate
+  handleSubmit
 }) => {
+  const translate = useTranslate()
   return (
     <form onSubmit={handleSubmit(login)}>
       <div className={classes.form}>
@@ -93,7 +95,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
       </div>
       <CardActions>
         <Button
-          variant="raised"
+          variant="contained"
           type="submit"
           color="primary"
           disabled={isLoading}
@@ -122,7 +124,7 @@ const enhance = compose<Props & EnhancedProps, Props>(
   connect(mapStateToProps),
   reduxForm({
     form: 'signIn',
-    validate: (values: FormData, props: TranslationContextProps) => {
+    validate: (values: FormData, props: I18nProvider) => {
       const errors = { email: '', password: '' }
       const { translate } = props
       if (!values.email) {

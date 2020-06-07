@@ -35,7 +35,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       flexGrow: 1,
       flexBasis: 0,
-      padding: theme.spacing.unit * 3,
+      padding: theme.spacing(3),
       [theme.breakpoints.up('xs')]: {
         paddingLeft: 5
       },
