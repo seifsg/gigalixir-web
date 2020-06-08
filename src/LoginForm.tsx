@@ -80,7 +80,6 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
         setLoading(false)
       })
       .catch(error => {
-        logger.debug(`login error: ${typeof error}: ${JSON.stringify(error)}`)
         setLoading(false)
         notify(
           typeof error === 'string'
