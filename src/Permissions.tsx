@@ -48,7 +48,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
   // threading version up into here is just a way to get Query
   // to reload itself when the delete button is pressed and
   // refresh=true
-  const { data, loading, loaded, error } = useQuery({
+  const { data, loaded, error } = useQuery({
     type: 'getOne',
     resource: 'permissions',
     payload: {
