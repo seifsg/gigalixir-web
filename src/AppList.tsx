@@ -34,8 +34,10 @@ class MaybeEmptyDatagrid extends React.Component<any> {
 
   public render() {
     const { push, ...sanitizedProps } = this.props
-    const { loadedOnce, total, ids } = sanitizedProps
+    const { loaded, total, ids } = sanitizedProps
 
+    // loadedOnce was renamed to loaded and isLoading was renamed to loading
+    //
     // if we use isLoading here instead of loadedOnce, then it basically shows
     // the datagrid after hitting the create dialog save button for a split second.
     // that's because isLoading is a global counter that is used anytime
@@ -50,7 +52,7 @@ class MaybeEmptyDatagrid extends React.Component<any> {
     // gets it's data from ListController which is harder to hook into. We will
     // probably need to eject ListController to do this and dispatch out own
     // actions to set loading states for each scenario.
-    const shouldShowEmptyView = loadedOnce && (ids.length === 0 || total === 0)
+    const shouldShowEmptyView = loaded && (ids.length === 0 || total === 0)
 
     // just inline the styles here since they aren't really going
     // to be reused much i think and it's a small section so it

@@ -32,7 +32,8 @@ export const login = (
       return Promise.reject(e)
     })
 
-export const logout = (): Promise<Record<string, unknown>> =>
+export const logout = (): Promise<string> =>
   api
     .del<{ data: Record<string, unknown> }>('/frontend/api/sessions')
     .then(response => response.data)
+    .then(() => '/login') // where to redirectTo

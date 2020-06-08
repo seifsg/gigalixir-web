@@ -2,9 +2,8 @@ import React, { FunctionComponent } from 'react'
 import classnames from 'classnames'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
-import { Query } from 'ra-core'
+import { useQueryWithStore } from 'ra-core'
 import _ from 'lodash/fp'
-import { Invoice } from './api/invoices'
 import Loading from './Loading'
 import ErrorComponent from './ErrorComponent'
 import { formatMoney } from './formatters'
@@ -34,56 +33,48 @@ interface Props {}
 type EnhancedProps = WithStyles<typeof styles>
 
 const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
+  const { data, loaded, error } = useQueryWithStore({
+    type: 'getList',
+    resource: 'invoices',
+    payload: {}
+  })
+
+  if (!loaded) {
+    return <Loading />
+  }
+  if (error) {
+    return <ErrorComponent>{error.message}</ErrorComponent>
+  }
+  if (data?.length === 0) {
+    return <div>No invoices yet</div>
+  }
   return (
-    <Query type="GET_LIST" resource="invoices" payload={{}}>
-      {({
-        data,
-        loading,
-        error
-      }: {
-        data?: Invoice[]
-        loading: boolean
-        error?: Error
-      }): React.ReactElement => {
-        if (loading) {
-          return <Loading />
-        }
-        if (error) {
-          return <ErrorComponent>{error.message}</ErrorComponent>
-        }
-        if (data?.length === 0) {
-          return <div>No invoices yet</div>
-        }
-        return (
-          <ul className={classes.table}>
-            <li className={classnames(classes.row, classes.header)}>
-              <div>Date</div>
-              <div>Amount</div>
-              <div>PDF</div>
+    <ul className={classes.table}>
+      <li className={classnames(classes.row, classes.header)}>
+        <div>Date</div>
+        <div>Amount</div>
+        <div>PDF</div>
+      </li>
+      {_.map(invoice => {
+        if (invoice.pdf) {
+          return (
+            <li key={invoice.id} className={classes.row}>
+              <div>
+                {`${invoice.periodStart.getMonth() +
+                  1}/${invoice.periodStart.getDate()}/${invoice.periodStart.getFullYear()} - ${invoice.periodEnd.getMonth() +
+                  1}/${invoice.periodEnd.getDate()}/${invoice.periodEnd.getFullYear()}`}
+              </div>
+              <div>{formatMoney(invoice.amountCents)}</div>
+              <div>
+                {' '}
+                <a href={invoice.pdf}>PDF</a>{' '}
+              </div>
             </li>
-            {_.map(invoice => {
-              if (invoice.pdf) {
-                return (
-                  <li key={invoice.id} className={classes.row}>
-                    <div>
-                      {`${invoice.periodStart.getMonth() +
-                        1}/${invoice.periodStart.getDate()}/${invoice.periodStart.getFullYear()} - ${invoice.periodEnd.getMonth() +
-                        1}/${invoice.periodEnd.getDate()}/${invoice.periodEnd.getFullYear()}`}
-                    </div>
-                    <div>{formatMoney(invoice.amountCents)}</div>
-                    <div>
-                      {' '}
-                      <a href={invoice.pdf}>PDF</a>{' '}
-                    </div>
-                  </li>
-                )
-              }
-              return null
-            }, data)}
-          </ul>
-        )
-      }}
-    </Query>
+          )
+        }
+        return null
+      }, data)}
+    </ul>
   )
 }
 

@@ -1,7 +1,7 @@
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import React, { FunctionComponent } from 'react'
-import { ShowController } from 'react-admin'
+import { useQuery, useQueryWithStore } from 'ra-core'
 import { App } from './api/apps'
 import { User } from './api/users'
 import AppScaleDialog from './AppScaleDialog'
@@ -275,30 +275,31 @@ const AppShow: FunctionComponent<AppShowProps> = ({
       }
     }
   ]
+
+  const profile = useQueryWithStore({
+    type: 'getOne',
+    resource: 'profile',
+    payload: {
+      id: 'ignored'
+    }
+  })
+  const app = useQuery({
+    type: 'getOne',
+    resource: 'apps',
+    payload: {
+      id
+    }
+  })
   return (
     <Page title={id}>
       <div>
-        <ShowController resource="profile" id="ignored" basePath="/login">
-          {(profileControllerProps: { record: User }) => {
-            const profile = profileControllerProps.record
-            return (
-              <ShowController resource="apps" id={id} basePath="/login">
-                {(controllerProps: { record: App; isLoading: boolean }) => {
-                  const app = controllerProps.record
-                  return (
-                    <SetupOrShowLayout
-                      app={app}
-                      profile={profile}
-                      tabs={tabs}
-                      isLoading={controllerProps.isLoading}
-                      version={version}
-                    />
-                  )
-                }}
-              </ShowController>
-            )
-          }}
-        </ShowController>
+        <SetupOrShowLayout
+          app={app.data}
+          profile={profile.data}
+          tabs={tabs}
+          loading={!profile.loaded || !app.loaded}
+          version={version}
+        />
       </div>
     </Page>
   )
