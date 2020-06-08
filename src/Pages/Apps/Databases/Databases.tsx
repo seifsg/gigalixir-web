@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import compose from 'recompose/compose'
-import { Query } from 'ra-core'
+import { useQueryWithStore } from 'ra-core'
 import {
   Grid,
   Divider,
@@ -44,10 +44,73 @@ interface Props {
 
 type EnhancedProps = WithStyles<typeof styles>
 
+const renderDatabases = (
+  classes: Record<keyof typeof styles, string>,
+  loading: boolean,
+  error: Error,
+  data: DatabasesArray
+): ReactNode => {
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <ErrorComponent>{error.message}</ErrorComponent>
+  }
+  if (data?.length === 2) {
+    return (
+      <div className={classnames(classes.container)}>
+        <Grid container>
+          <Grid item xs={6}>
+            <DatabaseCol database={data[0]} dividingBorder />
+          </Grid>
+          <Grid item xs={6}>
+            <DatabaseCol database={data[1]} />
+          </Grid>
+        </Grid>
+      </div>
+    )
+  }
+  if (data?.length === 1) {
+    return (
+      <div className={classnames(classes.container)}>
+        <Grid container>
+          <Grid item xs={12}>
+            <DatabaseCol database={data[0]} />
+          </Grid>
+        </Grid>
+      </div>
+    )
+  }
+  return (
+    <div className={classnames(classes.container)}>
+      <div>No database listed yet.</div>
+      <div>
+        {' '}
+        <DialogButton
+          containerClassName={classnames(classes.btn)}
+          label={
+            <>
+              <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
+            </>
+          }
+        >
+          {CreateDialog}
+        </DialogButton>
+      </div>
+    </div>
+  )
+}
+
 const Component: FunctionComponent<Props & EnhancedProps> = ({
   id,
   classes
 }) => {
+  const { data, loaded, error } = useQueryWithStore({
+    type: 'GET_LIST_BY_ID',
+    resource: 'databases',
+    payload: { id }
+  })
+
   return (
     <>
       <div className={classnames(classes.titleContainer)}>
@@ -81,67 +144,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
         </Grid>
       </div>
       <Divider />
-      <Query type="GET_LIST_BY_ID" resource="databases" payload={{ id }}>
-        {({
-          data,
-          loading,
-          error
-        }: {
-          data?: DatabasesArray
-          loading: boolean
-          error?: Error
-        }): React.ReactElement => {
-          if (loading) {
-            return <Loading />
-          }
-          if (error) {
-            return <ErrorComponent>{error.message}</ErrorComponent>
-          }
-          if (data?.length === 2) {
-            return (
-              <div className={classnames(classes.container)}>
-                <Grid container>
-                  <Grid item xs={6}>
-                    <DatabaseCol database={data[0]} dividingBorder />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <DatabaseCol database={data[1]} />
-                  </Grid>
-                </Grid>
-              </div>
-            )
-          }
-          if (data?.length === 1) {
-            return (
-              <div className={classnames(classes.container)}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <DatabaseCol database={data[0]} />
-                  </Grid>
-                </Grid>
-              </div>
-            )
-          }
-          return (
-            <div className={classnames(classes.container)}>
-              <div>No database listed yet.</div>
-              <div>
-                {' '}
-                <DialogButton
-                  containerClassName={classnames(classes.btn)}
-                  label={
-                    <>
-                      <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
-                    </>
-                  }
-                >
-                  {CreateDialog}
-                </DialogButton>
-              </div>
-            </div>
-          )
-        }}
-      </Query>
+      {renderDatabases(classes, !loaded, error, data)}
     </>
   )
 }

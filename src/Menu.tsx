@@ -3,8 +3,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/PowerSettingsNew'
 import DefaultIcon from '@material-ui/icons/ViewList'
 import classnames from 'classnames'
-import { getResources, userLogout as userLogoutAction } from 'ra-core'
-import React from 'react'
+import { getResources, useLogout } from 'ra-core'
+import React, { useCallback } from 'react'
 import { MenuItemLink } from 'react-admin'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
@@ -25,59 +25,56 @@ const Menu = ({
   dense,
   onMenuClick,
   resources,
-  userLogout,
+  // we handle this in sessions.ts. we do not need to vary the logout
+  // destination, so we just ignore it here
+  // redirectTo,
   // this is here so that it isn't in `rest` and does not get passed into the div which errors
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hasDashboard,
   ...rest
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-any) => (
-  <div className={classnames(classes.main, className)} {...rest}>
-    {resources
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter((r: any) => r.hasList)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((resource: any) => (
-        <MenuItemLink
-          key={resource.name}
-          to={`/${resource.name}`}
-          primaryText={_.capitalize(resource.name)}
-          leftIcon={resource.icon ? <resource.icon /> : <DefaultIcon />}
-          onClick={onMenuClick}
-          dense={dense}
-        />
-      ))}
-    <MenuItemLink
-      key="account"
-      to="/account"
-      primaryText="My Account"
-      leftIcon={<AccountCircle />}
-      onClick={onMenuClick}
-      dense={dense}
-    />
-    <MenuItemLink
-      key="logout"
-      to="#"
-      primaryText="Logout"
-      leftIcon={<ExitIcon />}
-      onClick={userLogout}
-      dense={dense}
-    />
-  </div>
-)
+any) => {
+  const logout = useLogout()
+  const handleLogoutClick = useCallback(() => logout('/login'), [
+    // redirectTo,
+    logout
+  ])
 
-// Menu.propTypes = {
-//   classes: PropTypes.object,
-//   className: PropTypes.string,
-//   dense: PropTypes.bool,
-//   hasDashboard: PropTypes.bool,
-//   logout: PropTypes.element,
-//   onMenuClick: PropTypes.func,
-//   open: PropTypes.bool,
-//   pathname: PropTypes.string,
-//   resources: PropTypes.array.isRequired,
-//   translate: PropTypes.func.isRequired
-// }
+  return (
+    <div className={classnames(classes.main, className)} {...rest}>
+      {resources
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .filter((r: any) => r.hasList)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map((resource: any) => (
+          <MenuItemLink
+            key={resource.name}
+            to={`/${resource.name}`}
+            primaryText={_.capitalize(resource.name)}
+            leftIcon={resource.icon ? <resource.icon /> : <DefaultIcon />}
+            onClick={onMenuClick}
+            dense={dense}
+          />
+        ))}
+      <MenuItemLink
+        key="account"
+        to="/account"
+        primaryText="My Account"
+        leftIcon={<AccountCircle />}
+        onClick={onMenuClick}
+        dense={dense}
+      />
+      <MenuItemLink
+        key="logout"
+        to="/login"
+        primaryText="Logout"
+        leftIcon={<ExitIcon />}
+        onClick={handleLogoutClick}
+        dense={dense}
+      />
+    </div>
+  )
+}
 
 Menu.defaultProps = {
   onMenuClick: () => null
@@ -90,16 +87,10 @@ const mapStateToProps = (state: any) => ({
   pathname: state.router.location.pathname // used to force redraw on navigation
 })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapDispatchToProps = (dispatch: any, { redirectTo }: any) => ({
-  userLogout: () => dispatch(userLogoutAction(redirectTo))
-})
-
 const enhance = compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    // {}, // Avoid connect passing dispatch in props,
+    {}, // Avoid connect passing dispatch in props,
     null,
     {
       areStatePropsEqual: (prev, next) =>

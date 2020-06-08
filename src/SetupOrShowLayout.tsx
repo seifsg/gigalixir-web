@@ -14,7 +14,7 @@ import { StyledTab, StyledTabs } from './Tabs'
 const styles = {}
 
 interface Props {
-  isLoading: boolean
+  loading: boolean
   version: number
   profile: User
   app: App
@@ -124,8 +124,7 @@ class SetupOrShowLayout extends React.Component<
 
 function mapStateToProps(state: ReduxState & CorrectedReduxState) {
   return {
-    isLoading: state.admin.loading > 0,
-    version: state.admin.ui.viewVersion
+    isLoading: state.admin.loading > 0
   }
 }
 
