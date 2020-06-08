@@ -32,13 +32,17 @@ export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   meta: { touched, invalid, error, submitError },
   ...custom
 }: { label: string } & FieldRenderProps<string, HTMLElement>): JSX.Element => {
+  let helperText
+  if ((error || submitError) && touched) {
+    helperText = error || submitError
+  }
   return (
     <TextField
       type={type}
       label={label}
       placeholder={label}
       error={touched && invalid}
-      helperText={(error || submitError) && touched && (error || submitError)}
+      helperText={helperText}
       {...input}
       {...custom}
     />
