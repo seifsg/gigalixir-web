@@ -101,7 +101,6 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
       onSubmit={submit}
       validate={validate}
       render={({ handleSubmit, submitError }) => {
-        logger.debug(`login submitError: ${submitError}`)
         return (
           <form onSubmit={handleSubmit}>
             {submitError && <div className="error">{submitError}</div>}

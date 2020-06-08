@@ -1,24 +1,17 @@
-import React, { FunctionComponent } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Button from '@material-ui/core/Button'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import classnames from 'classnames'
-import compose from 'recompose/compose'
-import {
-  Theme,
-  createStyles,
-  withStyles,
-  WithStyles
-} from '@material-ui/core/styles'
-import { Query, Mutation } from 'ra-core'
 import _ from 'lodash/fp'
-import { Permissions } from './api/permissions'
-import Loading from './Loading'
-import ErrorComponent from './ErrorComponent'
-import DialogButton, { CloseFunction } from './DialogButton'
+import { useQuery } from 'ra-core'
+import React, { FunctionComponent } from 'react'
+import compose from 'recompose/compose'
 import CollaboratorAddDialog from './CollaboratorAddDialog'
+import CollaboratorDeleteButton from './CollaboratorDeleteButton'
+import DialogButton, { CloseFunction } from './DialogButton'
+import ErrorComponent from './ErrorComponent'
+import Loading from './Loading'
 
 // TODO: duplicated in Invoices.tsx
-const styles = ({ spacing }: Theme) =>
+const styles = () =>
   createStyles({
     table: {
       padding: 0,
@@ -36,10 +29,6 @@ const styles = ({ spacing }: Theme) =>
     header: {
       color: 'rgba(0,0,0,0.5)',
       borderTop: 'none'
-    },
-    // duplicated in SubmitButton. how to not duplicate?
-    icon: {
-      marginRight: spacing()
     }
   })
 
@@ -59,98 +48,54 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
   // threading version up into here is just a way to get Query
   // to reload itself when the delete button is pressed and
   // refresh=true
-  return (
-    <Query
-      type="GET_ONE"
-      resource="permissions"
-      payload={{ id }}
-      options={{ version }}
-    >
-      {({
-        data,
-        loading,
-        error
-      }: {
-        data?: Permissions
-        loading: boolean
-        error?: Error
-      }): React.ReactElement => {
-        if (loading) {
-          return <Loading />
-        }
-        if (error) {
-          return <ErrorComponent>{error.message}</ErrorComponent>
-        }
-        const delOptions = {
-          refresh: true,
-          onSuccess: {
-            notification: { body: 'Deleted', level: 'info' }
-          },
-          onFailure: {
-            notification: { body: 'Error', level: 'warning' }
-          }
-        }
-        return (
-          <div>
-            <DialogButton label="Add Collaborator">
-              {(close: CloseFunction) => {
-                return <CollaboratorAddDialog id={id} close={close} />
-              }}
-            </DialogButton>
+  const { data, loading, loaded, error } = useQuery({
+    type: 'getOne',
+    resource: 'permissions',
+    payload: {
+      id,
+      version // this isn't used, it's just here to make sure refresh happens
+    }
+  })
 
-            <ul className={classes.table}>
-              <li className={classnames(classes.row, classes.header)}>
-                <div>Email</div>
-                <div>Role</div>
-                <div />
-              </li>
-              <li key={data?.owner} className={classes.row}>
-                <div>{data?.owner}</div>
-                <div>Owner</div>
-                <div />
-              </li>
-              {_.map(email => {
-                return (
-                  <li key={email} className={classes.row}>
-                    <div>{email}</div>
-                    <div>Collaborator</div>
-                    <div>
-                      <Mutation
-                        type="DELETE"
-                        resource="permissions"
-                        payload={{ id, email }}
-                        options={delOptions}
-                      >
-                        {(del: () => void, state: { loading: boolean }) => {
-                          return (
-                            <Button
-                              color="primary"
-                              variant="contained"
-                              size="small"
-                              style={{ margin: '-10px 0px' }}
-                              onClick={del}
-                            >
-                              {state.loading && (
-                                <CircularProgress
-                                  className={classes.icon}
-                                  size={18}
-                                  thickness={2}
-                                />
-                              )}
-                              Delete
-                            </Button>
-                          )
-                        }}
-                      </Mutation>
-                    </div>
-                  </li>
-                )
-              }, data?.collaborators)}
-            </ul>
-          </div>
-        )
-      }}
-    </Query>
+  if (!loaded) {
+    return <Loading />
+  }
+  if (error) {
+    return <ErrorComponent>{error.message}</ErrorComponent>
+  }
+
+  return (
+    <div>
+      <DialogButton label="Add Collaborator">
+        {(close: CloseFunction) => {
+          return <CollaboratorAddDialog id={id} close={close} />
+        }}
+      </DialogButton>
+
+      <ul className={classes.table}>
+        <li className={classnames(classes.row, classes.header)}>
+          <div>Email</div>
+          <div>Role</div>
+          <div />
+        </li>
+        <li key={data?.owner} className={classes.row}>
+          <div>{data?.owner}</div>
+          <div>Owner</div>
+          <div />
+        </li>
+        {_.map(email => {
+          return (
+            <li key={email} className={classes.row}>
+              <div>{email}</div>
+              <div>Collaborator</div>
+              <div>
+                <CollaboratorDeleteButton email={email} id={id} />
+              </div>
+            </li>
+          )
+        }, data?.collaborators)}
+      </ul>
+    </div>
   )
 }
 
