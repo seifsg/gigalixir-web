@@ -13,7 +13,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  FormControl
+  FormControl,
+  Theme
 } from '@material-ui/core'
 import { Slider } from 'antd'
 import css from './Slider.module.css' 
@@ -34,13 +35,13 @@ interface CreateProps {
 interface FormData {
   size: number
 }
-const styles = (theme: any) =>
+const styles = (theme: Theme) =>
   createStyles({
     formControl: {
-      margin: theme.spacing.unit * 3
+      margin: theme.spacing(3)
     },
     group: {
-      margin: `${theme.spacing.unit}px 0`
+      margin: `${theme.spacing()}px 0`
     }
   })
 

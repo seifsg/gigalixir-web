@@ -41,9 +41,9 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
         loading,
         error
       }: {
-        data: Invoice[]
+        data?: Invoice[]
         loading: boolean
-        error: Error
+        error?: Error
       }): React.ReactElement => {
         if (loading) {
           return <Loading />
@@ -51,7 +51,7 @@ const Invoices: FunctionComponent<Props & EnhancedProps> = ({ classes }) => {
         if (error) {
           return <ErrorComponent>{error.message}</ErrorComponent>
         }
-        if (data.length === 0) {
+        if (data?.length === 0) {
           return <div>No invoices yet</div>
         }
         return (

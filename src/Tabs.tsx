@@ -36,7 +36,7 @@ export const StyledTab = withStyles((theme: Theme) =>
       color: '#000',
       fontWeight: theme.typography.fontWeightRegular,
       fontSize: theme.typography.pxToRem(15),
-      marginRight: theme.spacing.unit,
+      marginRight: theme.spacing(),
       '&:focus': {
         opacity: 1
       }

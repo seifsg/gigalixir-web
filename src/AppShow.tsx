@@ -179,7 +179,7 @@ const AppShow: FunctionComponent<AppShowProps> = ({
                 <div style={{ paddingLeft: spacing, paddingRight: spacing }}>
                   <Button
                     href={`https://${app.id}.gigalixirapp.com/`}
-                    variant="raised"
+                    variant="contained"
                     color="primary"
                     disabled={app.replicas === 0}
                   >

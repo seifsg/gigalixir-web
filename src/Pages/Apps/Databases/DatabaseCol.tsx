@@ -54,7 +54,7 @@ const Component: FunctionComponent<DatabaseCol & EnhancedProps> = ({
         </div>
       ) : null}
       <div className={classnames(classes.container)}>
-        <Grid container spacing={24}>
+        <Grid container>
           <Grid item xs={3}>
             <h4>{database.tier}</h4>
             <div className={classnames(classes.divider)} />
@@ -97,7 +97,7 @@ const DbField: FunctionComponent<{
   )
     return null
   return (
-    <Grid container spacing={24}>
+    <Grid container>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         {leftSide}
       </Grid>
@@ -114,7 +114,7 @@ const DbFieldLimitedAt: FunctionComponent<{
   if (typeof limitedAt === 'undefined' || limitedAt === null) return null
   const limitedAtMoment = moment(limitedAt)
   return (
-    <Grid container spacing={24}>
+    <Grid container>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         Limited At
       </Grid>
@@ -132,7 +132,7 @@ const DbFieldTextArea: FunctionComponent<{
 }> = ({ leftSide, rightSide }) => {
   if (typeof rightSide === 'undefined' || rightSide === null) return null
   return (
-    <Grid container spacing={24}>
+    <Grid container>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         {leftSide}
       </Grid>

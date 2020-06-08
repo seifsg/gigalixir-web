@@ -2,7 +2,7 @@ import compose from 'recompose/compose'
 import { Datagrid, NumberField, TextField } from 'react-admin'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import { push as routerPush } from 'react-router-redux'
+import { push as routerPush } from 'connected-react-router'
 import React from 'react'
 
 import AppCreateDialog from './AppCreateDialog'

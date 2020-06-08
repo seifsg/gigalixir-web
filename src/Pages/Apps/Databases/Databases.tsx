@@ -9,7 +9,7 @@ import {
   withStyles
 } from '@material-ui/core'
 import classnames from 'classnames'
-import { Icon } from 'antd'
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import Loading from '../../../Loading'
 import ErrorComponent from '../../../ErrorComponent'
 import { DatabasesArray } from '../../../api/databases'
@@ -51,7 +51,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
   return (
     <>
       <div className={classnames(classes.titleContainer)}>
-        <Grid container spacing={24}>
+        <Grid container>
           <Grid item xs={6}>
             <h2 className={classnames(classes.title)}>Databases</h2>
           </Grid>
@@ -60,7 +60,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
               containerClassName={classnames(classes.btn)}
               label={
                 <>
-                  <Icon type="plus" /> &nbsp; &nbsp; <span>Add Database</span>
+                  <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
                 </>
               }
             >
@@ -71,7 +71,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
               color="secondary"
               label={
                 <>
-                  <Icon type="delete" /> &nbsp; &nbsp; <span>Delete</span>
+                  <DeleteOutlined /> &nbsp; &nbsp; <span>Delete</span>
                 </>
               }
             >
@@ -87,9 +87,9 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
           loading,
           error
         }: {
-          data: DatabasesArray
+          data?: DatabasesArray
           loading: boolean
-          error: Error
+          error?: Error
         }): React.ReactElement => {
           if (loading) {
             return <Loading />
@@ -97,10 +97,10 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
           if (error) {
             return <ErrorComponent>{error.message}</ErrorComponent>
           }
-          if (data.length === 2) {
+          if (data?.length === 2) {
             return (
               <div className={classnames(classes.container)}>
-                <Grid container spacing={24}>
+                <Grid container>
                   <Grid item xs={6}>
                     <DatabaseCol database={data[0]} dividingBorder />
                   </Grid>
@@ -111,10 +111,10 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
               </div>
             )
           }
-          if (data.length === 1) {
+          if (data?.length === 1) {
             return (
               <div className={classnames(classes.container)}>
-                <Grid container spacing={24}>
+                <Grid container>
                   <Grid item xs={12}>
                     <DatabaseCol database={data[0]} />
                   </Grid>
@@ -131,8 +131,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
                   containerClassName={classnames(classes.btn)}
                   label={
                     <>
-                      <Icon type="plus" /> &nbsp; &nbsp;{' '}
-                      <span>Add Database</span>
+                      <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
                     </>
                   }
                 >
