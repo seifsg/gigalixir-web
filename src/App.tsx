@@ -50,7 +50,7 @@ const App = () => (
       theme={theme}
       customSagas={[errorSagas, analyticsSaga]}
       customRoutes={customRoutes}
-      appLayout={AppLayout}
+      layout={AppLayout}
       loginPage={LoginPage}
       authProvider={authProvider}
       dataProvider={dataProvider}

@@ -1,29 +1,23 @@
 // copy and pasted. I don't wanna go through and fix their
 // typescript and lint errors right now..
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/prop-types */
 import React, { FunctionComponent } from 'react'
-import PropTypes from 'prop-types'
 import { Form, Field } from 'react-final-form'
+import { FORM_ERROR } from 'final-form'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { makeStyles, WithStyles, Theme } from '@material-ui/core/styles'
 import {
-  withStyles,
-  createStyles,
-  WithStyles,
-  Theme,
-} from '@material-ui/core/styles'
-import {
-  userLogin as userLoginRa,
-  withTranslate,
-  TranslationContextProps,
+  useLogin,
+  useNotify,
+  useSafeSetState,
+  useTranslate,
   ReduxState,
-  I18nProvider,
+  I18nProvider
 } from 'ra-core'
-import { useTranslate } from 'react-admin'
 import { renderInputField as renderInput } from './fieldComponents'
 import logger from './logger'
 
@@ -36,8 +30,8 @@ interface FormData {
   password: string
 }
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
+const useStyles = makeStyles(
+  (theme: Theme) => ({
     form: {
       padding: '0 1em 1em 1em'
     },
@@ -48,42 +42,73 @@ const styles = ({ spacing }: Theme) =>
       width: '100%'
     },
     icon: {
-      marginRight: spacing()
+      marginRight: theme.spacing(1)
     }
-  })
+  }),
+  { name: 'LoginForm' }
+)
 
-interface EnhancedProps extends I18nProvider, WithStyles<typeof styles> {
-  isLoading: boolean
+interface EnhancedProps {
+  loading: boolean
 }
 
-const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
-  classes,
-  isLoading,
-  userLogin,
-  redirectTo
-}) => {
+const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
+  const { redirectTo } = props
+  const [loading, setLoading] = useSafeSetState<boolean>(false)
+  const login = useLogin()
+  const notify = useNotify()
   const translate = useTranslate()
+  const classes = useStyles(props)
+  const validate = (values: FormData) => {
+    const errors: { email?: string; password?: string } = {
+      email: undefined,
+      password: undefined
+    }
+
+    if (!values.email) {
+      errors.email = translate('ra.validation.required')
+    }
+    if (!values.password) {
+      errors.password = translate('ra.validation.required')
+    }
+    return errors
+  }
+
+  const submit = (values: FormData) => {
+    setLoading(true)
+    login(values, redirectTo)
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(error => {
+        logger.debug(`login error: ${JSON.stringify(error)}`)
+        setLoading(false)
+        notify(
+          typeof error === 'string'
+            ? error
+            : typeof error === 'undefined' || !error.message
+            ? 'ra.auth.sign_in_error'
+            : error.message,
+          'warning'
+        )
+      })
+      .then(() => {
+        return Promise.resolve({
+          [FORM_ERROR]: 'yo'
+        })
+      })
+  }
+
   return (
     <Form
-      onSubmit={(values: FormData) => {
-        logger.debug(`submitting ${JSON.stringify(values)}`)
-        userLogin(values, redirectTo)
-      }}
-      validate={(values: FormData) => {
-        logger.debug('validating')
-        const errors: { email?: string; password?: string } = {}
-        if (!values.email) {
-          errors.email = 'Required'
-        }
-        if (!values.password) {
-          errors.password = 'Required'
-        }
-        return errors
-      }}
-    >
-      {({ handleSubmit }) => {
+      onSubmit={submit}
+      validate={validate}
+      render={({ handleSubmit, submitError }) => {
+        logger.debug(`login submitError: ${submitError}`)
         return (
           <form onSubmit={handleSubmit}>
+            {submitError && <div className="error">{submitError}</div>}
+
             <div className={classes.form}>
               <div className={classes.input}>
                 <Field
@@ -92,7 +117,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
                   component={renderInput}
                   fullWidth
                   label="Email"
-                  disabled={isLoading}
+                  disabled={loading}
                 />
               </div>
               <div className={classes.input}>
@@ -103,7 +128,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
                   fullWidth
                   label={translate('ra.auth.password')}
                   type="password"
-                  disabled={isLoading}
+                  disabled={loading}
                   autoComplete="current-password"
                 />
               </div>
@@ -113,10 +138,10 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
                 variant="contained"
                 type="submit"
                 color="primary"
-                disabled={isLoading}
+                disabled={loading}
                 className={classes.button}
               >
-                {isLoading && (
+                {loading && (
                   <CircularProgress
                     className={classes.icon}
                     size={18}
@@ -129,25 +154,17 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = ({
           </form>
         )
       }}
-    </Form>
+    />
   )
 }
 const mapStateToProps = (state: ReduxState) => ({
-  isLoading: state.admin.loading > 0,
+  loading: state.admin.loading > 0
 })
 
 const enhance = compose<Props & EnhancedProps, Props>(
-  withStyles(styles),
-  withTranslate,
-  connect(mapStateToProps, {
-    userLogin: userLoginRa
-  })
+  connect(mapStateToProps, {})
 )
 
 const EnhancedLoginForm = enhance(LoginForm)
-
-EnhancedLoginForm.propTypes = {
-  redirectTo: PropTypes.string,
-}
 
 export default EnhancedLoginForm
