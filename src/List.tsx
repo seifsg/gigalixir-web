@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card'
 import classnames from 'classnames'
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import { ListController, getListControllerProps } from 'ra-core'
-
 import {
   Title,
   defaultTheme,
@@ -14,6 +13,7 @@ import {
   ListActions,
   ListToolbar
 } from 'react-admin'
+import logger from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DefaultBulkActionButtons = (props: any) => <BulkDeleteButton {...props} />
@@ -65,8 +65,8 @@ const sanitizeRestProps = ({
   hideFilter,
   history,
   ids,
-  isLoading,
-  loadedOnce,
+  loading,
+  loaded,
   locale,
   location,
   match,
@@ -161,50 +161,6 @@ export const ListView = withStyles(styles)(
   }
 )
 
-// ListView.propTypes = {
-//   actions: PropTypes.element,
-//   aside: PropTypes.node,
-//   basePath: PropTypes.string,
-//   bulkActions: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-//   bulkActionButtons: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-//   children: PropTypes.element,
-//   className: PropTypes.string,
-//   classes: PropTypes.object,
-//   currentSort: PropTypes.shape({
-//     field: PropTypes.string,
-//     order: PropTypes.string
-//   }),
-//   data: PropTypes.object,
-//   defaultTitle: PropTypes.string,
-//   displayedFilters: PropTypes.object,
-//   exporter: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-//   filterDefaultValues: PropTypes.object,
-//   filters: PropTypes.element,
-//   filterValues: PropTypes.object,
-//   hasCreate: PropTypes.bool,
-//   hideFilter: PropTypes.func,
-//   ids: PropTypes.array,
-//   isLoading: PropTypes.bool,
-//   onSelect: PropTypes.func,
-//   onToggleItem: PropTypes.func,
-//   onUnselectItems: PropTypes.func,
-//   page: PropTypes.number,
-//   pagination: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
-//   perPage: PropTypes.number,
-//   refresh: PropTypes.func,
-//   resource: PropTypes.string,
-//   selectedIds: PropTypes.array,
-//   setFilters: PropTypes.func,
-//   setPage: PropTypes.func,
-//   setPerPage: PropTypes.func,
-//   setSort: PropTypes.func,
-//   showFilter: PropTypes.func,
-//   title: PropTypes.any,
-//   total: PropTypes.number,
-//   translate: PropTypes.func,
-//   version: PropTypes.number
-// }
-
 ListView.defaultProps = {
   actions: <ListActions />,
   classes: {},
@@ -256,7 +212,10 @@ ListView.defaultProps = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const List = (props: any) => (
   <ListController {...props}>
-    {controllerProps => <ListView {...props} {...controllerProps} />}
+    {controllerProps => {
+      logger.debug(JSON.stringify(controllerProps))
+      return <ListView {...props} {...controllerProps} />
+    }}
   </ListController>
 )
 

@@ -10,6 +10,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import { WrappedFieldProps } from 'redux-form'
 import { FieldRenderProps } from 'react-final-form'
 import TextField from '@material-ui/core/TextField'
+import logger from './logger'
 
 const renderFormHelper = ({
   touched,
@@ -28,16 +29,18 @@ const renderFormHelper = ({
 export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   label,
   input,
-  meta: { touched, invalid, error },
+  meta: { touched, invalid, error, submitError },
   ...custom
 }: { label: string } & FieldRenderProps<string, HTMLElement>): JSX.Element => {
+  logger.debug(`renderTextField error: ${error}`)
+  logger.debug(`renderTextField submitError: ${submitError}`)
   return (
     <TextField
       type={type}
       label={label}
       placeholder={label}
       error={touched && invalid}
-      helperText={touched && error}
+      helperText={(error || submitError) && touched && (error || submitError)}
       {...input}
       {...custom}
     />
