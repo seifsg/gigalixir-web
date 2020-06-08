@@ -14,7 +14,7 @@ import { StyledTab, StyledTabs } from './Tabs'
 const styles = {}
 
 interface Props {
-  isLoading: boolean
+  loading: boolean
   version: number
   profile: User
   app: App

@@ -14,7 +14,7 @@ import {
   useNotify,
   useSafeSetState,
   useTranslate,
-  ReduxState,
+  ReduxState
 } from 'ra-core'
 import { renderInputField as renderInput } from './fieldComponents'
 import logger from './logger'
@@ -80,7 +80,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
         setLoading(false)
       })
       .catch(error => {
-        logger.debug(`login error: ${JSON.stringify(error)}`)
+        logger.debug(`login error: ${typeof error}: ${JSON.stringify(error)}`)
         setLoading(false)
         notify(
           typeof error === 'string'
@@ -90,10 +90,10 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
             : error.message,
           'warning'
         )
-        return Promise.resolve({
+        return {
           email: extractEmailError(error.body.errors),
-          password: extractError(error.body.errors, 'password'),
-        })
+          password: extractError(error.body.errors, 'password')
+        }
       })
   }
 

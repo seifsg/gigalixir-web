@@ -283,14 +283,14 @@ const AppShow: FunctionComponent<AppShowProps> = ({
             const profile = profileControllerProps.record
             return (
               <ShowController resource="apps" id={id} basePath="/login">
-                {(controllerProps: { record: App; isLoading: boolean }) => {
+                {(controllerProps: { record: App; loading: boolean }) => {
                   const app = controllerProps.record
                   return (
                     <SetupOrShowLayout
                       app={app}
                       profile={profile}
                       tabs={tabs}
-                      isLoading={controllerProps.isLoading}
+                      loading={controllerProps.loading}
                       version={version}
                     />
                   )
