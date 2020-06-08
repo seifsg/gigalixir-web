@@ -32,8 +32,6 @@ export const renderTextField = ({ type }: { type: 'number' | 'input' }) => ({
   meta: { touched, invalid, error, submitError },
   ...custom
 }: { label: string } & FieldRenderProps<string, HTMLElement>): JSX.Element => {
-  logger.debug(`renderTextField error: ${error}`)
-  logger.debug(`renderTextField submitError: ${submitError}`)
   return (
     <TextField
       type={type}
