@@ -3,23 +3,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FunctionComponent } from 'react'
 import { Form, Field } from 'react-final-form'
-import { FORM_ERROR } from 'final-form'
 import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { makeStyles, WithStyles, Theme } from '@material-ui/core/styles'
+import { makeStyles, Theme } from '@material-ui/core/styles'
 import {
   useLogin,
   useNotify,
   useSafeSetState,
   useTranslate,
   ReduxState,
-  I18nProvider
 } from 'ra-core'
 import { renderInputField as renderInput } from './fieldComponents'
 import logger from './logger'
+import { extractEmailError, extractError } from './errorSagas'
 
 interface Props {
   redirectTo?: string
@@ -76,7 +75,7 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
 
   const submit = (values: FormData) => {
     setLoading(true)
-    login(values, redirectTo)
+    return login(values, redirectTo)
       .then(() => {
         setLoading(false)
       })
@@ -91,10 +90,9 @@ const LoginForm: FunctionComponent<Props & EnhancedProps> = props => {
             : error.message,
           'warning'
         )
-      })
-      .then(() => {
         return Promise.resolve({
-          [FORM_ERROR]: 'yo'
+          email: extractEmailError(error.body.errors),
+          password: extractError(error.body.errors, 'password'),
         })
       })
   }

@@ -5,7 +5,7 @@ import { stopSubmit } from 'redux-form'
 import { all, put, takeEvery } from 'redux-saga/effects'
 import { Action } from 'redux'
 import _ from 'lodash/fp'
-import { USER_LOGIN_FAILURE, FETCH_ERROR } from 'ra-core'
+import { FETCH_ERROR } from 'ra-core'
 
 // TODO: can we replace everything in this file with failureCallbacks instead?
 interface ErrorPayload {
@@ -52,7 +52,7 @@ interface UserLoginFailureAction extends Action {
   }
 }
 
-function extractEmailError(errors: ErrorPayload) {
+export function extractEmailError(errors: ErrorPayload) {
   const key = 'email'
   const errorList = _.get(key, errors) || []
   const msg = extractError(errors, key)
@@ -75,19 +75,6 @@ function extractEmailError(errors: ErrorPayload) {
     )
   }
   return msg
-}
-function* userLoginFailure(action: UserLoginFailureAction) {
-  if (action.error) {
-    const violations = {
-      email: extractEmailError(action.error.body.errors),
-      password: extractError(action.error.body.errors, 'password')
-    }
-
-    const a = stopSubmit('signIn', violations)
-    yield put(a)
-  } else {
-    throw new Error('userLoginFailure with no payload')
-  }
 }
 function* upgradeUserFailure(action: CrudFailureAction) {
   if (action.payload) {
@@ -147,15 +134,8 @@ function* crudFailureSaga(
   }, callback)
 }
 
-function* userLoginFailureSaga() {
-  yield takeEvery((action: UserLoginFailureAction): boolean => {
-    return action.type === USER_LOGIN_FAILURE && action.error !== undefined
-  }, userLoginFailure)
-}
-
 export default function* errorSagas() {
   yield all([
-    userLoginFailureSaga(),
     crudFailureSaga(
       CRUD_UPDATE_FAILURE,
       'payment_methods',
