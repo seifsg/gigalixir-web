@@ -124,8 +124,7 @@ class SetupOrShowLayout extends React.Component<
 
 function mapStateToProps(state: ReduxState & CorrectedReduxState) {
   return {
-    isLoading: state.admin.loading > 0,
-    version: state.admin.ui.viewVersion
+    isLoading: state.admin.loading > 0
   }
 }
 

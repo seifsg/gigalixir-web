@@ -17,7 +17,6 @@ import {
   ReduxState
 } from 'ra-core'
 import { renderInputField as renderInput } from './fieldComponents'
-import logger from './logger'
 import { extractEmailError, extractError } from './errorSagas'
 
 interface Props {

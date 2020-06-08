@@ -10,7 +10,6 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import { WrappedFieldProps } from 'redux-form'
 import { FieldRenderProps } from 'react-final-form'
 import TextField from '@material-ui/core/TextField'
-import logger from './logger'
 
 const renderFormHelper = ({
   touched,

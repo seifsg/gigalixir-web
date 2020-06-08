@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { CRUD_UPDATE_FAILURE } from 'react-admin'
 import { SagaIterator } from 'redux-saga'
 import { stopSubmit } from 'redux-form'
@@ -52,7 +52,7 @@ interface UserLoginFailureAction extends Action {
   }
 }
 
-export function extractEmailError(errors: ErrorPayload) {
+export const extractEmailError = (errors: ErrorPayload): ReactNode => {
   const key = 'email'
   const errorList = _.get(key, errors) || []
   const msg = extractError(errors, key)
