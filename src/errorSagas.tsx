@@ -45,7 +45,7 @@ export const extractError = (
 // This is because the old function could display empty notifications messages
 export const extractErrorNotify = (
   errors: ErrorPayload,
-  key: string
+  key: string | string[]
 ): ((
   notify: (
     message: string,

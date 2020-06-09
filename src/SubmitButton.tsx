@@ -5,14 +5,14 @@ import {
   Theme,
   withStyles,
   WithStyles,
-  createStyles
+  createStyles,
 } from '@material-ui/core/styles'
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
     icon: {
-      marginRight: spacing()
-    }
+      marginRight: spacing(),
+    },
   })
 interface Props {
   invalid: boolean
@@ -20,6 +20,7 @@ interface Props {
   submitting: boolean
   label: string
   variant?: 'text' | 'outlined' | 'contained' | undefined
+  color?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined
 }
 type EnhancedProps = WithStyles<typeof styles>
 const SubmitButton: FunctionComponent<Props & EnhancedProps> = ({
@@ -28,13 +29,15 @@ const SubmitButton: FunctionComponent<Props & EnhancedProps> = ({
   invalid,
   pristine,
   submitting,
-  label
+  label,
+  color,
 }) => {
+  console.log({ invalid, pristine, submitting })
   return (
     <Button
       type="submit"
       disabled={invalid || pristine || submitting}
-      color="primary"
+      color={color || 'primary'}
       variant={variant}
     >
       {submitting && (
