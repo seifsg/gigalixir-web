@@ -8,10 +8,9 @@
         "node": "11.1.0"
     },
     "dependencies": {
-        "@ant-design/icons": "^4.2.1",
         "@material-ui/core": "^4.10.1",
         "@material-ui/icons": "^4.9.1",
-        "antd": "^4.3.3",
+        "@material-ui/lab": "^4.0.0-alpha.55",
         "axios": "^0.19.2",
         "caniuse-lite": "^1.0.30001078",
         "chart.js": "^2.9.3",
