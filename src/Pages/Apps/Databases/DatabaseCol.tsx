@@ -4,8 +4,8 @@ import classnames from 'classnames'
 import compose from 'recompose/compose'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
-import { Alert } from 'antd'
 import moment from 'moment'
+import Alert from '@material-ui/lab/Alert'
 import { StandardDatabase, FreeDatabase } from '../../../api/databases'
 
 const styles = createStyles({
@@ -15,19 +15,19 @@ const styles = createStyles({
     height: '0px',
     padding: 0,
     margin: 0,
-    marginBottom: '1.33em'
+    marginBottom: '1.33em',
   },
   dividingBorder: {
     borderRight: '2px solid rgba(224, 224, 224, 1)',
-    minHeight: '100%'
+    minHeight: '100%',
   },
   container: {
     marginBottom: '1.33em',
-    marginTop: '1.33em'
+    marginTop: '1.33em',
   },
   dbLimitedAt: {
-    padding: '0 1.33em 1.33em'
-  }
+    padding: '0 1.33em 1.33em',
+  },
 })
 
 interface DatabaseCol {
@@ -40,7 +40,7 @@ type EnhancedProps = WithStyles<typeof styles>
 const Component: FunctionComponent<DatabaseCol & EnhancedProps> = ({
   database,
   dividingBorder,
-  classes
+  classes,
 }) => {
   return (
     <div
@@ -137,9 +137,10 @@ const DbFieldTextArea: FunctionComponent<{
         {leftSide}
       </Grid>
       <Grid item xs={9}>
-        <textarea style={{ width: '100%', resize: 'none' }}>
-          {rightSide}
-        </textarea>
+        <textarea
+          style={{ width: '100%', resize: 'none' }}
+          defaultValue={rightSide}
+        />
       </Grid>
     </Grid>
   )
@@ -151,16 +152,10 @@ const DbLimitedAt: FunctionComponent<{
   if (typeof limitedAt === 'undefined' || limitedAt === null) return null
   const limitedAtMoment = moment(limitedAt)
   return (
-    <Alert
-      message="Warning"
-      description={`This database was limited at ${limitedAtMoment.format(
-        'h:mma'
-      )} on ${limitedAtMoment.format(
-        'MM/DD/YYYY'
-      )} because it exceeded 10.000 rows`}
-      type="error"
-      showIcon
-    />
+    <Alert severity="error">
+      `This database was limited at ${limitedAtMoment.format('h:mma')} on $
+      {limitedAtMoment.format('MM/DD/YYYY')} because it exceeded 10.000 rows`
+    </Alert>
   )
 }
 

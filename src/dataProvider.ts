@@ -211,7 +211,7 @@ const dataProvider = <T extends DataProviderType>(
       return invoices.pdfs()
     }
     if (resource === 'apps') {
-      return apps.list().catch(e => {
+      return apps.list().catch((e) => {
         logger.debug(JSON.stringify(e))
         if (e.status === 401) {
           // semantically, probably better to reject here since it's an error, but
@@ -234,7 +234,7 @@ const dataProvider = <T extends DataProviderType>(
   }
   if (isCreateDatabase(params, resource, type)) {
     const { size, appID } = params.data
-    if (typeof size !== 'undefined') {
+    if (typeof size === 'number' && size > 0) {
       return databases.createStandard(appID, size)
     }
     return databases.createFree(appID)
@@ -279,14 +279,14 @@ const dataProvider = <T extends DataProviderType>(
   if (isUpdateApp(params, resource, type)) {
     return apps
       .scale(params.id, params.data.size, params.data.replicas)
-      .then(response => {
+      .then((response) => {
         const { data } = response
         return {
           data: {
             id: params.id,
             size: data.size,
-            replicas: data.replicas
-          }
+            replicas: data.replicas,
+          },
         }
       })
   }
