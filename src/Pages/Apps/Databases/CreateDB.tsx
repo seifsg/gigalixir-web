@@ -1,5 +1,4 @@
-import React from 'react'
-
+import React, { FunctionComponent, useState } from 'react'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
@@ -8,29 +7,24 @@ import Button from '@material-ui/core/Button'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { reduxForm, InjectedFormProps, SubmissionError } from 'redux-form'
+import { Form, Field } from 'react-final-form'
 import {
   RadioGroup,
   FormControlLabel,
   Radio,
   FormControl,
-  Theme
+  Theme,
+  Dialog,
 } from '@material-ui/core'
-import { Slider } from 'antd'
-import css from './Slider.module.css' 
-import { CloseFunction } from '../../../DialogButton'
-// import { required, choices } from '../../../validators'
+import Slider from '@material-ui/core/Slider'
+import { useMutation, useRefresh, useNotify } from 'ra-core'
+import { FORM_ERROR } from 'final-form'
+import AddIcon from '@material-ui/icons/Add'
 import { extractError } from '../../../errorSagas'
-import { crudCreate } from '../../../crudCreate'
-import { SuccessCallback, FailureCallback } from '../../../callbacks'
 import SubmitButton from '../../../SubmitButton'
 
-export const CreateDialog = (close: CloseFunction): JSX.Element => {
-  return <EnhancedCreate close={close} />
-}
-
 interface CreateProps {
-  close: CloseFunction
+  appID: string
 }
 interface FormData {
   size: number
@@ -38,197 +32,250 @@ interface FormData {
 const styles = (theme: Theme) =>
   createStyles({
     formControl: {
-      margin: theme.spacing(3)
+      margin: theme.spacing(3),
     },
     group: {
-      margin: `${theme.spacing()}px 0`
-    }
+      margin: `${theme.spacing()}px 0`,
+    },
   })
 
-interface EnhancedCreateProps
-  extends InjectedFormProps<FormData>,
-    WithStyles<typeof styles> {
-  create: (
-    values: { size: number },
-    onSuccess: SuccessCallback,
-    onFailure: FailureCallback
-  ) => void
-}
+type EnhancedCreateProps = WithStyles<typeof styles>
 
-interface CreateState {
-  selectedDBType: 'FREE' | 'STANDARD'
-  marks: { [key: string]: number }
-  displaySlider: boolean
-}
+const DBCreate: FunctionComponent<CreateProps & EnhancedCreateProps> = (
+  props
+) => {
+  const { classes, appID } = props
+  const [displaySlider, setDisplaySlider] = useState(false)
+  const [open, setOpen] = useState(false)
+  const refresh = useRefresh()
+  const notify = useNotify()
+  const [mutate] = useMutation()
 
-class DBCreate extends React.Component<
-  CreateProps & EnhancedCreateProps,
-  CreateState
-> {
-  /**
-   *
-   */
-  constructor(props: CreateProps & EnhancedCreateProps) {
-    super(props)
-
-    this.state = {
-      selectedDBType: 'FREE',
-      displaySlider: false,
-      marks: {
-        16: 0.6,
-        32: 1.7,
-        48: 4,
-        64: 8,
-        80: 16,
-        96: 32,
-        112: 64,
-        128: 128
-      }
-    }
-
-    this.onCancel = this.onCancel.bind(this)
-    this.handleChangeRadio = this.handleChangeRadio.bind(this)
+  const handleClickOpen = () => {
+    setOpen(true)
   }
 
-  onCancel = () => {
-    const { close } = this.props
-    close()
+  const handleClose = () => {
+    setOpen(false)
   }
 
-  onSubmit = ({ size }: FormData) => {
-    const { close, create } = this.props
+  const marks = [
+    {
+      value: 16,
+      label: 0.6,
+    },
+    {
+      value: 32,
+      label: 1.7,
+    },
+    {
+      value: 48,
+      label: 4,
+    },
+    {
+      value: 80,
+      label: 16,
+    },
+    {
+      value: 96,
+      label: 32,
+    },
+    {
+      value: 112,
+      label: 64,
+    },
+    {
+      value: 128,
+      label: 128,
+    },
+  ]
 
-    const createObj = {
-      size
-    }
-    return new Promise((resolve, reject) => {
-      const failureCallback: FailureCallback = ({ payload: { errors } }) => {
-        const formErrors = {
-          ...errors,
-          app_id: errors.app_id,
-          upgrade: errors['']
-        }
-        reject(
-          new SubmissionError({
-            _error: extractError(formErrors, 'Failed to add database'),
-            size: extractError(formErrors, 'size')
-          })
-        )
-      }
-      create(
-        createObj,
-        () => {
-          close()
-          resolve()
+  const onCancel = () => {
+    handleClose()
+  }
+
+  const submit = (values: FormData) => {
+    return new Promise((resolve) => {
+      mutate(
+        {
+          type: 'create',
+          resource: 'databases',
+          payload: {
+            data: { size: values.size, appID },
+          },
         },
-        failureCallback
+        {
+          onSuccess: () => {
+            notify('Database added!')
+            handleClose()
+            resolve()
+            refresh()
+          },
+          onFailure: ({ body: { errors } }) => {
+            resolve({
+              [FORM_ERROR]: extractError(errors, ['', 'app_name', 'app_id']),
+            })
+          },
+        }
       )
     })
   }
 
-  handleChangeRadio(event: React.ChangeEvent<{}>, value: string) {
+  const handleChangeRadio = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    value: string
+  ) => {
     if (value === 'FREE') {
-      this.setState({ selectedDBType: 'FREE', displaySlider: false })
-    } else this.setState({ selectedDBType: 'STANDARD', displaySlider: true })
+      setDisplaySlider(false)
+    } else {
+      setDisplaySlider(true)
+    }
   }
 
-  render() {
-    const {
-      error,
-      submitting,
-      pristine,
-      invalid,
-      handleSubmit,
-      classes
-    } = this.props
-
-    const { selectedDBType, marks, displaySlider } = this.state
-
-    return (
-      <form style={{ minWidth: 600 }} onSubmit={handleSubmit(this.onSubmit)}>
-        <DialogTitle id="form-dialog-title">Add Database</DialogTitle>
-        {error && (
-          <DialogContent>
-            <FormHelperText error>{error}</FormHelperText>
-          </DialogContent>
-        )}
-
-        <DialogContent>
-          <FormControl>
-            <RadioGroup
-              row
-              aria-label="Gender"
-              name="gender1"
-              className={classes.group}
-              value={selectedDBType}
-              onChange={this.handleChangeRadio}
-            >
-              <FormControlLabel
-                value="FREE"
-                control={<Radio color="primary" />}
-                label="Free"
-              />
-              <FormControlLabel
-                value="STANDARD"
-                control={<Radio color="primary" />}
-                label="Standard"
-              />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogContent style={{ display: displaySlider ? 'block' : 'none' }}>
-          <div>
-            <Slider marks={marks} step={null} defaultValue={48} max={144} className={css.slider}/>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <SubmitButton
-            {...{ invalid, pristine, submitting }}
-            label="Save Database"
-          />
-          <Button onClick={this.onCancel} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
-      </form>
-    )
+  /**
+   * Since the distance between slider select points is calculated by value
+   * I set values that serve an ergonomic purpose
+   * So this function serves to get the actual value
+   */
+  const loopForSelectedValue = (value: number) => {
+    let i = marks.length
+    let selected = 0
+    while (i > 0 && selected === 0) {
+      i -= 1
+      if (marks[i].value === value) selected = marks[i].label
+    }
+    return selected
   }
-}
 
-const createForm = (
-  values: { size: number },
-  successCallback: SuccessCallback,
-  failureCallback: FailureCallback
-) => {
-  const basePath = ''
-  const redirectTo = ''
+  return (
+    <>
+      <Button color="primary" variant="contained" onClick={handleClickOpen}>
+        <AddIcon /> &nbsp; &nbsp; <span>Add Database</span>
+      </Button>
 
-  // needed because the create endpoint doesn't return a full app e.g. stack
-  const refresh = true
-  return crudCreate(
-    'databases',
-    values,
-    basePath,
-    redirectTo,
-    refresh,
-    successCallback,
-    failureCallback
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <Form
+          onSubmit={submit}
+          mutators={{
+            changeValue: (args, state, utils) => {
+              utils.changeValue(state, args[0], () => args[1])
+            },
+          }}
+          render={({
+            handleSubmit,
+            submitError,
+            submitting,
+            hasValidationErrors,
+            hasSubmitErrors,
+            modifiedSinceLastSubmit,
+            values,
+            form,
+          }) => {
+            return (
+              <form onSubmit={handleSubmit} style={{ minWidth: 600 }}>
+                <DialogTitle id="form-dialog-title">Add Database</DialogTitle>
+                {submitError && (
+                  <DialogContent>
+                    <FormHelperText error>{submitError}</FormHelperText>
+                  </DialogContent>
+                )}
+
+                <DialogContent>
+                  <FormControl>
+                    <Field name="type" type="radio">
+                      {(formProps) => (
+                        <RadioGroup
+                          row
+                          className={classes.group}
+                          name={formProps.input.name}
+                          value={formProps.input.value}
+                          onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>,
+                            value: string
+                          ) => {
+                            formProps.input.onChange(event)
+                            handleChangeRadio(event, value)
+                            if (
+                              typeof values.size === 'undefined' &&
+                              value === 'STANDARD'
+                            ) {
+                              form.mutators.changeValue('size', 4) // setting default value that only needed when "STANDARD" is selected
+                            }
+                          }}
+                        >
+                          <FormControlLabel
+                            value="FREE"
+                            control={<Radio color="primary" />}
+                            label="Free"
+                          />
+                          <FormControlLabel
+                            value="STANDARD"
+                            control={<Radio color="primary" />}
+                            label="Standard"
+                          />
+                        </RadioGroup>
+                      )}
+                    </Field>
+                  </FormControl>
+                </DialogContent>
+                <DialogContent
+                  style={{ display: displaySlider ? 'block' : 'none' }}
+                >
+                  <div>
+                    <Field name="size">
+                      {(formProps) => (
+                        <Slider
+                          marks={marks}
+                          step={null}
+                          defaultValue={48}
+                          max={144}
+                          name={formProps.input.name}
+                          onChange={(
+                            event: React.ChangeEvent<unknown>,
+                            value: number | number[]
+                          ) => {
+                            formProps.input.onChange(event)
+                            if (typeof value === 'number') {
+                              const val = loopForSelectedValue(value)
+                              form.mutators.changeValue('size', val)
+                            }
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </div>
+                </DialogContent>
+                <DialogActions>
+                  <SubmitButton
+                    {...{
+                      invalid:
+                        hasValidationErrors ||
+                        (hasSubmitErrors && !modifiedSinceLastSubmit),
+                      pristine: false,
+                      submitting,
+                    }}
+                    label="Save database"
+                  />
+                  <Button onClick={onCancel} color="primary">
+                    Cancel
+                  </Button>
+                </DialogActions>
+              </form>
+            )
+          }}
+        />
+      </Dialog>
+    </>
   )
 }
 
 const EnhancedCreate = compose<CreateProps & EnhancedCreateProps, CreateProps>(
   withStyles(styles),
-  connect(
-    () => ({
-      initialValues: {}
-    }),
-    {
-      create: createForm
-    }
-  ),
-  reduxForm({
-    form: 'dbCreate'
-  })
+  connect()
 )(DBCreate)
 
 export default EnhancedCreate

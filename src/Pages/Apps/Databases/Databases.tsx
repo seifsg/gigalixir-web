@@ -6,36 +6,44 @@ import {
   Divider,
   createStyles,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core'
 import classnames from 'classnames'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import Loading from '../../../Loading'
 import ErrorComponent from '../../../ErrorComponent'
 import { DatabasesArray } from '../../../api/databases'
 import DatabaseCol from './DatabaseCol'
-import DialogButton from '../../../DialogButton'
-import { CreateDialog } from './CreateDB'
+import AddDatabase from './CreateDB'
+import DeleteDB from './DeleteDB'
 
 const styles = createStyles({
   container: {
-    padding: '1.3em 0'
+    padding: '1.3em 0',
   },
   title: {
-    display: 'inline-block'
+    display: 'inline-block',
   },
   titleContainer: {
     width: '100%',
-    marginBottom: 5
+    marginBottom: 5,
   },
   controlButtons: {
     float: 'right',
-    marginRight: 2
+    marginRight: 2,
   },
   btn: {
     display: 'inline',
-    marginLeft: '1em'
-  }
+    marginLeft: '1em',
+  },
+  containerNoDB: {
+    minHeight: '200px',
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    justifyItems: 'center',
+    flexDirection: 'column',
+  },
+  noDB: {},
 })
 
 interface Props {
@@ -48,7 +56,8 @@ const renderDatabases = (
   classes: Record<keyof typeof styles, string>,
   loading: boolean,
   error: Error,
-  data: DatabasesArray
+  data: DatabasesArray,
+  id: string
 ): ReactNode => {
   if (loading) {
     return <Loading />
@@ -82,20 +91,12 @@ const renderDatabases = (
     )
   }
   return (
-    <div className={classnames(classes.container)}>
-      <div>No database listed yet.</div>
-      <div>
-        {' '}
-        <DialogButton
-          containerClassName={classnames(classes.btn)}
-          label={
-            <>
-              <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
-            </>
-          }
-        >
-          {CreateDialog}
-        </DialogButton>
+    <div className={classnames(classes.containerNoDB)}>
+      <div className={classnames(classes.noDB)}>
+        <h3>No database listed yet.</h3>
+        <div className={classnames(classes.btn)}>
+          <AddDatabase appID={id} />
+        </div>
       </div>
     </div>
   )
@@ -103,12 +104,12 @@ const renderDatabases = (
 
 const Component: FunctionComponent<Props & EnhancedProps> = ({
   id,
-  classes
+  classes,
 }) => {
   const { data, loaded, error } = useQueryWithStore({
     type: 'GET_LIST_BY_ID',
     resource: 'databases',
-    payload: { id }
+    payload: { id },
   })
 
   return (
@@ -119,32 +120,17 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
             <h2 className={classnames(classes.title)}>Databases</h2>
           </Grid>
           <Grid item xs={6} style={{ textAlign: 'right' }}>
-            <DialogButton
-              containerClassName={classnames(classes.btn)}
-              label={
-                <>
-                  <PlusOutlined /> &nbsp; &nbsp; <span>Add Database</span>
-                </>
-              }
-            >
-              {CreateDialog}
-            </DialogButton>
-            <DialogButton
-              containerClassName={classnames(classes.btn)}
-              color="secondary"
-              label={
-                <>
-                  <DeleteOutlined /> &nbsp; &nbsp; <span>Delete</span>
-                </>
-              }
-            >
-              {CreateDialog}
-            </DialogButton>
+            <div className={classnames(classes.btn)}>
+              <AddDatabase appID={id} />
+            </div>
+            <div className={classnames(classes.btn)}>
+              <DeleteDB appID={id} />
+            </div>
           </Grid>
         </Grid>
       </div>
       <Divider />
-      {renderDatabases(classes, !loaded, error, data)}
+      {renderDatabases(classes, !loaded, error, data, id)}
     </>
   )
 }

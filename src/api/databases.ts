@@ -1,5 +1,7 @@
 import _ from 'lodash'
+import { HttpError } from 'ra-core'
 import * as api from './api'
+import { extractAllErrors } from '../errorSagas'
 
 export type DatabasesArray = Array<FreeDatabase | StandardDatabase>
 
@@ -75,7 +77,7 @@ export const get = (id: string): Promise<Response> => {
             host: r.host,
             database: r.database,
             appName: r.app_name,
-            limitedAt: r.limited_at
+            limitedAt: r.limited_at,
           }
           return db
         }
@@ -93,13 +95,13 @@ export const get = (id: string): Promise<Response> => {
           host: r.host,
           database: r.database,
           cloud: r.cloud,
-          appName: r.app_name
+          appName: r.app_name,
         }
         return db
       })
 
       return {
-        data
+        data,
       }
     }
   )
@@ -127,9 +129,18 @@ export const createFree = (appID: string): Promise<{ data: FreeDatabase }> => {
           // eslint-disable-next-line camelcase
           appName: r.app_name,
           // eslint-disable-next-line camelcase
-          limitedAt: r.limited_at
-        }
+          limitedAt: r.limited_at,
+        },
       }
+    })
+    .catch((error) => {
+      return Promise.reject(
+        new HttpError(
+          extractAllErrors(error.body.errors),
+          error.status,
+          error.body
+        )
+      )
     })
 }
 
@@ -139,7 +150,7 @@ export const createStandard = (
 ): Promise<{ data: StandardDatabase }> => {
   return api
     .post<ServerResponseSingular>(`/frontend/api/apps/${appID}/databases`, {
-      size
+      size,
     })
     .then((response): { data: StandardDatabase } => {
       const r = response.data.data
@@ -158,23 +169,38 @@ export const createStandard = (
           appName: r.app_name,
           size: r.size,
           region: r.region,
-          cloud: r.cloud
-        }
+          cloud: r.cloud,
+        },
       }
+    })
+    .catch((error) => {
+      return Promise.reject(
+        new HttpError(
+          extractAllErrors(error.body.errors),
+          error.status,
+          error.body
+        )
+      )
     })
 }
 
 export const del = (
   appID: string,
   id: string
-): Promise<{ data: FreeDatabase | StandardDatabase }> => {
+): Promise<{
+  data: FreeDatabase | StandardDatabase | Record<string, unknown>
+}> => {
   return api
-    .del<ServerResponseSingular>(`/frontend/api/apps/${appID}/databases/${id}`)
-    .then((response): { data: FreeDatabase | StandardDatabase } => {
+    .del<ServerResponseSingular>(
+      `/frontend/api/apps/${appID}/databases/${encodeURIComponent(id)}`
+    )
+    .then((response): {
+      data: FreeDatabase | StandardDatabase | Record<string, unknown>
+    } => {
       const r = response.data.data
-      let db: FreeDatabase | StandardDatabase
 
-      if (r.tier === 'FREE') {
+      let db: FreeDatabase | StandardDatabase | Record<string, unknown> = {}
+      if (r?.tier === 'FREE') {
         db = {
           username: r.username,
           url: r.url,
@@ -186,9 +212,9 @@ export const del = (
           host: r.host,
           database: r.database,
           appName: r.app_name,
-          limitedAt: r.limited_at
+          limitedAt: r.limited_at,
         }
-      } else
+      } else if (r?.tier === 'STANDARD') {
         db = {
           username: r.username,
           url: r.url,
@@ -202,8 +228,18 @@ export const del = (
           host: r.host,
           database: r.database,
           cloud: r.cloud,
-          appName: r.app_name
+          appName: r.app_name,
         }
+      }
       return { data: db }
+    })
+    .catch((error) => {
+      return Promise.reject(
+        new HttpError(
+          extractAllErrors(error.body.errors),
+          error.status,
+          error.body
+        )
+      )
     })
 }

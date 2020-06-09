@@ -1,6 +1,0 @@
-.slider {
-  background-color: blue
-}
-.slider :global(.ant-slider-track) {
-  background-color: black
-}
