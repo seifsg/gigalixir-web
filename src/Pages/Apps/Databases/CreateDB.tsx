@@ -172,6 +172,7 @@ const DBCreate: FunctionComponent<CreateProps & EnhancedCreateProps> = (
             hasValidationErrors,
             hasSubmitErrors,
             modifiedSinceLastSubmit,
+            pristine,
             values,
             form,
           }) => {
@@ -204,6 +205,8 @@ const DBCreate: FunctionComponent<CreateProps & EnhancedCreateProps> = (
                               value === 'STANDARD'
                             ) {
                               form.mutators.changeValue('size', 4) // setting default value that only needed when "STANDARD" is selected
+                            } else {
+                              form.mutators.changeValue('size', undefined)
                             }
                           }}
                         >
@@ -255,7 +258,7 @@ const DBCreate: FunctionComponent<CreateProps & EnhancedCreateProps> = (
                       invalid:
                         hasValidationErrors ||
                         (hasSubmitErrors && !modifiedSinceLastSubmit),
-                      pristine: false,
+                      pristine,
                       submitting,
                     }}
                     label="Save database"
