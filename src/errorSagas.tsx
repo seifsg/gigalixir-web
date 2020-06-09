@@ -20,10 +20,47 @@ export const extractErrorValue = (
 }
 
 const errorListWithKey = (key: string) =>
-  _.map(msg => `${_.capitalize(key)} ${msg}`)
-export const extractError = (errors: ErrorPayload, key: string): string => {
+  _.map((msg) => `${_.capitalize(key)} ${msg}`)
+export const extractError = (
+  errors: ErrorPayload,
+  key: string | string[]
+): string => {
+  if (Array.isArray(key)) {
+    let result = ''
+    for (let i = 0; i < key.length; i += 1) {
+      const _key = key[i]
+      const _keyErrorList =
+        typeof errors[_key] === 'string'
+          ? [_.get(_key, errors)]
+          : _.get(_key, errors) || []
+      if (_keyErrorList.length > 0)
+        result += ` ${_.join('. ', errorListWithKey(_key)(_keyErrorList))}`
+    }
+    return result
+  }
   const errorList = _.get(key, errors) || []
   return _.join('. ', errorListWithKey(key)(errorList))
+}
+
+// This is because the old function could display empty notifications messages
+export const extractErrorNotify = (
+  errors: ErrorPayload,
+  key: string
+): ((
+  notify: (
+    message: string,
+    type?: 'info' | 'warning' | 'error' | undefined,
+    messageArgs?: any,
+    undoable?: boolean | undefined,
+    autoHideDuration?: number | undefined
+  ) => void
+) => void) => {
+  const notifMsg = extractError(errors, key)
+  return (notify) => {
+    if (notifMsg.length > 0) {
+      notify(notifMsg, 'error')
+    }
+  }
 }
 
 export const extractAllErrors = (errors: ErrorPayload): string => {
@@ -85,7 +122,7 @@ function* upgradeUserFailure(action: CrudFailureAction) {
     // always omit the key and make all other errors consistent?
     const tokenViolation = extractErrorValue(action.payload.errors, '')
     const violations = {
-      token: tokenViolation
+      token: tokenViolation,
     }
 
     const a = stopSubmit('upgradeUser', violations)
@@ -107,7 +144,7 @@ function* updatePaymentMethodFailure(action: CrudFailureAction) {
       'stripe_token'
     )
     const violations = {
-      token: tokenViolation
+      token: tokenViolation,
     }
 
     const a = stopSubmit('updatePaymentMethod', violations)
@@ -142,6 +179,6 @@ export default function* errorSagas() {
       'UPDATE',
       updatePaymentMethodFailure
     ),
-    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure)
+    crudFailureSaga(CRUD_UPDATE_FAILURE, 'users', 'UPDATE', upgradeUserFailure),
   ])
 }
