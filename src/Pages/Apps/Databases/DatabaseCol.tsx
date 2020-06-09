@@ -97,7 +97,7 @@ const DbField: FunctionComponent<{
   )
     return null
   return (
-    <Grid container>
+    <Grid container style={{ margin: '0.66em 0' }}>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         {leftSide}
       </Grid>
@@ -114,7 +114,7 @@ const DbFieldLimitedAt: FunctionComponent<{
   if (typeof limitedAt === 'undefined' || limitedAt === null) return null
   const limitedAtMoment = moment(limitedAt)
   return (
-    <Grid container>
+    <Grid container style={{ margin: '0.66em 0' }}>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         Limited At
       </Grid>
@@ -132,7 +132,7 @@ const DbFieldTextArea: FunctionComponent<{
 }> = ({ leftSide, rightSide }) => {
   if (typeof rightSide === 'undefined' || rightSide === null) return null
   return (
-    <Grid container>
+    <Grid container style={{ margin: '0.66em 0' }}>
       <Grid item xs={2} style={{ fontWeight: 'bold' }}>
         {leftSide}
       </Grid>
