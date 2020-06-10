@@ -5,8 +5,8 @@ import {
   Grid,
   Divider,
   createStyles,
-  WithStyles,
   withStyles,
+  WithStyles
 } from '@material-ui/core'
 import classnames from 'classnames'
 import Loading from '../../../Loading'
@@ -18,22 +18,22 @@ import DeleteDB from './DeleteDB'
 
 const styles = createStyles({
   container: {
-    padding: '1.3em 0',
+    // padding: '1.3em 0',
   },
   title: {
-    display: 'inline-block',
+    display: 'inline-block'
   },
   titleContainer: {
     width: '100%',
-    marginBottom: 5,
+    marginBottom: 5
   },
   controlButtons: {
     float: 'right',
-    marginRight: 2,
+    marginRight: 2
   },
   btn: {
     display: 'inline',
-    marginLeft: '1em',
+    marginLeft: '1em'
   },
   containerNoDB: {
     minHeight: '200px',
@@ -41,9 +41,9 @@ const styles = createStyles({
     display: 'flex',
     justifyContent: 'center',
     justifyItems: 'center',
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
-  noDB: {},
+  noDB: {}
 })
 
 interface Props {
@@ -104,16 +104,16 @@ const renderDatabases = (
 
 const Component: FunctionComponent<Props & EnhancedProps> = ({
   id,
-  classes,
+  classes
 }) => {
   const { data, loaded, error } = useQueryWithStore({
     type: 'GET_LIST_BY_ID',
     resource: 'databases',
-    payload: { id },
+    payload: { id }
   })
 
   return (
-    <>
+    <div>
       <div className={classnames(classes.titleContainer)}>
         <Grid container>
           <Grid item xs={6}>
@@ -131,7 +131,7 @@ const Component: FunctionComponent<Props & EnhancedProps> = ({
       </div>
       <Divider />
       {renderDatabases(classes, !loaded, error, data, id)}
-    </>
+    </div>
   )
 }
 

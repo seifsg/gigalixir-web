@@ -7,6 +7,9 @@ const styles = createStyles({
   section: {
     border: '1px solid rgba(0,0,0,0.1)',
     padding: '20px',
+    '& h4': {
+      marginTop: 20
+    },
     '& h4:first-child': {
       marginTop: 0
     }

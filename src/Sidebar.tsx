@@ -47,6 +47,10 @@ const styles = (theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         border: 'none',
         marginTop: '1.5em'
+      },
+      // undo antd hover color
+      '& a:hover': {
+        color: 'inherit'
       }
     }
   })
@@ -58,7 +62,7 @@ interface EnhancedProps extends WithStyles<typeof styles> {
   children: ReactElement
   closedSize: number
   open: boolean
-  setSidebarVisibility: Function
+  setSidebarVisibility: (open: boolean) => void
   size: number
   width: string
 }
